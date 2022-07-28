@@ -1,4 +1,5 @@
 from __future__ import annotations
+from unicodedata import name
 
 import pygame
 import os
@@ -31,51 +32,51 @@ class Character(pygame.sprite.Sprite):
         self.win_end_animation = []
         self.jump_animation = []
         self.focused = False
-        for image in os.listdir(f'resources/images/sprites/{character_name}/skin_1/idle/'):
+        for image in sorted(os.listdir(f'resources/images/sprites/{character_name}/skin_1/idle/')):
             _image = pygame.image.load(
                 f'resources/images/sprites/{character_name}/skin_1/idle/{image}').convert_alpha()
             self.idle_animation.append(_image)
-        for image in os.listdir(f'resources/images/sprites/{character_name}/skin_1/attack/'):
+        for image in sorted(os.listdir(f'resources/images/sprites/{character_name}/skin_1/attack/')):
             _image = pygame.image.load(
                 f'resources/images/sprites/{character_name}/skin_1/attack/{image}').convert_alpha()
             self.attack_animation.append(_image)
-        for image in os.listdir(f'resources/images/sprites/{character_name}/skin_1/attack_standby/'):
+        for image in sorted(os.listdir(f'resources/images/sprites/{character_name}/skin_1/attack_standby/')):
             _image = pygame.image.load(
                 f'resources/images/sprites/{character_name}/skin_1/attack_standby/{image}').convert_alpha()
             self.attack_standby_animation.append(_image)
-        for image in os.listdir(f'resources/images/sprites/{character_name}/skin_1/dead/'):
+        for image in sorted(os.listdir(f'resources/images/sprites/{character_name}/skin_1/dead/')):
             _image = pygame.image.load(
                 f'resources/images/sprites/{character_name}/skin_1/dead/{image}').convert_alpha()
             self.dead_animation.append(_image)
-        for image in os.listdir(f'resources/images/sprites/{character_name}/skin_1/dying/'):
+        for image in sorted(os.listdir(f'resources/images/sprites/{character_name}/skin_1/dying/')):
             _image = pygame.image.load(
                 f'resources/images/sprites/{character_name}/skin_1/dying/{image}').convert_alpha()
             self.dying_animation.append(_image)
-        for image in os.listdir(f'resources/images/sprites/{character_name}/skin_1/limit_break/'):
+        for image in sorted(os.listdir(f'resources/images/sprites/{character_name}/skin_1/limit_break/')):
             _image = pygame.image.load(
                 f'resources/images/sprites/{character_name}/skin_1/limit_break/{image}').convert_alpha()
             self.limit_break_animation.append(_image)
-        for image in os.listdir(f'resources/images/sprites/{character_name}/skin_1/magic_standby/'):
+        for image in sorted(os.listdir(f'resources/images/sprites/{character_name}/skin_1/magic_standby/')):
             _image = pygame.image.load(
                 f'resources/images/sprites/{character_name}/skin_1/magic_standby/{image}').convert_alpha()
             self.magic_standby_animation.append(_image)
-        for image in os.listdir(f'resources/images/sprites/{character_name}/skin_1/magic_attack/'):
+        for image in sorted(os.listdir(f'resources/images/sprites/{character_name}/skin_1/magic_attack/')):
             _image = pygame.image.load(
                 f'resources/images/sprites/{character_name}/skin_1/magic_attack/{image}').convert_alpha()
             self.magic_attack_animation.append(_image)
-        for image in os.listdir(f'resources/images/sprites/{character_name}/skin_1/move/'):
+        for image in sorted(os.listdir(f'resources/images/sprites/{character_name}/skin_1/move/')):
             _image = pygame.image.load(
                 f'resources/images/sprites/{character_name}/skin_1/move/{image}').convert_alpha()
             self.move_animation.append(_image)
-        for image in os.listdir(f'resources/images/sprites/{character_name}/skin_1/jump/'):
+        for image in sorted(os.listdir(f'resources/images/sprites/{character_name}/skin_1/jump/')):
             _image = pygame.image.load(
                 f'resources/images/sprites/{character_name}/skin_1/jump/{image}').convert_alpha()
             self.jump_animation.append(_image)
-        for image in os.listdir(f'resources/images/sprites/{character_name}/skin_1/win/'):
+        for image in sorted(os.listdir(f'resources/images/sprites/{character_name}/skin_1/win/')):
             _image = pygame.image.load(
                 f'resources/images/sprites/{character_name}/skin_1/win/{image}').convert_alpha()
             self.win_animation.append(_image)
-        for image in os.listdir(f'resources/images/sprites/{character_name}/skin_1/win_end/'):
+        for image in sorted(os.listdir(f'resources/images/sprites/{character_name}/skin_1/win_end/')):
             _image = pygame.image.load(
                 f'resources/images/sprites/{character_name}/skin_1/win_end/{image}').convert_alpha()
             self.win_end_animation.append(_image)
@@ -87,7 +88,7 @@ class Character(pygame.sprite.Sprite):
             self.image = pygame.transform.flip(
                 self.idle_animation[0], True, False)
             self.rect = self.image.get_rect(bottomleft=self.starting_spot)
-
+        
         self.animation_frame_count = 0
 
     def update(self):
