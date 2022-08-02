@@ -71,9 +71,11 @@ while True:
                 pygame.quit()
                 exit()
             if event.key == pygame.K_j:
-                if cloud.focused:
-                    cloud.basic_attack(tidus)
-
+                if lightning.focused:
+                    # cloud.rect.center = (100, 100)
+                    # cloud.move(tidus.rect)
+                    lightning.move(tidus.rect.midleft)
+                    # print(cloud.get_distance_to_enemy(tidus))
 
     screen.blit(background, (0, 0))
 

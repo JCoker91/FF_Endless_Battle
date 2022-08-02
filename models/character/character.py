@@ -9,30 +9,41 @@ from util.util_functions import load_image_folder
 class Character(pygame.sprite.Sprite):
     def __init__(self, character_name: str, position: tuple, side: PlayerSide) -> None:
         super().__init__()
-        self.name = character_name # Character name
-        self.side = side # Which side the character is on (left or right)
-        self.starting_spot = position # Determines where the character will load on the screen
-        self.current_state = CurrentState.IDLE # Determines animation states
-        self.animation_frame_count = 0 # The count used to loop through the animations
-        self.focused = False # Determines if the player has focus on the character
-
+        self.name = character_name  # Character name
+        self.side = side  # Which side the character is on (left or right)
+        # Determines where the character will load on the screen
+        self.starting_spot = position
+        self.current_state = CurrentState.IDLE  # Determines animation states
+        self.animation_frame_count = 0  # The count used to loop through the animations
+        self.focused = False  # Determines if the player has focus on the character
+        self.direction = pygame.math.Vector2()
+        self.is_moving = False
+        self.is_attacking = False
+        self.move_speed = 10
+        self.move_to = None
+        self.off_set = {
+            'attack': (60, 60)
+        }
         # Load sprite animations
         self.animations = {
             'icon': [],
-            'idle':[],
-            'attack':[],
-            'attack_standby':[],
-            'magic_attack':[],
-            'magic_standby':[],
-            'dying':[],
-            'dead':[],
-            'limit_break':[],
-            'move':[],
-            'jump':[],
-            'win':[],
+            'idle': [],
+            'attack': [],
+            'attack_standby': [],
+            'magic_attack': [],
+            'magic_standby': [],
+            'dying': [],
+            'dead': [],
+            'limit_break': [],
+            'move': [],
+            'jump': [],
+            'win': [],
             'win_end': []
-            }
-        self.load_images()        
+        }
+        self.load_images()
+        self.base_rect = None
+
+        self.action_queue = []
 
         if self.side == PlayerSide.RIGHT:
             self.image = self.animations['idle'][0]
@@ -41,22 +52,18 @@ class Character(pygame.sprite.Sprite):
             self.image = pygame.transform.flip(
                 self.animations['idle'][0], True, False)
             self.rect = self.image.get_rect(bottomleft=self.starting_spot)
-        
+
         # Timers
         self.mouse_click_timer = None
         self.mouse_click_cool_down = 300
         self.can_click = True
 
-
-
-
-
-
     def load_images(self):
         self.icon = pygame.image.load(
-                f'resources/images/sprites/{self.name}/skin_1/icon/tile000.png')
+            f'resources/images/sprites/{self.name}/skin_1/icon/tile000.png')
         for animation in list(self.animations.keys()):
-            animation_images = load_image_folder(f'resources/images/sprites/{self.name}/skin_1/{animation}')
+            animation_images = load_image_folder(
+                f'resources/images/sprites/{self.name}/skin_1/{animation}')
             for image in animation_images:
                 self.animations[animation].append(image)
 
@@ -72,8 +79,6 @@ class Character(pygame.sprite.Sprite):
                     else:
                         self.image = pygame.transform.flip(
                             self.animations['idle'][int(self.animation_frame_count)], 1, 0)
-                        self.rect = self.image.get_rect(
-                            bottomleft=self.starting_spot)
                     self.animation_frame_count += .08
                     if self.animation_frame_count >= len(self.animations['idle']):
                         self.animation_frame_count = 0
@@ -83,14 +88,14 @@ class Character(pygame.sprite.Sprite):
                             self.animation_frame_count)]
                         self.rect = self.image.get_rect(
                             bottomright=self.starting_spot)
-                    else:
+                    elif self.side == PlayerSide.LEFT:
                         self.image = pygame.transform.flip(
                             self.animations['attack'][int(self.animation_frame_count)], 1, 0)
-                        self.rect = self.image.get_rect(bottomleft=self.starting_spot)
+
                     self.animation_frame_count += .25
                     if self.animation_frame_count >= len(self.animations['attack']):
                         self.animation_frame_count = 0
-                        self.current_state = CurrentState.IDLE
+                        self.is_attacking = False
                 case CurrentState.LIMIT_BREAK:
                     if self.side == PlayerSide.RIGHT:
                         self.image = self.animations['limit_break'][int(
@@ -200,8 +205,8 @@ class Character(pygame.sprite.Sprite):
                     else:
                         self.image = pygame.transform.flip(
                             self.animations['move'][int(self.animation_frame_count)], 1, 0)
-                        self.rect = self.image.get_rect(
-                            bottomleft=self.starting_spot)
+                        # self.rect = self.image.get_rect(
+                        #     bottomleft=self.starting_spot)
                     self.animation_frame_count += .08
                     if self.animation_frame_count >= len(self.animations['move']):
                         self.animation_frame_count = 0
@@ -242,7 +247,6 @@ class Character(pygame.sprite.Sprite):
                 self.can_click = False
                 self.mouse_click_timer = pygame.time.get_ticks()
 
-
         if self.focused:
             pressed_keys = pygame.key.get_pressed()
             if pressed_keys[pygame.K_1]:
@@ -259,7 +263,8 @@ class Character(pygame.sprite.Sprite):
                 self.current_state = CurrentState.ATTACK_STANDBY
             if pressed_keys[pygame.K_5]:
                 self.animation_frame_count = 0
-                self.current_state = CurrentState.ATTACK
+                self.is_attacking = True
+                # self.current_state = CurrentState.ATTACK
             if pressed_keys[pygame.K_6]:
                 self.animation_frame_count = 0
                 self.current_state = CurrentState.MAGIC_STANDBY
@@ -282,9 +287,15 @@ class Character(pygame.sprite.Sprite):
                 self.animation_frame_count = 0
                 self.current_state = CurrentState.WIN_END
 
+    def get_is_moving(self):
+        return self.is_moving
+
     def basic_attack(self, enemy: Character):
-        self.rect.move_ip(100,100)
-        self.current_state = CurrentState.ATTACK
+        self.action_queue.append(
+            (self.move, [enemy.rect], self.get_is_moving))
+        # self.action_queue.append((self.move, [self.rect], self.get_not_moving))
+        # self.move(enemy.rect)
+        # self.move(self.rect)
 
     def cool_downs(self):
         if not self.can_click:
@@ -292,10 +303,86 @@ class Character(pygame.sprite.Sprite):
             if timer - self.mouse_click_timer > self.mouse_click_cool_down:
                 self.can_click = True
 
+    def switch_animation(self, animation: CurrentState):
+        if self.current_state != animation:
+            self.animation_frame_count = 0
+            self.current_state = animation
+            if animation == CurrentState.ATTACK:
+                if not self.base_rect:
+                    self.base_rect = self.rect
+                print('base', self.base_rect.x, self.base_rect.y)
+                self.rect.x -= self.off_set['attack'][0]
+                self.rect.y -= self.off_set['attack'][1]
+                print('current', self.rect.x, self.rect.y)
+            if animation == CurrentState.IDLE:
+                if self.base_rect:
+                    print('base', self.base_rect.x, self.base_rect.y)
+                    self.rect = self.base_rect
+                    self.base_rect = None
+                print('current', self.rect.x, self.rect.y)
+
+    def get_distance_to_move_point(self, move_point: tuple):
+        move_point_vector = pygame.math.Vector2(move_point)
+        player_vector = pygame.math.Vector2(self.rect.center)
+        distance = (player_vector - move_point_vector).magnitude()
+
+        if distance > 0:
+            direction = (move_point_vector - player_vector).normalize()
+        else:
+            distance = 0
+            direction = pygame.math.Vector2()
+        return (distance, direction)
+
+    def move(self, move_point: tuple):
+        if self.direction.magnitude() != 0:
+            self.direction = self.direction.normalize()
+        vector = self.get_distance_to_move_point(move_point)
+        self.direction = vector[1]
+        self.distance = vector[0]
+        self.move_to = move_point
+        self.is_moving = True
+
+    def move_sprite(self):
+        if self.is_moving and self.move_to:
+            self.switch_animation(CurrentState.MOVE)
+            self.rect.x += self.direction.x * self.move_speed
+            self.rect.y += self.direction.y * self.move_speed
+            if self.rect.collidepoint(self.move_to):
+                self.is_moving = False
+                self.move_to = None
+                self.switch_animation(CurrentState.IDLE)
+
+    def play_action(self):
+        if self.is_moving and self.move_to:
+            self.switch_animation(CurrentState.MOVE)
+            self.rect.x += self.direction.x * self.move_speed
+            self.rect.y += self.direction.y * self.move_speed
+            if self.rect.collidepoint(self.move_to):
+                self.is_moving = False
+                self.move_to = None
+                self.switch_animation(CurrentState.IDLE)
+                self.is_attacking = True
+        elif self.is_attacking:
+            self.switch_animation(CurrentState.ATTACK)
+        else:
+            self.switch_animation(CurrentState.IDLE)
+
+    # def run(self):
+    #     if len(self.action_queue) > 0:
+    #         run_action = self.action_queue[0][0]
+    #         params = self.action_queue[0][1]
+    #         action_finished = self.action_queue[0][2]()
+            # run_action(*params)
+            # if not action_finished:
+            #     self.action_queue.pop(0)
+
     def update(self):
         self.input()
         self.animate()
+        self.play_action()
+        # self.run()
         self.cool_downs()
+
 
 class YSortedGroup(pygame.sprite.Group):
     def __init__(self) -> None:
