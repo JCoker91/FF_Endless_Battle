@@ -70,12 +70,15 @@ while True:
             if event.key == pygame.K_ESCAPE:
                 pygame.quit()
                 exit()
+            if event.key == pygame.K_j:
+                if cloud.focused:
+                    cloud.basic_attack(tidus)
+
 
     screen.blit(background, (0, 0))
 
     players.update()
     players.draw(screen)
-    cloud.attack(bartz)
     y1 = 10
     y2 = 10
     for player in players:
