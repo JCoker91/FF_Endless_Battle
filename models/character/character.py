@@ -8,7 +8,7 @@ from util.util_functions import load_image_folder
 
 
 class Character(pygame.sprite.Sprite):
-    def __init__(self, character_name: str, position: tuple, side: PlayerSide) -> None:
+    def __init__(self, character_name: str, position: tuple, side: PlayerSide, off_set: dict) -> None:
         super().__init__()
         self.name = character_name  # Character name
         self.side = side  # Which side the character is on (left or right)
@@ -21,10 +21,9 @@ class Character(pygame.sprite.Sprite):
         self.is_moving = False
         self.is_attacking = False
         self.move_speed = 10
+        self.set_offset = None
         self.move_to = None
-        self.off_set = {
-            'attack': (-15, -73)
-        }
+        self.off_set = off_set
         # Load sprite animations
         self.animations = {
             'icon': [],
@@ -44,20 +43,25 @@ class Character(pygame.sprite.Sprite):
         self.load_images()
         self.base_rect = None
 
-        self.action_queue = []
-
         if self.side == PlayerSide.RIGHT:
             self.image = self.animations['idle'][0]
             self.rect = self.image.get_rect(bottomright=self.starting_spot)
+            self.hit_area = (
+                self.starting_spot[0] - 200, self.starting_spot[1])
         else:
             self.image = pygame.transform.flip(
                 self.animations['idle'][0], True, False)
             self.rect = self.image.get_rect(bottomleft=self.starting_spot)
+            self.hit_area = (
+                self.starting_spot[0] + 200, self.starting_spot[1])
 
         # Timers
         self.mouse_click_timer = None
         self.mouse_click_cool_down = 300
         self.can_click = True
+
+    def __str__(self):
+        return self.name
 
     def load_images(self):
         self.icon = pygame.image.load(
@@ -75,8 +79,6 @@ class Character(pygame.sprite.Sprite):
                     if self.side == PlayerSide.RIGHT:
                         self.image = self.animations['idle'][int(
                             self.animation_frame_count)]
-                        self.rect = self.image.get_rect(
-                            bottomright=self.starting_spot)
                     else:
                         self.image = pygame.transform.flip(
                             self.animations['idle'][int(self.animation_frame_count)], 1, 0)
@@ -87,8 +89,6 @@ class Character(pygame.sprite.Sprite):
                     if self.side == PlayerSide.RIGHT:
                         self.image = self.animations['attack'][int(
                             self.animation_frame_count)]
-                        self.rect = self.image.get_rect(
-                            bottomright=self.starting_spot)
                     elif self.side == PlayerSide.LEFT:
                         self.image = pygame.transform.flip(
                             self.animations['attack'][int(self.animation_frame_count)], 1, 0)
@@ -101,13 +101,9 @@ class Character(pygame.sprite.Sprite):
                     if self.side == PlayerSide.RIGHT:
                         self.image = self.animations['limit_break'][int(
                             self.animation_frame_count)]
-                        self.rect = self.image.get_rect(
-                            bottomright=self.starting_spot)
                     else:
                         self.image = pygame.transform.flip(
                             self.animations['limit_break'][int(self.animation_frame_count)], 1, 0)
-                        self.rect = self.image.get_rect(
-                            bottomleft=self.starting_spot)
                     self.animation_frame_count += .25
                     if self.animation_frame_count >= len(self.animations['limit_break']):
                         self.animation_frame_count = 0
@@ -116,13 +112,9 @@ class Character(pygame.sprite.Sprite):
                     if self.side == PlayerSide.RIGHT:
                         self.image = self.animations['attack_standby'][int(
                             self.animation_frame_count)]
-                        self.rect = self.image.get_rect(
-                            bottomright=self.starting_spot)
                     else:
                         self.image = pygame.transform.flip(
                             self.animations['attack_standby'][int(self.animation_frame_count)], 1, 0)
-                        self.rect = self.image.get_rect(
-                            bottomleft=self.starting_spot)
                     self.animation_frame_count += .08
                     if self.animation_frame_count >= len(self.animations['attack_standby']):
                         self.animation_frame_count = 0
@@ -130,13 +122,9 @@ class Character(pygame.sprite.Sprite):
                     if self.side == PlayerSide.RIGHT:
                         self.image = self.animations['magic_standby'][int(
                             self.animation_frame_count)]
-                        self.rect = self.image.get_rect(
-                            bottomright=self.starting_spot)
                     else:
                         self.image = pygame.transform.flip(
                             self.animations['magic_standby'][int(self.animation_frame_count)], 1, 0)
-                        self.rect = self.image.get_rect(bottomleft=(
-                            (self.starting_spot[0]), (self.starting_spot[1])))
                     self.animation_frame_count += .08
                     if self.animation_frame_count >= len(self.animations['magic_standby']):
                         self.animation_frame_count = 0
@@ -144,13 +132,9 @@ class Character(pygame.sprite.Sprite):
                     if self.side == PlayerSide.RIGHT:
                         self.image = self.animations['magic_attack'][int(
                             self.animation_frame_count)]
-                        self.rect = self.image.get_rect(
-                            bottomright=self.starting_spot)
                     else:
                         self.image = pygame.transform.flip(
                             self.animations['magic_attack'][int(self.animation_frame_count)], 1, 0)
-                        self.rect = self.image.get_rect(
-                            bottomleft=self.starting_spot)
                     self.animation_frame_count += .08
                     if self.animation_frame_count >= len(self.animations['magic_attack']):
                         self.animation_frame_count = 0
@@ -159,13 +143,9 @@ class Character(pygame.sprite.Sprite):
                     if self.side == PlayerSide.RIGHT:
                         self.image = self.animations['dying'][int(
                             self.animation_frame_count)]
-                        self.rect = self.image.get_rect(
-                            bottomright=self.starting_spot)
                     else:
                         self.image = pygame.transform.flip(
                             self.animations['dying'][int(self.animation_frame_count)], 1, 0)
-                        self.rect = self.image.get_rect(
-                            bottomleft=self.starting_spot)
                     self.animation_frame_count += .08
                     if self.animation_frame_count >= len(self.animations['dying']):
                         self.animation_frame_count = 0
@@ -173,13 +153,9 @@ class Character(pygame.sprite.Sprite):
                     if self.side == PlayerSide.RIGHT:
                         self.image = self.animations['dead'][int(
                             self.animation_frame_count)]
-                        self.rect = self.image.get_rect(
-                            bottomright=self.starting_spot)
                     else:
                         self.image = pygame.transform.flip(
                             self.animations['dead'][int(self.animation_frame_count)], 1, 0)
-                        self.rect = self.image.get_rect(
-                            bottomleft=self.starting_spot)
                     self.animation_frame_count += .08
                     if self.animation_frame_count >= len(self.animations['dead']):
                         self.animation_frame_count = 0
@@ -187,13 +163,9 @@ class Character(pygame.sprite.Sprite):
                     if self.side == PlayerSide.RIGHT:
                         self.image = self.animations['jump'][int(
                             self.animation_frame_count)]
-                        self.rect = self.image.get_rect(
-                            bottomright=self.starting_spot)
                     else:
                         self.image = pygame.transform.flip(
                             self.animations['jump'][int(self.animation_frame_count)], 1, 0)
-                        self.rect = self.image.get_rect(
-                            bottomleft=self.starting_spot)
                     self.animation_frame_count += .08
                     if self.animation_frame_count >= len(self.animations['jump']):
                         self.animation_frame_count = 0
@@ -201,13 +173,9 @@ class Character(pygame.sprite.Sprite):
                     if self.side == PlayerSide.RIGHT:
                         self.image = self.animations['move'][int(
                             self.animation_frame_count)]
-                        self.rect = self.image.get_rect(
-                            bottomright=self.starting_spot)
                     else:
                         self.image = pygame.transform.flip(
                             self.animations['move'][int(self.animation_frame_count)], 1, 0)
-                        # self.rect = self.image.get_rect(
-                        #     bottomleft=self.starting_spot)
                     self.animation_frame_count += .08
                     if self.animation_frame_count >= len(self.animations['move']):
                         self.animation_frame_count = 0
@@ -215,13 +183,9 @@ class Character(pygame.sprite.Sprite):
                     if self.side == PlayerSide.RIGHT:
                         self.image = self.animations['win'][int(
                             self.animation_frame_count)]
-                        self.rect = self.image.get_rect(
-                            bottomright=self.starting_spot)
                     else:
                         self.image = pygame.transform.flip(
                             self.animations['win'][int(self.animation_frame_count)], 1, 0)
-                        self.rect = self.image.get_rect(
-                            bottomleft=self.starting_spot)
                     self.animation_frame_count += .15
                     if self.animation_frame_count >= len(self.animations['win']):
                         self.animation_frame_count = 0
@@ -230,16 +194,21 @@ class Character(pygame.sprite.Sprite):
                     if self.side == PlayerSide.RIGHT:
                         self.image = self.animations['win_end'][int(
                             self.animation_frame_count)]
-                        self.rect = self.image.get_rect(
-                            bottomright=self.starting_spot)
                     else:
                         self.image = pygame.transform.flip(
                             self.animations['win_end'][int(self.animation_frame_count)], 1, 0)
-                        self.rect = self.image.get_rect(
-                            bottomleft=self.starting_spot)
                     self.animation_frame_count += .15
                     if self.animation_frame_count >= len(self.animations['win_end']):
                         self.animation_frame_count = 0
+
+    def adjust_offset(self):
+        if self.set_offset:
+            if self.side == PlayerSide.LEFT:
+                self.rect.x += self.off_set[self.set_offset][0]
+            else:
+                self.rect.x -= self.off_set[self.set_offset][0]
+            self.rect.y += self.off_set[self.set_offset][1]
+            self.set_offset = None
 
     def input(self):
         if self.rect.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
@@ -265,7 +234,6 @@ class Character(pygame.sprite.Sprite):
             if pressed_keys[pygame.K_5]:
                 self.animation_frame_count = 0
                 self.is_attacking = True
-                # self.current_state = CurrentState.ATTACK
             if pressed_keys[pygame.K_6]:
                 self.animation_frame_count = 0
                 self.current_state = CurrentState.MAGIC_STANDBY
@@ -288,12 +256,9 @@ class Character(pygame.sprite.Sprite):
                 self.animation_frame_count = 0
                 self.current_state = CurrentState.WIN_END
 
-    def get_is_moving(self):
-        return self.is_moving
-
-    def basic_attack(self, enemy: Character):
-        self.action_queue.append(
-            (self.move, [enemy.rect], self.get_is_moving))
+    # def basic_attack(self, enemy: Character):
+    #     self.action_queue.append(
+    #         (self.move, [enemy.rect], self.get_is_moving))
         # self.action_queue.append((self.move, [self.rect], self.get_not_moving))
         # self.move(enemy.rect)
         # self.move(self.rect)
@@ -311,9 +276,9 @@ class Character(pygame.sprite.Sprite):
             if animation == CurrentState.ATTACK:
                 if not self.base_rect:
                     self.base_rect = self.rect.copy()
-                self.rect.x += self.off_set['attack'][0]
-                self.rect.y += self.off_set['attack'][1]
+                    self.set_offset = 'attack'
             if animation == CurrentState.IDLE:
+                self.set_offset = 'idle'
                 if self.base_rect:
                     self.rect = self.base_rect
                     self.base_rect = None
@@ -336,7 +301,7 @@ class Character(pygame.sprite.Sprite):
         vector = self.get_distance_to_move_point(move_point)
         self.direction = vector[1]
         self.distance = vector[0]
-        self.move_to = (move_point[0] -50, move_point[1])
+        self.move_to = (move_point[0], move_point[1])
         self.is_moving = True
 
     # def move_sprite(self):
@@ -351,11 +316,25 @@ class Character(pygame.sprite.Sprite):
     def play_action(self):
         if self.is_moving and self.move_to:
             self.switch_animation(CurrentState.MOVE)
-            if self.rect.midbottom[1] != self.move_to[1]:
-                self.rect.y += self.direction.y * self.move_speed
+            if abs(self.rect.bottomleft[1] - self.move_to[1]) <= self.move_speed:
+                if self.rect.bottomleft[1] > self.move_to[1]:
+                    self.rect.y -= abs(
+                        self.rect.bottomleft[1] - self.move_to[1])
+                else:
+                    self.rect.y += abs(
+                        self.rect.bottomleft[1] - self.move_to[1])
+            else:
+                self.rect.y += self.direction.y * self.move_speed//2
+            if abs(self.rect.bottomleft[0] - self.move_to[0]) <= self.move_speed:
+                if self.rect.bottomleft[0] > self.move_to[0]:
+                    self.rect.x -= abs(
+                        self.rect.x - self.move_to[0])
+                else:
+                    self.rect.x += abs(
+                        self.rect.x - self.move_to[0])
             else:
                 self.rect.x += self.direction.x * self.move_speed
-            if self.rect.collidepoint(self.move_to):
+            if self.rect.bottomleft == self.move_to:
                 self.is_moving = False
                 self.move_to = None
                 self.switch_animation(CurrentState.IDLE)
@@ -364,8 +343,14 @@ class Character(pygame.sprite.Sprite):
             self.switch_animation(CurrentState.ATTACK)
         else:
             self.switch_animation(CurrentState.IDLE)
-            self.rect.x = self.starting_spot[0]
-            self.rect.y = self.starting_spot[1]
+            if self.side == PlayerSide.RIGHT:
+                self.rect.bottomright = (
+                    self.starting_spot[0], self.starting_spot[1])
+            else:
+                self.rect.bottomleft = (
+                    self.starting_spot[0], self.starting_spot[1])
+            # self.rect.x = self.starting_spot[0]
+            # self.rect.y = self.starting_spot[1]
 
     # def run(self):
     #     if len(self.action_queue) > 0:
@@ -377,10 +362,10 @@ class Character(pygame.sprite.Sprite):
             #     self.action_queue.pop(0)
 
     def update(self):
-        self.input()
+        self.adjust_offset()
         self.animate()
+        self.input()
         self.play_action()
-        # self.run()
         self.cool_downs()
 
 

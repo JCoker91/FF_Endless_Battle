@@ -1,7 +1,10 @@
+from tkinter import RIGHT
+from turtle import pos
 import pygame
 from sys import exit
 from models.character.character import Character, YSortedGroup
 from util.custom_enum import PlayerSide
+from settings import CHARACTERS
 
 pygame.init()
 
@@ -31,28 +34,52 @@ RIGHT_SIDE = {
     "back_bot": (550, 550),
 }
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-tidus = Character("Tidus", RIGHT_SIDE['front_middle'], PlayerSide.RIGHT)
-tera = Character("Tera", RIGHT_SIDE['middle_top'], PlayerSide.RIGHT)
-squall = Character("Squall", RIGHT_SIDE['middle_bot'], PlayerSide.RIGHT)
-cecil = Character("Cecil", RIGHT_SIDE['back_top'], PlayerSide.RIGHT)
-noctis = Character("Noctis", RIGHT_SIDE['back_bot'], PlayerSide.RIGHT)
-lightning = Character("Lightning", LEFT_SIDE['front_middle'], PlayerSide.LEFT)
-firion = Character("Firion", LEFT_SIDE['middle_top'], PlayerSide.LEFT)
-bartz = Character("Bartz", LEFT_SIDE['middle_bot'], PlayerSide.LEFT)
-cloud = Character("Cloud", LEFT_SIDE['back_top'], PlayerSide.LEFT)
-zidane = Character("Zidane", LEFT_SIDE['back_bot'], PlayerSide.LEFT)
-# players = pygame.sprite.Group()
 players = YSortedGroup()
-players.add(tidus)
-players.add(cloud)
-players.add(lightning)
-players.add(noctis)
-players.add(squall)
-players.add(bartz)
-players.add(cecil)
-players.add(firion)
-players.add(tera)
-players.add(zidane)
+for i, character in enumerate(CHARACTERS):
+    try:
+        if character['side'] == PlayerSide.LEFT:
+            players.add(
+                Character(
+                    character_name=character['name'],
+                    off_set=character['off_set'],
+                    side=character['side'],
+                    position=LEFT_SIDE[list(LEFT_SIDE.keys())[i]]
+                )
+            )
+        else:
+            players.add(
+                Character(
+                    character_name=character['name'],
+                    off_set=character['off_set'],
+                    side=character['side'],
+                    position=RIGHT_SIDE[list(LEFT_SIDE.keys())[i]]
+                )
+            )
+    except IndexError:
+        pass
+
+
+# cloud = Character("Cloud", RIGHT_SIDE['front_middle'], PlayerSide.RIGHT)
+# tera = Character("Tera", RIGHT_SIDE['middle_top'], PlayerSide.RIGHT)
+# squall = Character("Squall", RIGHT_SIDE['middle_bot'], PlayerSide.RIGHT)
+# cecil = Character("Cecil", RIGHT_SIDE['back_top'], PlayerSide.RIGHT)
+# noctis = Character("Noctis", RIGHT_SIDE['back_bot'], PlayerSide.RIGHT)
+# lightning = Character("Lightning", LEFT_SIDE['front_middle'], PlayerSide.LEFT)
+# firion = Character("Firion", LEFT_SIDE['middle_top'], PlayerSide.LEFT)
+# bartz = Character("Bartz", LEFT_SIDE['middle_bot'], PlayerSide.LEFT)
+# tidus = Character("Tidus", LEFT_SIDE['back_top'], PlayerSide.LEFT)
+# zidane = Character("Zidane", LEFT_SIDE['back_bot'], PlayerSide.LEFT)
+# # players = pygame.sprite.Group()
+# players.add(tidus)
+# players.add(cloud)
+# players.add(lightning)
+# players.add(noctis)
+# players.add(squall)
+# players.add(bartz)
+# players.add(cecil)
+# players.add(firion)
+# players.add(tera)
+# players.add(zidane)
 
 custom_font = pygame.font.Font('resources/fonts/Pixeltype.ttf', 32)
 
@@ -71,11 +98,19 @@ while True:
                 pygame.quit()
                 exit()
             if event.key == pygame.K_j:
-                if lightning.focused:
-                    # cloud.rect.center = (100, 100)
-                    # cloud.move(tidus.rect)
-                    lightning.move(tidus.rect.midbottom)
-                    # print(cloud.get_distance_to_enemy(tidus))
+                right_focused = list(filter(
+                    lambda character: character.focused and character.side == PlayerSide.RIGHT, players))
+                left_focused = list(filter(
+                    lambda character: character.focused and character.side == PlayerSide.LEFT, players))
+                if len(right_focused) > 0 and len(left_focused) > 0:
+                    right_focused[0].move(left_focused[0].hit_area)
+            if event.key == pygame.K_f:
+                right_focused = list(filter(
+                    lambda character: character.focused and character.side == PlayerSide.RIGHT, players))
+                left_focused = list(filter(
+                    lambda character: character.focused and character.side == PlayerSide.LEFT, players))
+                if len(right_focused) > 0 and len(left_focused) > 0:
+                    left_focused[0].move(right_focused[0].hit_area)
 
     screen.blit(background, (0, 0))
 
