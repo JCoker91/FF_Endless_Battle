@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import pygame
 import os
+import sys
 from util.custom_enum import CurrentState, PlayerSide
 from util.util_functions import load_image_folder
 
@@ -22,7 +23,7 @@ class Character(pygame.sprite.Sprite):
         self.move_speed = 10
         self.move_to = None
         self.off_set = {
-            'attack': (60, 60)
+            'attack': (-15, -73)
         }
         # Load sprite animations
         self.animations = {
@@ -309,21 +310,17 @@ class Character(pygame.sprite.Sprite):
             self.current_state = animation
             if animation == CurrentState.ATTACK:
                 if not self.base_rect:
-                    self.base_rect = self.rect
-                print('base', self.base_rect.x, self.base_rect.y)
-                self.rect.x -= self.off_set['attack'][0]
-                self.rect.y -= self.off_set['attack'][1]
-                print('current', self.rect.x, self.rect.y)
+                    self.base_rect = self.rect.copy()
+                self.rect.x += self.off_set['attack'][0]
+                self.rect.y += self.off_set['attack'][1]
             if animation == CurrentState.IDLE:
                 if self.base_rect:
-                    print('base', self.base_rect.x, self.base_rect.y)
                     self.rect = self.base_rect
                     self.base_rect = None
-                print('current', self.rect.x, self.rect.y)
 
     def get_distance_to_move_point(self, move_point: tuple):
         move_point_vector = pygame.math.Vector2(move_point)
-        player_vector = pygame.math.Vector2(self.rect.center)
+        player_vector = pygame.math.Vector2(self.rect.midbottom)
         distance = (player_vector - move_point_vector).magnitude()
 
         if distance > 0:
@@ -339,24 +336,25 @@ class Character(pygame.sprite.Sprite):
         vector = self.get_distance_to_move_point(move_point)
         self.direction = vector[1]
         self.distance = vector[0]
-        self.move_to = move_point
+        self.move_to = (move_point[0] -50, move_point[1])
         self.is_moving = True
 
-    def move_sprite(self):
-        if self.is_moving and self.move_to:
-            self.switch_animation(CurrentState.MOVE)
-            self.rect.x += self.direction.x * self.move_speed
-            self.rect.y += self.direction.y * self.move_speed
-            if self.rect.collidepoint(self.move_to):
-                self.is_moving = False
-                self.move_to = None
-                self.switch_animation(CurrentState.IDLE)
+    # def move_sprite(self):
+    #     if self.is_moving and self.move_to:
+    #         self.switch_animation(CurrentState.MOVE)
+    #         self.rect.x += self.direction.x * self.move_speed
+    #         self.rect.y += self.direction.y * self.move_speed
+    #         if self.rect.collidepoint(self.move_to):
+    #             self.is_moving = False
+    #             self.move_to = None
 
     def play_action(self):
         if self.is_moving and self.move_to:
             self.switch_animation(CurrentState.MOVE)
-            self.rect.x += self.direction.x * self.move_speed
-            self.rect.y += self.direction.y * self.move_speed
+            if self.rect.midbottom[1] != self.move_to[1]:
+                self.rect.y += self.direction.y * self.move_speed
+            else:
+                self.rect.x += self.direction.x * self.move_speed
             if self.rect.collidepoint(self.move_to):
                 self.is_moving = False
                 self.move_to = None
@@ -366,6 +364,8 @@ class Character(pygame.sprite.Sprite):
             self.switch_animation(CurrentState.ATTACK)
         else:
             self.switch_animation(CurrentState.IDLE)
+            self.rect.x = self.starting_spot[0]
+            self.rect.y = self.starting_spot[1]
 
     # def run(self):
     #     if len(self.action_queue) > 0:
