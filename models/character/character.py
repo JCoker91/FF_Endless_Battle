@@ -3,8 +3,10 @@ from __future__ import annotations
 import pygame
 import os
 import sys
+from random import randint, random
 from util.custom_enum import CurrentState, PlayerSide
 from util.util_functions import load_image_folder
+from models.particle.particle import Particle
 
 
 class Character(pygame.sprite.Sprite):
@@ -18,11 +20,16 @@ class Character(pygame.sprite.Sprite):
         self.animation_frame_count = 0  # The count used to loop through the animations
         self.focused = False  # Determines if the player has focus on the character
         self.direction = pygame.math.Vector2()
+        self.damage_taken_frame = []
         self.is_moving = False
+        self.damage_frame = False
+        self.is_taking_damage = False
         self.is_attacking = False
         self.move_speed = 10
         self.set_offset = None
+        self.particle_action_count = 0
         self.move_to = None
+        self.particle_list = []
         self.off_set = off_set
         # Load sprite animations
         self.animations = {
@@ -256,12 +263,59 @@ class Character(pygame.sprite.Sprite):
                 self.animation_frame_count = 0
                 self.current_state = CurrentState.WIN_END
 
-    # def basic_attack(self, enemy: Character):
-    #     self.action_queue.append(
-    #         (self.move, [enemy.rect], self.get_is_moving))
-        # self.action_queue.append((self.move, [self.rect], self.get_not_moving))
-        # self.move(enemy.rect)
-        # self.move(self.rect)
+    def basic_attack(self, enemy: Character, group: pygame.sprite.Group):
+        self.is_attacking = True
+        damage_data = {
+            'damage' : 50,
+            'attack_len' : len(self.animations['attack']),
+            # 'particle_list' : ['slash','slash','slash','slash','slash','slash','slash','slash','shards'],
+            # 'particle_action' : [3,5,12,14,17,19,22,24,28],
+            'particle_list' : ['slash','slash','slash','slash','shards'],
+            'particle_action' : [3,12,17,22,28],
+            'damage_weight' : [1,1,1,1,5],
+            'particle_list_group': group
+        }
+        enemy.take_damage(damage_data)
+    
+    def take_damage(self, damage_data: dict):
+        self.is_taking_damage = True
+        self.taking_damage_duration = damage_data['attack_len']
+        self.particle_action = damage_data['particle_action']
+        self.damage_taken = damage_data['damage']
+        self.damage_weight = damage_data['damage_weight']
+        for i,particle in enumerate(damage_data['particle_list']):
+            self.damage_taken_frame.append(self.calculate_weighted_damage(self.damage_weight,i,self.damage_taken))
+            new_particle = Particle(particle,damage_data['particle_list_group'])
+            self.particle_list.append(new_particle)
+    
+    def calculate_weighted_damage(self, damage_weight: list, index: int, total_damage: int):
+        total_weight = 0
+        for damage in damage_weight:
+            total_weight += damage
+        damage = int((damage_weight[index]/total_weight) * total_damage)
+        modifier = randint(-20,20)
+        return int((100 + modifier)/100 * damage)
+
+        
+
+    def display_damage(self):
+        screen = pygame.display.get_surface()
+        custom_font = pygame.font.Font('resources/fonts/Pixeltype.ttf', 32)
+        if self.is_taking_damage:
+            if self.damage_frame == self.particle_action[self.particle_action_count]:
+                self.particle_list[self.particle_action_count].create(self.rect.center)
+                screen.blit(custom_font.render(
+                    str(self.damage_taken_frame[self.particle_action_count]), True, 'Red'), (self.rect.centerx, self.rect.centery -60))
+                self.particle_action_count+=1
+            self.damage_frame += .25
+            if self.particle_action_count >= len(self.particle_action):
+                self.damage_frame = 0
+                self.particle_action = 0
+                self.is_taking_damage = False
+                self.particle_action_count = 0
+                self.taking_damage_duration = 0
+                self.particle_list.clear()
+
 
     def cool_downs(self):
         if not self.can_click:
@@ -315,16 +369,18 @@ class Character(pygame.sprite.Sprite):
 
     def play_action(self):
         if self.is_moving and self.move_to:
+            
             self.switch_animation(CurrentState.MOVE)
             if abs(self.rect.bottomleft[1] - self.move_to[1]) <= self.move_speed:
                 if self.rect.bottomleft[1] > self.move_to[1]:
                     self.rect.y -= abs(
                         self.rect.bottomleft[1] - self.move_to[1])
+                    
                 else:
                     self.rect.y += abs(
                         self.rect.bottomleft[1] - self.move_to[1])
             else:
-                self.rect.y += self.direction.y * self.move_speed//2
+                self.rect.y += self.direction.y * self.move_speed
             if abs(self.rect.bottomleft[0] - self.move_to[0]) <= self.move_speed:
                 if self.rect.bottomleft[0] > self.move_to[0]:
                     self.rect.x -= abs(
@@ -333,22 +389,22 @@ class Character(pygame.sprite.Sprite):
                     self.rect.x += abs(
                         self.rect.x - self.move_to[0])
             else:
-                self.rect.x += self.direction.x * self.move_speed
+                self.rect.x = self.direction.x * self.move_speed
             if self.rect.bottomleft == self.move_to:
                 self.is_moving = False
                 self.move_to = None
-                self.switch_animation(CurrentState.IDLE)
+                # self.switch_animation(CurrentState.IDLE)
                 self.is_attacking = True
         elif self.is_attacking:
             self.switch_animation(CurrentState.ATTACK)
         else:
-            self.switch_animation(CurrentState.IDLE)
             if self.side == PlayerSide.RIGHT:
                 self.rect.bottomright = (
                     self.starting_spot[0], self.starting_spot[1])
             else:
                 self.rect.bottomleft = (
                     self.starting_spot[0], self.starting_spot[1])
+            self.switch_animation(CurrentState.IDLE)
             # self.rect.x = self.starting_spot[0]
             # self.rect.y = self.starting_spot[1]
 
@@ -364,6 +420,7 @@ class Character(pygame.sprite.Sprite):
     def update(self):
         self.adjust_offset()
         self.animate()
+        self.display_damage()
         self.input()
         self.play_action()
         self.cool_downs()

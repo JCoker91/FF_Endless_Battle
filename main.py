@@ -5,6 +5,7 @@ from sys import exit
 from models.character.character import Character, YSortedGroup
 from util.custom_enum import PlayerSide
 from settings import CHARACTERS
+from util.debug import debug
 
 pygame.init()
 
@@ -12,15 +13,15 @@ pygame.init()
 SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 800
 LEFT_SIDE = {
-    "front_middle": (200, 500),
-    "front_top": (200, 450),
-    "front_bot": (200, 550),
-    "middle_middle": (150, 500),
-    "middle_top": (150, 450),
-    "middle_bot": (150, 550),
-    "back_middle": (100, 500),
-    "back_top": (100, 450),
-    "back_bot": (100, 550),
+    "front_middle": (float(200.0), float(500.0)),
+    "front_top": (float(200.0), float(450.0)),
+    "front_bot": (float(200.0), float(550.0)),
+    "middle_middle": (float(150.0), float(500.0)),
+    "middle_top": (float(150.0), float(450.0)),
+    "middle_bot": (float(150.0), float(550.0)),
+    "back_middle": (float(100.0), float(500.0)),
+    "back_top": (float(100.0), float(450.0)),
+    "back_bot": (float(100.0), float(550.0)),
 }
 RIGHT_SIDE = {
     "front_middle": (450, 500),
@@ -35,6 +36,7 @@ RIGHT_SIDE = {
 }
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 players = YSortedGroup()
+particles = pygame.sprite.Group()
 for i, character in enumerate(CHARACTERS):
     try:
         if character['side'] == PlayerSide.LEFT:
@@ -103,19 +105,23 @@ while True:
                 left_focused = list(filter(
                     lambda character: character.focused and character.side == PlayerSide.LEFT, players))
                 if len(right_focused) > 0 and len(left_focused) > 0:
-                    right_focused[0].move(left_focused[0].hit_area)
+                    right_focused[0].basic_attack(left_focused[0],particles)
+                    # debug(right_focused[0].rect.bottomright)
             if event.key == pygame.K_f:
                 right_focused = list(filter(
                     lambda character: character.focused and character.side == PlayerSide.RIGHT, players))
                 left_focused = list(filter(
                     lambda character: character.focused and character.side == PlayerSide.LEFT, players))
                 if len(right_focused) > 0 and len(left_focused) > 0:
-                    left_focused[0].move(right_focused[0].hit_area)
+                    left_focused[0].basic_attack(right_focused[0], particles)
+                    # debug(left_focused[0].rect.bottomleft)
 
     screen.blit(background, (0, 0))
 
     players.update()
+    particles.update()
     players.draw(screen)
+    particles.draw(screen)
     y1 = 10
     y2 = 10
     for player in players:
