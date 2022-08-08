@@ -37,6 +37,7 @@ RIGHT_SIDE = {
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 players = YSortedGroup()
 particles = pygame.sprite.Group()
+floating_text = pygame.sprite.Group()
 for i, character in enumerate(CHARACTERS):
     try:
         if character['side'] == PlayerSide.LEFT:
@@ -105,7 +106,7 @@ while True:
                 left_focused = list(filter(
                     lambda character: character.focused and character.side == PlayerSide.LEFT, players))
                 if len(right_focused) > 0 and len(left_focused) > 0:
-                    right_focused[0].basic_attack(left_focused[0],particles)
+                    right_focused[0].basic_attack(left_focused[0], particles)
                     # debug(right_focused[0].rect.bottomright)
             if event.key == pygame.K_f:
                 right_focused = list(filter(
@@ -113,15 +114,18 @@ while True:
                 left_focused = list(filter(
                     lambda character: character.focused and character.side == PlayerSide.LEFT, players))
                 if len(right_focused) > 0 and len(left_focused) > 0:
-                    left_focused[0].basic_attack(right_focused[0], particles)
+                    left_focused[0].basic_attack(
+                        right_focused[0], particles, floating_text)
                     # debug(left_focused[0].rect.bottomleft)
 
     screen.blit(background, (0, 0))
 
     players.update()
     particles.update()
+    floating_text.update()
     players.draw(screen)
     particles.draw(screen)
+    floating_text.draw(screen)
     y1 = 10
     y2 = 10
     for player in players:
