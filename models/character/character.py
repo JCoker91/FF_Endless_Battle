@@ -98,9 +98,14 @@ class Character(pygame.sprite.Sprite):
                     if self.side == PlayerSide.RIGHT:
                         self.image = self.animations['attack'][int(
                             self.animation_frame_count)]
+                        # self.rect = self.image.get_rect(
+                        # bottomright=self.starting_spot)
+
                     elif self.side == PlayerSide.LEFT:
                         self.image = pygame.transform.flip(
                             self.animations['attack'][int(self.animation_frame_count)], 1, 0)
+                        # self.rect = self.image.get_rect(
+                        # bottomleft=self.starting_spot)
 
                     self.animation_frame_count += .25
                     if self.animation_frame_count >= len(self.animations['attack']):
@@ -214,7 +219,7 @@ class Character(pygame.sprite.Sprite):
         if self.set_offset:
             if self.side == PlayerSide.LEFT:
                 self.rect.x += self.off_set[self.set_offset][0]
-            else:
+            elif self.side == PlayerSide.RIGHT:
                 self.rect.x -= self.off_set[self.set_offset][0]
             self.rect.y += self.off_set[self.set_offset][1]
             self.set_offset = None
@@ -268,13 +273,14 @@ class Character(pygame.sprite.Sprite):
     def basic_attack(self, enemy: Character, group: pygame.sprite.Group, group_2: pygame.sprite.Group):
         self.is_attacking = True
         damage_data = {
-            'damage': 50,
+            'damage': 500,
             'attack_len': len(self.animations['attack']),
             # 'particle_list' : ['slash','slash','slash','slash','slash','slash','slash','slash','shards'],
             # 'particle_action' : [3,5,12,14,17,19,22,24,28],
-            'particle_list': ['slash', 'slash', 'slash', 'slash', 'shards'],
+            'particle_list': ['slash', 'slash', 'slash', 'slash', 'shards', 'shards', 'shards'],
             'particle_action': [3, 12, 17, 22, 28],
-            'damage_weight': [1, 1, 1, 1, 5],
+            'particle_action': [3,  12,  17,  22,   27, 28, 29],
+            'damage_weight': [3, 3, 3, 3, 2, 2, 2],
             'particle_list_group': group,
             'floating_text_group': group_2
         }
@@ -308,7 +314,7 @@ class Character(pygame.sprite.Sprite):
                 self.particle_list[self.particle_action_count].create(
                     self.rect.center)
                 damage_text = Text(
-                    str(self.damage_taken_frame[self.particle_action_count]), 24, 'White', 32, 32, self.rect.center)
+                    str(self.damage_taken_frame[self.particle_action_count]), 24, 'Yellow', 32, 32, (self.rect.centerx, self.rect.centery - 25))
                 self.floating_text_group.add(damage_text)
                 self.particle_action_count += 1
             self.damage_frame += .25
@@ -371,43 +377,43 @@ class Character(pygame.sprite.Sprite):
     #             self.move_to = None
 
     def play_action(self):
-        if self.is_moving and self.move_to:
+        # if self.is_moving and self.move_to:
 
-            self.switch_animation(CurrentState.MOVE)
-            if abs(self.rect.bottomleft[1] - self.move_to[1]) <= self.move_speed:
-                if self.rect.bottomleft[1] > self.move_to[1]:
-                    self.rect.y -= abs(
-                        self.rect.bottomleft[1] - self.move_to[1])
+        #     self.switch_animation(CurrentState.MOVE)
+        #     if abs(self.rect.bottomleft[1] - self.move_to[1]) <= self.move_speed:
+        #         if self.rect.bottomleft[1] > self.move_to[1]:
+        #             self.rect.y -= abs(
+        #                 self.rect.bottomleft[1] - self.move_to[1])
 
-                else:
-                    self.rect.y += abs(
-                        self.rect.bottomleft[1] - self.move_to[1])
-            else:
-                self.rect.y += self.direction.y * self.move_speed
-            if abs(self.rect.bottomleft[0] - self.move_to[0]) <= self.move_speed:
-                if self.rect.bottomleft[0] > self.move_to[0]:
-                    self.rect.x -= abs(
-                        self.rect.x - self.move_to[0])
-                else:
-                    self.rect.x += abs(
-                        self.rect.x - self.move_to[0])
-            else:
-                self.rect.x = self.direction.x * self.move_speed
-            if self.rect.bottomleft == self.move_to:
-                self.is_moving = False
-                self.move_to = None
-                # self.switch_animation(CurrentState.IDLE)
-                self.is_attacking = True
-        elif self.is_attacking:
+        #         else:
+        #             self.rect.y += abs(
+        #                 self.rect.bottomleft[1] - self.move_to[1])
+        #     else:
+        #         self.rect.y += self.direction.y * self.move_speed
+        #     if abs(self.rect.bottomleft[0] - self.move_to[0]) <= self.move_speed:
+        #         if self.rect.bottomleft[0] > self.move_to[0]:
+        #             self.rect.x -= abs(
+        #                 self.rect.x - self.move_to[0])
+        #         else:
+        #             self.rect.x += abs(
+        #                 self.rect.x - self.move_to[0])
+        #     else:
+        #         self.rect.x = self.direction.x * self.move_speed
+        #     if self.rect.bottomleft == self.move_to:
+        #         self.is_moving = False
+        #         self.move_to = None
+        #         # self.switch_animation(CurrentState.IDLE)
+        #         self.is_attacking = True
+        if self.is_attacking:
             self.switch_animation(CurrentState.ATTACK)
         else:
-            if self.side == PlayerSide.RIGHT:
-                self.rect.bottomright = (
-                    self.starting_spot[0], self.starting_spot[1])
-            else:
-                self.rect.bottomleft = (
-                    self.starting_spot[0], self.starting_spot[1])
             self.switch_animation(CurrentState.IDLE)
+            # if self.side == PlayerSide.RIGHT:
+            #     self.rect.bottomright = (
+            #         self.starting_spot[0], self.starting_spot[1])
+            # else:
+            #     self.rect.bottomleft = (
+            #         self.starting_spot[0], self.starting_spot[1])
             # self.rect.x = self.starting_spot[0]
             # self.rect.y = self.starting_spot[1]
 
@@ -422,10 +428,10 @@ class Character(pygame.sprite.Sprite):
 
     def update(self):
         self.adjust_offset()
-        self.animate()
         self.display_damage()
         self.input()
         self.play_action()
+        self.animate()
         self.cool_downs()
 
 

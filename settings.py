@@ -22,7 +22,7 @@ CHARACTERS = [
         'off_set':
         {
             'idle': (0, 0),
-            'attack': (0, 0),
+            'attack': (-25, -32),
             'magic_attack': (0, 0),
             'magic_standby': (0, 0),
             'attack_standby': (0, 0),
@@ -32,48 +32,14 @@ CHARACTERS = [
             'move': (0, 0),
             'jump': (0, 0),
         },
-        'side': PlayerSide.RIGHT,
+        'side': PlayerSide.LEFT,
     },
     {
         'name': 'Tidus',
         'off_set':
         {
             'idle': (0, 0),
-            'attack': (-0, -31),
-            'magic_attack': (0, 0),
-            'magic_standby': (0, 0),
-            'attack_standby': (0, 0),
-            'limit_break': (0, 0),
-            'dying': (0, 0),
-            'dead': (0, 0),
-            'move': (0, 0),
-            'jump': (0, 0),
-        },
-        'side': PlayerSide.LEFT,
-    },
-    {
-        'name': 'Firion',
-        'off_set':
-        {
-            'idle': (0, 0),
-            'attack': (0, 0),
-            'magic_attack': (0, 0),
-            'magic_standby': (0, 0),
-            'attack_standby': (0, 0),
-            'limit_break': (0, 0),
-            'dying': (0, 0),
-            'dead': (0, 0),
-            'move': (0, 0),
-            'jump': (0, 0),
-        },
-        'side': PlayerSide.LEFT,
-    },
-    {
-        'name': 'Cecil',
-        'off_set':
-        {
-            'idle': (0, 0),
-            'attack': (0, 0),
+            'attack': (0, -31),
             'magic_attack': (0, 0),
             'magic_standby': (0, 0),
             'attack_standby': (0, 0),
@@ -86,11 +52,28 @@ CHARACTERS = [
         'side': PlayerSide.RIGHT,
     },
     {
-        'name': 'Bartz',
+        'name': 'Firion',
         'off_set':
         {
             'idle': (0, 0),
-            'attack': (0, 0),
+            'attack': (3, -27),
+            'magic_attack': (0, 0),
+            'magic_standby': (0, 0),
+            'attack_standby': (0, 0),
+            'limit_break': (0, 0),
+            'dying': (0, 0),
+            'dead': (0, 0),
+            'move': (0, 0),
+            'jump': (0, 0),
+        },
+        'side': PlayerSide.RIGHT,
+    },
+    {
+        'name': 'Cecil',
+        'off_set':
+        {
+            'idle': (0, 0),
+            'attack': (-34, -44),
             'magic_attack': (0, 0),
             'magic_standby': (0, 0),
             'attack_standby': (0, 0),
@@ -103,11 +86,11 @@ CHARACTERS = [
         'side': PlayerSide.LEFT,
     },
     {
-        'name': 'Zidane',
+        'name': 'Bartz',
         'off_set':
         {
             'idle': (0, 0),
-            'attack': (0, 0),
+            'attack': (5, -18),
             'magic_attack': (0, 0),
             'magic_standby': (0, 0),
             'attack_standby': (0, 0),
@@ -117,7 +100,24 @@ CHARACTERS = [
             'move': (0, 0),
             'jump': (0, 0),
         },
-        'side': PlayerSide.LEFT,
+        'side': PlayerSide.RIGHT,
+    },
+    {
+        'name': 'Zidane',
+        'off_set':
+        {
+            'idle': (0, 0),
+            'attack': (-1, -20),
+            'magic_attack': (0, 0),
+            'magic_standby': (0, 0),
+            'attack_standby': (0, 0),
+            'limit_break': (0, 0),
+            'dying': (0, 0),
+            'dead': (0, 0),
+            'move': (0, 0),
+            'jump': (0, 0),
+        },
+        'side': PlayerSide.RIGHT,
     },
     {
         'name': 'Tera',
@@ -134,14 +134,14 @@ CHARACTERS = [
             'move': (0, 0),
             'jump': (0, 0),
         },
-        'side': PlayerSide.RIGHT,
+        'side': PlayerSide.LEFT,
     },
     {
         'name': 'Noctis',
         'off_set':
         {
             'idle': (0, 0),
-            'attack': (0, 0),
+            'attack': (-139, -50),
             'magic_attack': (0, 0),
             'magic_standby': (0, 0),
             'attack_standby': (0, 0),
@@ -151,7 +151,7 @@ CHARACTERS = [
             'move': (0, 0),
             'jump': (0, 0),
         },
-        'side': PlayerSide.RIGHT,
+        'side': PlayerSide.LEFT,
     },
     {
         'name': 'Squall',
@@ -168,6 +168,6 @@ CHARACTERS = [
             'move': (0, 0),
             'jump': (0, 0),
         },
-        'side': PlayerSide.RIGHT,
+        'side': PlayerSide.LEFT,
     },
 ]

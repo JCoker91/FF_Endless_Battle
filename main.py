@@ -13,15 +13,15 @@ pygame.init()
 SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 800
 LEFT_SIDE = {
-    "front_middle": (float(200.0), float(500.0)),
-    "front_top": (float(200.0), float(450.0)),
-    "front_bot": (float(200.0), float(550.0)),
-    "middle_middle": (float(150.0), float(500.0)),
-    "middle_top": (float(150.0), float(450.0)),
-    "middle_bot": (float(150.0), float(550.0)),
-    "back_middle": (float(100.0), float(500.0)),
-    "back_top": (float(100.0), float(450.0)),
-    "back_bot": (float(100.0), float(550.0)),
+    "front_middle": (200, 500),
+    "front_top": (200, 450),
+    "front_bot": (200, 550),
+    "middle_middle": (150, 500),
+    "middle_top": (150, 450),
+    "middle_bot": (150, 550),
+    "back_middle": (100, 500),
+    "back_top": (100, 450),
+    "back_bot": (100, 550),
 }
 RIGHT_SIDE = {
     "front_middle": (450, 500),
@@ -38,28 +38,42 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 players = YSortedGroup()
 particles = pygame.sprite.Group()
 floating_text = pygame.sprite.Group()
-for i, character in enumerate(CHARACTERS):
-    try:
-        if character['side'] == PlayerSide.LEFT:
-            players.add(
-                Character(
-                    character_name=character['name'],
-                    off_set=character['off_set'],
-                    side=character['side'],
-                    position=LEFT_SIDE[list(LEFT_SIDE.keys())[i]]
-                )
-            )
-        else:
-            players.add(
-                Character(
-                    character_name=character['name'],
-                    off_set=character['off_set'],
-                    side=character['side'],
-                    position=RIGHT_SIDE[list(LEFT_SIDE.keys())[i]]
-                )
-            )
-    except IndexError:
-        pass
+for character in CHARACTERS:
+    if character['name'] == 'Lightning':
+        players.add(Character(
+            character_name=character['name'],
+            off_set=character['off_set'],
+            side=PlayerSide.LEFT,
+            position=LEFT_SIDE['front_middle']
+        ))
+        players.add(Character(
+            character_name=character['name'],
+            off_set=character['off_set'],
+            side=PlayerSide.RIGHT,
+            position=RIGHT_SIDE['front_middle']
+        ))
+# for i, character in enumerate(CHARACTERS):
+#     try:
+#         if character['side'] == PlayerSide.LEFT:
+#             players.add(
+#                 Character(
+#                     character_name=character['name'],
+#                     off_set=character['off_set'],
+#                     side=character['side'],
+#                     position=LEFT_SIDE[list(LEFT_SIDE.keys())[i]]
+#                 )
+#             )
+#         else:
+#             players.add(
+#                 Character(
+#                     character_name=character['name'],
+#                     off_set=character['off_set'],
+#                     side=character['side'],
+#                     position=RIGHT_SIDE[list(RIGHT_SIDE.keys())[i]]
+#                 )
+#             )
+#     except IndexError:
+#         pass
 
 
 # cloud = Character("Cloud", RIGHT_SIDE['front_middle'], PlayerSide.RIGHT)
@@ -106,7 +120,8 @@ while True:
                 left_focused = list(filter(
                     lambda character: character.focused and character.side == PlayerSide.LEFT, players))
                 if len(right_focused) > 0 and len(left_focused) > 0:
-                    right_focused[0].basic_attack(left_focused[0], particles)
+                    right_focused[0].basic_attack(
+                        left_focused[0], particles, floating_text)
                     # debug(right_focused[0].rect.bottomright)
             if event.key == pygame.K_f:
                 right_focused = list(filter(
@@ -116,7 +131,6 @@ while True:
                 if len(right_focused) > 0 and len(left_focused) > 0:
                     left_focused[0].basic_attack(
                         right_focused[0], particles, floating_text)
-                    # debug(left_focused[0].rect.bottomleft)
 
     screen.blit(background, (0, 0))
 
