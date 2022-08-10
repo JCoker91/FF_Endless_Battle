@@ -39,7 +39,7 @@ players = YSortedGroup()
 particles = pygame.sprite.Group()
 floating_text = pygame.sprite.Group()
 for character in CHARACTERS:
-    if character['name'] == 'Lightning':
+    if character['name'] == 'Squall':
         players.add(Character(
             character_name=character['name'],
             off_set=character['off_set'],
@@ -52,28 +52,6 @@ for character in CHARACTERS:
             side=PlayerSide.RIGHT,
             position=RIGHT_SIDE['front_middle']
         ))
-# for i, character in enumerate(CHARACTERS):
-#     try:
-#         if character['side'] == PlayerSide.LEFT:
-#             players.add(
-#                 Character(
-#                     character_name=character['name'],
-#                     off_set=character['off_set'],
-#                     side=character['side'],
-#                     position=LEFT_SIDE[list(LEFT_SIDE.keys())[i]]
-#                 )
-#             )
-#         else:
-#             players.add(
-#                 Character(
-#                     character_name=character['name'],
-#                     off_set=character['off_set'],
-#                     side=character['side'],
-#                     position=RIGHT_SIDE[list(RIGHT_SIDE.keys())[i]]
-#                 )
-#             )
-#     except IndexError:
-#         pass
 
 
 # cloud = Character("Cloud", RIGHT_SIDE['front_middle'], PlayerSide.RIGHT)

@@ -7,7 +7,7 @@ from random import randint, random
 from util.custom_enum import CurrentState, PlayerSide
 from util.util_functions import load_image_folder
 from models.particle.particle import Particle
-from models.floating_text.damage_text import Text
+from models.floating_text.damage_text import DamageText
 
 
 class Character(pygame.sprite.Sprite):
@@ -32,7 +32,11 @@ class Character(pygame.sprite.Sprite):
         self.particle_action_count = 0
         self.move_to = None
         self.particle_list = []
-        self.off_set = off_set
+        if self.side == PlayerSide.RIGHT:
+
+            self.off_set = off_set['right']
+        else:
+            self.off_set = off_set['left']
         # Load sprite animations
         self.animations = {
             'icon': [],
@@ -217,10 +221,9 @@ class Character(pygame.sprite.Sprite):
 
     def adjust_offset(self):
         if self.set_offset:
-            if self.side == PlayerSide.LEFT:
-                self.rect.x += self.off_set[self.set_offset][0]
-            elif self.side == PlayerSide.RIGHT:
-                self.rect.x -= self.off_set[self.set_offset][0]
+
+            self.rect.x += self.off_set[self.set_offset][0]
+
             self.rect.y += self.off_set[self.set_offset][1]
             self.set_offset = None
 
@@ -275,10 +278,7 @@ class Character(pygame.sprite.Sprite):
         damage_data = {
             'damage': 500,
             'attack_len': len(self.animations['attack']),
-            # 'particle_list' : ['slash','slash','slash','slash','slash','slash','slash','slash','shards'],
-            # 'particle_action' : [3,5,12,14,17,19,22,24,28],
             'particle_list': ['slash', 'slash', 'slash', 'slash', 'shards', 'shards', 'shards'],
-            'particle_action': [3, 12, 17, 22, 28],
             'particle_action': [3,  12,  17,  22,   27, 28, 29],
             'damage_weight': [3, 3, 3, 3, 2, 2, 2],
             'particle_list_group': group,
@@ -313,9 +313,8 @@ class Character(pygame.sprite.Sprite):
             if self.damage_frame == self.particle_action[self.particle_action_count]:
                 self.particle_list[self.particle_action_count].create(
                     self.rect.center)
-                damage_text = Text(
-                    str(self.damage_taken_frame[self.particle_action_count]), 24, 'Yellow', 32, 32, (self.rect.centerx, self.rect.centery - 25))
-                self.floating_text_group.add(damage_text)
+                DamageText(
+                    str(self.damage_taken_frame[self.particle_action_count]), self.rect.center, self.floating_text_group)
                 self.particle_action_count += 1
             self.damage_frame += .25
             if self.particle_action_count >= len(self.particle_action):
@@ -346,26 +345,26 @@ class Character(pygame.sprite.Sprite):
                     self.rect = self.base_rect
                     self.base_rect = None
 
-    def get_distance_to_move_point(self, move_point: tuple):
-        move_point_vector = pygame.math.Vector2(move_point)
-        player_vector = pygame.math.Vector2(self.rect.midbottom)
-        distance = (player_vector - move_point_vector).magnitude()
+    # def get_distance_to_move_point(self, move_point: tuple):
+    #     move_point_vector = pygame.math.Vector2(move_point)
+    #     player_vector = pygame.math.Vector2(self.rect.midbottom)
+    #     distance = (player_vector - move_point_vector).magnitude()
 
-        if distance > 0:
-            direction = (move_point_vector - player_vector).normalize()
-        else:
-            distance = 0
-            direction = pygame.math.Vector2()
-        return (distance, direction)
+    #     if distance > 0:
+    #         direction = (move_point_vector - player_vector).normalize()
+    #     else:
+    #         distance = 0
+    #         direction = pygame.math.Vector2()
+    #     return (distance, direction)
 
-    def move(self, move_point: tuple):
-        if self.direction.magnitude() != 0:
-            self.direction = self.direction.normalize()
-        vector = self.get_distance_to_move_point(move_point)
-        self.direction = vector[1]
-        self.distance = vector[0]
-        self.move_to = (move_point[0], move_point[1])
-        self.is_moving = True
+    # def move(self, move_point: tuple):
+    #     if self.direction.magnitude() != 0:
+    #         self.direction = self.direction.normalize()
+    #     vector = self.get_distance_to_move_point(move_point)
+    #     self.direction = vector[1]
+    #     self.distance = vector[0]
+    #     self.move_to = (move_point[0], move_point[1])
+    #     self.is_moving = True
 
     # def move_sprite(self):
     #     if self.is_moving and self.move_to:
@@ -376,61 +375,17 @@ class Character(pygame.sprite.Sprite):
     #             self.is_moving = False
     #             self.move_to = None
 
-    def play_action(self):
-        # if self.is_moving and self.move_to:
-
-        #     self.switch_animation(CurrentState.MOVE)
-        #     if abs(self.rect.bottomleft[1] - self.move_to[1]) <= self.move_speed:
-        #         if self.rect.bottomleft[1] > self.move_to[1]:
-        #             self.rect.y -= abs(
-        #                 self.rect.bottomleft[1] - self.move_to[1])
-
-        #         else:
-        #             self.rect.y += abs(
-        #                 self.rect.bottomleft[1] - self.move_to[1])
-        #     else:
-        #         self.rect.y += self.direction.y * self.move_speed
-        #     if abs(self.rect.bottomleft[0] - self.move_to[0]) <= self.move_speed:
-        #         if self.rect.bottomleft[0] > self.move_to[0]:
-        #             self.rect.x -= abs(
-        #                 self.rect.x - self.move_to[0])
-        #         else:
-        #             self.rect.x += abs(
-        #                 self.rect.x - self.move_to[0])
-        #     else:
-        #         self.rect.x = self.direction.x * self.move_speed
-        #     if self.rect.bottomleft == self.move_to:
-        #         self.is_moving = False
-        #         self.move_to = None
-        #         # self.switch_animation(CurrentState.IDLE)
-        #         self.is_attacking = True
+    def switch_action(self):
         if self.is_attacking:
             self.switch_animation(CurrentState.ATTACK)
         else:
             self.switch_animation(CurrentState.IDLE)
-            # if self.side == PlayerSide.RIGHT:
-            #     self.rect.bottomright = (
-            #         self.starting_spot[0], self.starting_spot[1])
-            # else:
-            #     self.rect.bottomleft = (
-            #         self.starting_spot[0], self.starting_spot[1])
-            # self.rect.x = self.starting_spot[0]
-            # self.rect.y = self.starting_spot[1]
-
-    # def run(self):
-    #     if len(self.action_queue) > 0:
-    #         run_action = self.action_queue[0][0]
-    #         params = self.action_queue[0][1]
-    #         action_finished = self.action_queue[0][2]()
-            # run_action(*params)
-            # if not action_finished:
-            #     self.action_queue.pop(0)
 
     def update(self):
         self.adjust_offset()
+        # self.input()
         self.display_damage()
-        self.input()
-        self.play_action()
+        self.switch_action()
         self.animate()
         self.cool_downs()
 
