@@ -383,7 +383,7 @@ class Character(pygame.sprite.Sprite):
 
     def update(self):
         self.adjust_offset()
-        # self.input()
+        self.input()
         self.display_damage()
         self.switch_action()
         self.animate()
