@@ -3,19 +3,21 @@ from util.custom_enum import PlayerSide
 CHARACTERS = [
     {
         'name': 'Lightning',
-        'abilities':{
-            'basic_attack':{
+        'stats': {
+            'hp': 500, 'mp': 50, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 50
+        },
+        'abilities': {
+            'basic_attack': {
                 'particle_effects': ['slash', 'slash', 'slash', 'slash', 'shards', 'shards', 'shards'],
                 'particle_action_frames': [3,  12,  17,  22, 27, 28, 29],
                 'damage_weight': [3, 3, 3, 3, 2, 2, 2],
-                }
+            }
         },
         'off_set': {
             'left':
             {
                 'idle': (0, 0),
                 'attack': (-15, -73),
-
                 'magic_attack': (0, 0),
                 'magic_standby': (0, 0),
                 'attack_standby': (0, 0),
@@ -42,13 +44,16 @@ CHARACTERS = [
     },
     {
         'name': 'Cloud',
-        'abilities':{
-            'basic_attack':{
+        'stats': {
+            'hp': 500, 'mp': 50, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 50
+        },
+        'abilities': {
+            'basic_attack': {
                 'particle_effects': ['slash'],
                 'particle_action_frames': [2],
                 'damage_weight': [1],
-                }
-            },
+            }
+        },
         'off_set': {
             'left':
             {
@@ -80,13 +85,16 @@ CHARACTERS = [
     },
     {
         'name': 'Tidus',
-        'abilities':{
-            'basic_attack':{
+        'stats': {
+            'hp': 500, 'mp': 50, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 50
+        },
+        'abilities': {
+            'basic_attack': {
                 'particle_effects': ['slash'],
                 'particle_action_frames': [3],
                 'damage_weight': [1],
-                }
-            },
+            }
+        },
         'off_set': {
             'left':
             {
@@ -118,13 +126,16 @@ CHARACTERS = [
     },
     {
         'name': 'Firion',
-        'abilities':{
-            'basic_attack':{
-                'particle_effects': ['slash','slash'],
-                'particle_action_frames': [3,9],
-                'damage_weight': [1,1],
-                }
-            },
+        'stats': {
+            'hp': 500, 'mp': 50, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 50
+        },
+        'abilities': {
+            'basic_attack': {
+                'particle_effects': ['slash', 'slash'],
+                'particle_action_frames': [3, 9],
+                'damage_weight': [1, 1],
+            }
+        },
         'off_set': {
             'left':
             {
@@ -156,13 +167,16 @@ CHARACTERS = [
     },
     {
         'name': 'Cecil',
-        'abilities':{
-            'basic_attack':{
+        'stats': {
+            'hp': 500, 'mp': 50, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 50
+        },
+        'abilities': {
+            'basic_attack': {
                 'particle_effects': ['slash'],
                 'particle_action_frames': [8],
                 'damage_weight': [1],
-                }
-            },
+            }
+        },
         'off_set': {
             'left':
             {
@@ -194,13 +208,16 @@ CHARACTERS = [
     },
     {
         'name': 'Bartz',
-        'abilities':{
-            'basic_attack':{
-                'particle_effects': ['slash','slash'],
-                'particle_action_frames': [0,6],
-                'damage_weight': [1,1],
-                }
-            },
+        'stats': {
+            'hp': 500, 'mp': 50, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 50
+        },
+        'abilities': {
+            'basic_attack': {
+                'particle_effects': ['slash', 'slash'],
+                'particle_action_frames': [0, 6],
+                'damage_weight': [1, 1],
+            }
+        },
         'off_set': {
             'left':
             {
@@ -232,13 +249,16 @@ CHARACTERS = [
     },
     {
         'name': 'Zidane',
-        'abilities':{
-            'basic_attack':{
-                'particle_effects': ['slash','slash','slash'],
-                'particle_action_frames': [1,4,7],
-                'damage_weight': [1,1,2],
-                }
-            },
+        'stats': {
+            'hp': 500, 'mp': 50, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 50
+        },
+        'abilities': {
+            'basic_attack': {
+                'particle_effects': ['slash', 'slash', 'slash'],
+                'particle_action_frames': [1, 4, 7],
+                'damage_weight': [1, 1, 2],
+            }
+        },
         'off_set': {
             'left':
             {
@@ -270,13 +290,16 @@ CHARACTERS = [
     },
     {
         'name': 'Tera',
-        'abilities':{
-            'basic_attack':{
-                'particle_effects': ['shards','shards','shards','shards','shards',],
-                'particle_action_frames': [3,4,5,6,7],
-                'damage_weight': [1,1,1,1,1],
-                }
-            },
+        'stats': {
+            'hp': 500, 'mp': 50, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 50
+        },
+        'abilities': {
+            'basic_attack': {
+                'particle_effects': ['shards', 'shards', 'shards', 'shards', 'shards', ],
+                'particle_action_frames': [3, 4, 5, 6, 7],
+                'damage_weight': [1, 1, 1, 1, 1],
+            }
+        },
         'off_set': {
             'left':
             {
@@ -308,13 +331,16 @@ CHARACTERS = [
     },
     {
         'name': 'Noctis',
-        'abilities':{
-            'basic_attack':{
-                'particle_effects': ['shards','slash','slash'],
-                'particle_action_frames': [12,16,19],
-                'damage_weight': [5,4,4],
-                }
-            },
+        'stats': {
+            'hp': 500, 'mp': 50, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 50
+        },
+        'abilities': {
+            'basic_attack': {
+                'particle_effects': ['shards', 'slash', 'slash'],
+                'particle_action_frames': [12, 16, 19],
+                'damage_weight': [5, 4, 4],
+            }
+        },
         'off_set': {
             'left':
             {
@@ -346,13 +372,16 @@ CHARACTERS = [
     },
     {
         'name': 'Squall',
-        'abilities':{
-            'basic_attack':{
+        'stats': {
+            'hp': 500, 'mp': 50, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 50
+        },
+        'abilities': {
+            'basic_attack': {
                 'particle_effects': ['slash'],
                 'particle_action_frames': [3],
                 'damage_weight': [1],
-                }
-            },
+            }
+        },
         'off_set': {
             'left':
             {

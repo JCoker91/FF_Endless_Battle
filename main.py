@@ -6,6 +6,7 @@ from util.custom_enum import PlayerSide
 from settings import CHARACTERS
 from util.debug import debug
 from models.abilities.abilities import basic_attack
+from models.hp_bar.hp_bar import HPBar
 
 pygame.init()
 
@@ -44,22 +45,24 @@ particles_group = pygame.sprite.Group()
 floating_text_group = pygame.sprite.Group()
 
 player1 = choice(CHARACTERS)
-Character(
+player_1 = Character(
     character_name=player1['name'],
+    stats=player1['stats'],
     off_set=player1['off_set'],
     attack_effects=player1['abilities'],
     side=PlayerSide.LEFT,
     position=LEFT_SIDE['front_middle'],
-    group = players_group
+    group=players_group
 )
 player2 = choice(CHARACTERS)
-Character(
+player_2 = Character(
     character_name=player2['name'],
+    stats=player2['stats'],
     off_set=player2['off_set'],
     attack_effects=player2['abilities'],
     side=PlayerSide.RIGHT,
     position=RIGHT_SIDE['front_middle'],
-    group = players_group
+    group=players_group
 )
 # Setup Characters
 # for character in CHARACTERS:
@@ -104,8 +107,8 @@ while True:
                     lambda character: character.focused and character.side == PlayerSide.LEFT, players_group))
                 if len(right_focused) > 0 and len(left_focused) > 0:
                     basic_attack(right_focused[0],
-                        left_focused[0], particles_group, floating_text_group)
-                    
+                                 left_focused[0], particles_group, floating_text_group)
+
             if event.key == pygame.K_f:
                 right_focused = list(filter(
                     lambda character: character.focused and character.side == PlayerSide.RIGHT, players_group))
@@ -113,18 +116,23 @@ while True:
                     lambda character: character.focused and character.side == PlayerSide.LEFT, players_group))
                 if len(right_focused) > 0 and len(left_focused) > 0:
                     basic_attack(left_focused[0],
-                        right_focused[0], particles_group, floating_text_group)
+                                 right_focused[0], particles_group, floating_text_group)
 
     screen.blit(background, (0, 0))
     y1 = 10
     y2 = 10
+
     for player in players_group:
         if player.icon is not None:
             if player.side == PlayerSide.RIGHT:
                 screen.blit(player.icon, (screen.get_width() - 66, y2))
+                hp_bar = HPBar(player, screen.get_width() - 216, y2)
+                hp_bar.draw()
                 y2 += 40
             else:
                 screen.blit(pygame.transform.flip(player.icon, 1, 0), (10, y1))
+                hp_bar = HPBar(player, 70, y1)
+                hp_bar.draw()
                 y1 += 40
 
     players_group.update()
@@ -133,6 +141,5 @@ while True:
     players_group.draw(screen)
     particles_group.draw(screen)
     floating_text_group.draw(screen)
-
     pygame.display.update()
     clock.tick(60)

@@ -9,8 +9,10 @@ from models.floating_text.damage_text import DamageText
 
 
 class Character(pygame.sprite.Sprite):
-    def __init__(self, character_name: str, position: tuple, side: PlayerSide, off_set: dict, attack_effects: dict,group: pygame.sprite.Group) -> None:
+    def __init__(self, character_name: str, stats: dict, position: tuple, side: PlayerSide, off_set: dict, attack_effects: dict, group: pygame.sprite.Group) -> None:
         super().__init__()
+        self.base_stats = stats.copy()
+        self.current_stats = stats.copy()
         self.attack_effects = attack_effects
         self.name = character_name  # Character name
         self.side = side  # Which side the character is on (left or right)
@@ -23,8 +25,10 @@ class Character(pygame.sprite.Sprite):
         self.damage_taken_frame = []
         self.is_moving = False
         self.damage_frame = False
+        self.has_fallen = False
         self.is_taking_damage = False
         self.is_attacking = False
+        self.is_dying = False
         self.move_speed = 10
         self.floating_text_group = None
         self.set_offset = None
@@ -296,6 +300,12 @@ class Character(pygame.sprite.Sprite):
                     self.rect.center)
                 DamageText(
                     str(self.damage_taken_frame[self.particle_action_count]), self.rect.center, self.floating_text_group)
+                self.current_stats['hp'] -= self.damage_taken_frame[self.particle_action_count]
+                if self.current_stats['hp'] < 0.3 * self.base_stats['hp']:
+                    self.is_dying = True
+                if self.current_stats['hp'] < 1:
+                    self.has_fallen = True
+                    self.is_dying = False
                 self.particle_action_count += 1
             self.damage_frame += .25
             if self.particle_action_count >= len(self.particle_action_frames):
@@ -320,6 +330,16 @@ class Character(pygame.sprite.Sprite):
                 if not self.base_rect:
                     self.base_rect = self.rect.copy()
                     self.set_offset = 'attack'
+            if animation == CurrentState.DYING:
+                self.set_offset = 'dying'
+                if self.base_rect:
+                    self.rect = self.base_rect
+                    self.base_rect = None
+            if animation == CurrentState.DEAD:
+                self.set_offset = 'dead'
+                if self.base_rect:
+                    self.rect = self.base_rect
+                    self.base_rect = None
             if animation == CurrentState.IDLE:
                 self.set_offset = 'idle'
                 if self.base_rect:
@@ -359,6 +379,10 @@ class Character(pygame.sprite.Sprite):
     def switch_action(self):
         if self.is_attacking:
             self.switch_animation(CurrentState.ATTACK)
+        elif self.is_dying:
+            self.switch_animation(CurrentState.DYING)
+        elif self.has_fallen:
+            self.switch_animation(CurrentState.DEAD)
         else:
             self.switch_animation(CurrentState.IDLE)
 

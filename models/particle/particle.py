@@ -1,4 +1,4 @@
-from tkinter import CENTER
+
 import pygame
 from util.util_functions import load_image_folder
 
