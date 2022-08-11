@@ -1,9 +1,7 @@
 from __future__ import annotations
 
 import pygame
-import os
-import sys
-from random import randint, random
+from random import randint
 from util.custom_enum import CurrentState, PlayerSide
 from util.util_functions import load_image_folder
 from models.particle.particle import Particle
@@ -11,8 +9,9 @@ from models.floating_text.damage_text import DamageText
 
 
 class Character(pygame.sprite.Sprite):
-    def __init__(self, character_name: str, position: tuple, side: PlayerSide, off_set: dict) -> None:
+    def __init__(self, character_name: str, position: tuple, side: PlayerSide, off_set: dict, attack_effects: dict,group: pygame.sprite.Group) -> None:
         super().__init__()
+        self.attack_effects = attack_effects
         self.name = character_name  # Character name
         self.side = side  # Which side the character is on (left or right)
         # Determines where the character will load on the screen
@@ -72,6 +71,7 @@ class Character(pygame.sprite.Sprite):
         self.mouse_click_timer = None
         self.mouse_click_cool_down = 300
         self.can_click = True
+        group.add(self)
 
     def __str__(self):
         return self.name
@@ -102,14 +102,10 @@ class Character(pygame.sprite.Sprite):
                     if self.side == PlayerSide.RIGHT:
                         self.image = self.animations['attack'][int(
                             self.animation_frame_count)]
-                        # self.rect = self.image.get_rect(
-                        # bottomright=self.starting_spot)
 
                     elif self.side == PlayerSide.LEFT:
                         self.image = pygame.transform.flip(
                             self.animations['attack'][int(self.animation_frame_count)], 1, 0)
-                        # self.rect = self.image.get_rect(
-                        # bottomleft=self.starting_spot)
 
                     self.animation_frame_count += .25
                     if self.animation_frame_count >= len(self.animations['attack']):
@@ -221,9 +217,7 @@ class Character(pygame.sprite.Sprite):
 
     def adjust_offset(self):
         if self.set_offset:
-
             self.rect.x += self.off_set[self.set_offset][0]
-
             self.rect.y += self.off_set[self.set_offset][1]
             self.set_offset = None
 
@@ -273,27 +267,14 @@ class Character(pygame.sprite.Sprite):
                 self.animation_frame_count = 0
                 self.current_state = CurrentState.WIN_END
 
-    def basic_attack(self, enemy: Character, group: pygame.sprite.Group, group_2: pygame.sprite.Group):
-        self.is_attacking = True
-        damage_data = {
-            'damage': 500,
-            'attack_len': len(self.animations['attack']),
-            'particle_list': ['slash', 'slash', 'slash', 'slash', 'shards', 'shards', 'shards'],
-            'particle_action': [3,  12,  17,  22,   27, 28, 29],
-            'damage_weight': [3, 3, 3, 3, 2, 2, 2],
-            'particle_list_group': group,
-            'floating_text_group': group_2
-        }
-        enemy.take_damage(damage_data)
-
     def take_damage(self, damage_data: dict):
         self.is_taking_damage = True
         self.taking_damage_duration = damage_data['attack_len']
-        self.particle_action = damage_data['particle_action']
+        self.particle_action_frames = damage_data['particle_action_frames']
         self.damage_taken = damage_data['damage']
         self.damage_weight = damage_data['damage_weight']
         self.floating_text_group = damage_data['floating_text_group']
-        for i, particle in enumerate(damage_data['particle_list']):
+        for i, particle in enumerate(damage_data['particle_effects']):
             self.damage_taken_frame.append(self.calculate_weighted_damage(
                 self.damage_weight, i, self.damage_taken))
             new_particle = Particle(
@@ -310,16 +291,16 @@ class Character(pygame.sprite.Sprite):
 
     def display_damage(self):
         if self.is_taking_damage:
-            if self.damage_frame == self.particle_action[self.particle_action_count]:
+            if self.damage_frame == self.particle_action_frames[self.particle_action_count]:
                 self.particle_list[self.particle_action_count].create(
                     self.rect.center)
                 DamageText(
                     str(self.damage_taken_frame[self.particle_action_count]), self.rect.center, self.floating_text_group)
                 self.particle_action_count += 1
             self.damage_frame += .25
-            if self.particle_action_count >= len(self.particle_action):
+            if self.particle_action_count >= len(self.particle_action_frames):
                 self.damage_frame = 0
-                self.particle_action = 0
+                self.particle_action_frames = 0
                 self.is_taking_damage = False
                 self.particle_action_count = 0
                 self.taking_damage_duration = 0

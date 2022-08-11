@@ -1,5 +1,4 @@
 import pygame
-from random import randint
 
 
 class DamageText(pygame.sprite.Sprite):
@@ -10,7 +9,7 @@ class DamageText(pygame.sprite.Sprite):
         self.outline_color = (1, 1, 1)
         self.text_size = 24
         self.is_waiting_count = 8
-        self.width = self.text_size * 2
+        self.width = self.text_size * 4
         self.height = self.text_size * 2
         self.is_first_run = True
         self.is_floating = True
@@ -39,7 +38,7 @@ class DamageText(pygame.sprite.Sprite):
     def update(self):
         if self.is_floating:
             if self.is_first_run:
-                self.gravity = randint(-6, -5)
+                self.gravity = -6
                 self.is_first_run = False
             else:
                 self.gravity += .5

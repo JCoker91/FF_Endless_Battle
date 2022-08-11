@@ -1,15 +1,15 @@
-from tkinter import RIGHT
-from turtle import pos
 import pygame
 from sys import exit
+from random import choice
 from models.character.character import Character, YSortedGroup
 from util.custom_enum import PlayerSide
 from settings import CHARACTERS
 from util.debug import debug
+from models.abilities.abilities import basic_attack
 
 pygame.init()
 
-
+# Constants
 SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 800
 LEFT_SIDE = {
@@ -34,47 +34,52 @@ RIGHT_SIDE = {
     "back_top": (550, 450),
     "back_bot": (550, 550),
 }
+
+# Setup Screen
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-players = YSortedGroup()
-particles = pygame.sprite.Group()
-floating_text = pygame.sprite.Group()
-for character in CHARACTERS:
-    if character['name'] == 'Squall':
-        players.add(Character(
-            character_name=character['name'],
-            off_set=character['off_set'],
-            side=PlayerSide.LEFT,
-            position=LEFT_SIDE['front_middle']
-        ))
-        players.add(Character(
-            character_name=character['name'],
-            off_set=character['off_set'],
-            side=PlayerSide.RIGHT,
-            position=RIGHT_SIDE['front_middle']
-        ))
 
+# Setup Groups
+players_group = YSortedGroup()
+particles_group = pygame.sprite.Group()
+floating_text_group = pygame.sprite.Group()
 
-# cloud = Character("Cloud", RIGHT_SIDE['front_middle'], PlayerSide.RIGHT)
-# tera = Character("Tera", RIGHT_SIDE['middle_top'], PlayerSide.RIGHT)
-# squall = Character("Squall", RIGHT_SIDE['middle_bot'], PlayerSide.RIGHT)
-# cecil = Character("Cecil", RIGHT_SIDE['back_top'], PlayerSide.RIGHT)
-# noctis = Character("Noctis", RIGHT_SIDE['back_bot'], PlayerSide.RIGHT)
-# lightning = Character("Lightning", LEFT_SIDE['front_middle'], PlayerSide.LEFT)
-# firion = Character("Firion", LEFT_SIDE['middle_top'], PlayerSide.LEFT)
-# bartz = Character("Bartz", LEFT_SIDE['middle_bot'], PlayerSide.LEFT)
-# tidus = Character("Tidus", LEFT_SIDE['back_top'], PlayerSide.LEFT)
-# zidane = Character("Zidane", LEFT_SIDE['back_bot'], PlayerSide.LEFT)
-# # players = pygame.sprite.Group()
-# players.add(tidus)
-# players.add(cloud)
-# players.add(lightning)
-# players.add(noctis)
-# players.add(squall)
-# players.add(bartz)
-# players.add(cecil)
-# players.add(firion)
-# players.add(tera)
-# players.add(zidane)
+player1 = choice(CHARACTERS)
+Character(
+    character_name=player1['name'],
+    off_set=player1['off_set'],
+    attack_effects=player1['abilities'],
+    side=PlayerSide.LEFT,
+    position=LEFT_SIDE['front_middle'],
+    group = players_group
+)
+player2 = choice(CHARACTERS)
+Character(
+    character_name=player2['name'],
+    off_set=player2['off_set'],
+    attack_effects=player2['abilities'],
+    side=PlayerSide.RIGHT,
+    position=RIGHT_SIDE['front_middle'],
+    group = players_group
+)
+# Setup Characters
+# for character in CHARACTERS:
+#     if character['name'] == 'Squall':
+#         Character(
+#             character_name=character['name'],
+#             off_set=character['off_set'],
+#             attack_effects=character['abilities'],
+#             side=PlayerSide.LEFT,
+#             position=LEFT_SIDE['front_middle'],
+#             group = players_group
+#         )
+#         Character(
+#             character_name=character['name'],
+#             off_set=character['off_set'],
+#             attack_effects=character['abilities'],
+#             side=PlayerSide.RIGHT,
+#             position=RIGHT_SIDE['front_middle'],
+#             group = players_group
+#         )
 
 custom_font = pygame.font.Font('resources/fonts/Pixeltype.ttf', 32)
 
@@ -94,45 +99,40 @@ while True:
                 exit()
             if event.key == pygame.K_j:
                 right_focused = list(filter(
-                    lambda character: character.focused and character.side == PlayerSide.RIGHT, players))
+                    lambda character: character.focused and character.side == PlayerSide.RIGHT, players_group))
                 left_focused = list(filter(
-                    lambda character: character.focused and character.side == PlayerSide.LEFT, players))
+                    lambda character: character.focused and character.side == PlayerSide.LEFT, players_group))
                 if len(right_focused) > 0 and len(left_focused) > 0:
-                    right_focused[0].basic_attack(
-                        left_focused[0], particles, floating_text)
-                    # debug(right_focused[0].rect.bottomright)
+                    basic_attack(right_focused[0],
+                        left_focused[0], particles_group, floating_text_group)
+                    
             if event.key == pygame.K_f:
                 right_focused = list(filter(
-                    lambda character: character.focused and character.side == PlayerSide.RIGHT, players))
+                    lambda character: character.focused and character.side == PlayerSide.RIGHT, players_group))
                 left_focused = list(filter(
-                    lambda character: character.focused and character.side == PlayerSide.LEFT, players))
+                    lambda character: character.focused and character.side == PlayerSide.LEFT, players_group))
                 if len(right_focused) > 0 and len(left_focused) > 0:
-                    left_focused[0].basic_attack(
-                        right_focused[0], particles, floating_text)
+                    basic_attack(left_focused[0],
+                        right_focused[0], particles_group, floating_text_group)
 
     screen.blit(background, (0, 0))
-
-    players.update()
-    particles.update()
-    floating_text.update()
-    players.draw(screen)
-    particles.draw(screen)
-    floating_text.draw(screen)
     y1 = 10
     y2 = 10
-    for player in players:
+    for player in players_group:
         if player.icon is not None:
             if player.side == PlayerSide.RIGHT:
                 screen.blit(player.icon, (screen.get_width() - 66, y2))
-                screen.blit(custom_font.render(
-                    str(player.rect.center), False, 'Red'), (screen.get_width() - 166, y2+15))
                 y2 += 40
             else:
                 screen.blit(pygame.transform.flip(player.icon, 1, 0), (10, y1))
-                screen.blit(custom_font.render(
-                    str(player.rect.center), False, 'Red'), (80, y1+15))
                 y1 += 40
 
-    pygame.display.update()
+    players_group.update()
+    particles_group.update()
+    floating_text_group.update()
+    players_group.draw(screen)
+    particles_group.draw(screen)
+    floating_text_group.draw(screen)
 
+    pygame.display.update()
     clock.tick(60)
