@@ -6,7 +6,9 @@ from util.custom_enum import PlayerSide
 from settings import CHARACTERS
 from util.debug import debug
 from models.abilities.abilities import basic_attack
-from models.hp_bar.hp_bar import HPBar
+from models.UI_Bar.hp_bar import HPBar
+from models.UI_Bar.mp_bar import MPBar
+from models.UI_Bar.break_bar import BreakBar
 
 pygame.init()
 
@@ -127,12 +129,20 @@ while True:
             if player.side == PlayerSide.RIGHT:
                 screen.blit(player.icon, (screen.get_width() - 66, y2))
                 hp_bar = HPBar(player, screen.get_width() - 216, y2)
+                break_bar = BreakBar(player, screen.get_width() - 216, y2+20)
+                mp_bar = MPBar(player, screen.get_width() - 216, y2+40)
                 hp_bar.draw()
+                break_bar.draw()
+                mp_bar.draw()
                 y2 += 40
             else:
                 screen.blit(pygame.transform.flip(player.icon, 1, 0), (10, y1))
                 hp_bar = HPBar(player, 70, y1)
+                break_bar = BreakBar(player, 70, y1 + 20)
+                mp_bar = MPBar(player, 70, y1 + 40)
                 hp_bar.draw()
+                break_bar.draw()
+                mp_bar.draw()
                 y1 += 40
 
     players_group.update()
