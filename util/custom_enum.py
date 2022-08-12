@@ -14,8 +14,15 @@ class CurrentState(Enum):
     MOVE = 10
     WIN = 11
     WIN_END = 12
+    BROKEN = 13
 
 
 class PlayerSide(Enum):
     RIGHT = 1
     LEFT = 2
+
+
+class DamageType(Enum):
+    PHYSICAL = 1
+    MAGIC = 2
+    BREAK = 3

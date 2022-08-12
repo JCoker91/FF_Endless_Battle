@@ -16,9 +16,12 @@ class HPBar:
     def draw(self):
         HP_COLOR = 'Green'
         if self.player.current_stats['hp'] < .5 * self.player.base_stats['hp']:
-            HP_COLOR = 'Orange'
+            HP_COLOR = 'Yellow'
         if self.player.current_stats['hp'] < .3 * self.player.base_stats['hp']:
             HP_COLOR = 'Red'
-        pygame.draw.rect(self.display_surf, 'Black', self.max_hp_bar)
-        pygame.draw.rect(self.display_surf, HP_COLOR, self.current_hp_bar)
-        pygame.draw.rect(self.display_surf, 'White', self.max_hp_bar, 3)
+        pygame.draw.rect(self.display_surf, 'Black',
+                         self.max_hp_bar, border_top_right_radius=10, border_bottom_right_radius=10)
+        pygame.draw.rect(self.display_surf, HP_COLOR,
+                         self.current_hp_bar, border_top_right_radius=10, border_bottom_right_radius=10)
+        pygame.draw.rect(self.display_surf, 'White',
+                         self.max_hp_bar, 1, border_top_right_radius=10, border_bottom_right_radius=10)

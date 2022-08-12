@@ -15,6 +15,9 @@ class MPBar:
 
     def draw(self):
         MP_COLOR = 'Blue'
-        pygame.draw.rect(self.display_surf, 'Black', self.max_mp_bar)
-        pygame.draw.rect(self.display_surf, MP_COLOR, self.current_hp_bar)
-        pygame.draw.rect(self.display_surf, 'White', self.max_mp_bar, 3)
+        pygame.draw.rect(self.display_surf, 'Black',
+                         self.max_mp_bar, border_top_right_radius=10, border_bottom_right_radius=10)
+        pygame.draw.rect(self.display_surf, MP_COLOR,
+                         self.current_hp_bar, border_top_right_radius=10, border_bottom_right_radius=10)
+        pygame.draw.rect(self.display_surf, 'White',
+                         self.max_mp_bar, 1, border_top_right_radius=10, border_bottom_right_radius=10)

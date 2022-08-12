@@ -8,6 +8,7 @@ def basic_attack(caster: Character, enemy: Character, particle_list_group: pygam
         int(caster.current_stats['strength'] - (enemy.current_stats['defense'] * 0.3)), 1)
     damage_data = {
         'damage': damage,
+        'break_damage': caster.current_stats['break_power'],
         'attack_len': len(caster.animations['attack']),
         'particle_effects': caster.attack_effects['basic_attack']['particle_effects'],
         'particle_action_frames': caster.attack_effects['basic_attack']['particle_action_frames'],

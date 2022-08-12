@@ -1,13 +1,19 @@
 import pygame
+from util.custom_enum import DamageType
 
 
 class DamageText(pygame.sprite.Sprite):
-    def __init__(self, text, center, group):
+    def __init__(self, text: str, center: tuple, group: pygame.sprite.Group, damage_type: DamageType = None):
         pygame.sprite.Sprite.__init__(self)
         self.center = (center[0], center[1] - 35)
+        self.damage_type = damage_type
         self.color = (255, 255, 255)
         self.outline_color = (1, 1, 1)
         self.text_size = 24
+        if damage_type == DamageType.BREAK:
+            self.color = (255, 0, 0)
+            self.outline_color = (255, 255, 0)
+            self.text_size = 28
         self.is_waiting_count = 8
         self.width = self.text_size * 4
         self.height = self.text_size * 2
@@ -28,6 +34,7 @@ class DamageText(pygame.sprite.Sprite):
         self.starting_pos = self.center
         W = self.textSurf.get_width()
         H = self.textSurf.get_height()
+
         self.image.blit(
             self.textSurfOutline, [(self.width/2 - W/2) - 2, (self.height/2 - H/2)-2])
         self.image.blit(
@@ -38,7 +45,10 @@ class DamageText(pygame.sprite.Sprite):
     def update(self):
         if self.is_floating:
             if self.is_first_run:
-                self.gravity = -6
+                if self.damage_type == DamageType.BREAK:
+                    self.gravity = -8
+                else:
+                    self.gravity = -6
                 self.is_first_run = False
             else:
                 self.gravity += .5
