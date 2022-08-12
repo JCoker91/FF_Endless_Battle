@@ -7,7 +7,7 @@ class BreakBar:
         self.player = player
         self.display_surf = pygame.display.get_surface()
         MAX_WIDTH = 150
-        MAX_HEIGHT = 20
+        MAX_HEIGHT = 13
         break_width = (player.current_stats['hp'] /
                     player.base_stats['hp']) * MAX_WIDTH
         self.max_hp_bar = pygame.Rect(x_pos, y_pos, MAX_WIDTH, MAX_HEIGHT)

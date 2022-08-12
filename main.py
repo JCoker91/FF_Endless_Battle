@@ -129,8 +129,8 @@ while True:
             if player.side == PlayerSide.RIGHT:
                 screen.blit(player.icon, (screen.get_width() - 66, y2))
                 hp_bar = HPBar(player, screen.get_width() - 216, y2)
-                break_bar = BreakBar(player, screen.get_width() - 216, y2+20)
-                mp_bar = MPBar(player, screen.get_width() - 216, y2+40)
+                break_bar = BreakBar(player, screen.get_width() - 216, y2+14)
+                mp_bar = MPBar(player, screen.get_width() - 216, y2+28)
                 hp_bar.draw()
                 break_bar.draw()
                 mp_bar.draw()
@@ -138,8 +138,8 @@ while True:
             else:
                 screen.blit(pygame.transform.flip(player.icon, 1, 0), (10, y1))
                 hp_bar = HPBar(player, 70, y1)
-                break_bar = BreakBar(player, 70, y1 + 20)
-                mp_bar = MPBar(player, 70, y1 + 40)
+                break_bar = BreakBar(player, 70, y1 + 14)
+                mp_bar = MPBar(player, 70, y1 + 28)
                 hp_bar.draw()
                 break_bar.draw()
                 mp_bar.draw()

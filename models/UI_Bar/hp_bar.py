@@ -7,7 +7,7 @@ class HPBar:
         self.player = player
         self.display_surf = pygame.display.get_surface()
         MAX_WIDTH = 150
-        MAX_HEIGHT = 20
+        MAX_HEIGHT = 13
         hp_width = (player.current_stats['hp'] /
                     player.base_stats['hp']) * MAX_WIDTH
         self.max_hp_bar = pygame.Rect(x_pos, y_pos, MAX_WIDTH, MAX_HEIGHT)
@@ -16,7 +16,7 @@ class HPBar:
     def draw(self):
         HP_COLOR = 'Green'
         if self.player.current_stats['hp'] < .5 * self.player.base_stats['hp']:
-            HP_COLOR = 'Yellow'
+            HP_COLOR = 'Orange'
         if self.player.current_stats['hp'] < .3 * self.player.base_stats['hp']:
             HP_COLOR = 'Red'
         pygame.draw.rect(self.display_surf, 'Black', self.max_hp_bar)
