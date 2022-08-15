@@ -1,6 +1,6 @@
 
 import pygame
-from util.util_functions import load_image_folder
+from source.util.util_functions import load_image_folder
 
 
 class Particle(pygame.sprite.Sprite):

@@ -1,5 +1,5 @@
 import pygame
-from models.character.character import Character
+from source.models.character.character import Character
 
 
 class MPBar:
@@ -14,7 +14,7 @@ class MPBar:
         self.current_hp_bar = pygame.Rect(x_pos, y_pos, mp_width, MAX_HEIGHT)
 
     def draw(self):
-        MP_COLOR = 'Blue'
+        MP_COLOR = (0,0,200)
         pygame.draw.rect(self.display_surf, 'Black',
                          self.max_mp_bar, border_top_right_radius=10, border_bottom_right_radius=10)
         pygame.draw.rect(self.display_surf, MP_COLOR,

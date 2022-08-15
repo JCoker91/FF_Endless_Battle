@@ -1,5 +1,5 @@
 import pygame
-from util.custom_enum import DamageType
+from source.util.custom_enum import DamageType
 
 
 class DamageText(pygame.sprite.Sprite):
@@ -16,6 +16,8 @@ class DamageText(pygame.sprite.Sprite):
             self.text_size = 28
         self.is_waiting_count = 8
         self.width = self.text_size * 4
+        if len(text) > 3:
+            self.width = self.text_size *8
         self.height = self.text_size * 2
         self.is_first_run = True
         self.is_floating = True

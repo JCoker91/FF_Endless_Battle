@@ -1,5 +1,5 @@
 import pygame
-from models.character.character import Character
+from source.models.character.character import Character
 
 
 class HPBar:
@@ -14,7 +14,7 @@ class HPBar:
         self.current_hp_bar = pygame.Rect(x_pos, y_pos, hp_width, MAX_HEIGHT)
 
     def draw(self):
-        HP_COLOR = 'Green'
+        HP_COLOR = (0,200,0)
         if self.player.current_stats['hp'] < .5 * self.player.base_stats['hp']:
             HP_COLOR = 'Yellow'
         if self.player.current_stats['hp'] < .3 * self.player.base_stats['hp']:

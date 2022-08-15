@@ -2,10 +2,10 @@ from __future__ import annotations
 
 import pygame
 from random import randint
-from util.custom_enum import CurrentState, PlayerSide, DamageType
-from util.util_functions import load_image_folder
-from models.particle.particle import Particle
-from models.floating_text.damage_text import DamageText
+from source.util.custom_enum import CurrentState, PlayerSide, DamageType
+from source.util.util_functions import load_image_folder
+from source.models.particle.particle import Particle
+from source.models.floating_text.damage_text import DamageText
 
 
 class Character(pygame.sprite.Sprite):
@@ -279,6 +279,8 @@ class Character(pygame.sprite.Sprite):
                 if self.is_broken:
                     damage += int(damage * .5)
                     damage_type = DamageType.BREAK
+                if self.break_bar > 0 and self.break_bar - self.break_damage_taken_frame[self.particle_action_count] < 0:
+                    DamageText("BREAK",self.rect.center, self.floating_text_group, DamageType.BREAK)
                 DamageText(
                     str(damage), self.rect.center, self.floating_text_group, damage_type)
                 self.current_stats['hp'] -= damage
@@ -353,11 +355,11 @@ class Character(pygame.sprite.Sprite):
         self.cool_downs()
 
 
-class YSortedGroup(pygame.sprite.Group):
-    def __init__(self) -> None:
-        super().__init__()
-        self.display_surface = pygame.display.get_surface()
+# class YSortedGroup(pygame.sprite.Group):
+#     def __init__(self) -> None:
+#         super().__init__()
+#         self.display_surface = pygame.display.get_surface()
 
-    def draw(self, surface):
-        for sprite in sorted(self.sprites(), key=lambda sprite: sprite.rect.centery):
-            self.display_surface.blit(sprite.image, sprite.rect)
+#     def draw(self, surface):
+#         for sprite in sorted(self.sprites(), key=lambda sprite: sprite.rect.centery):
+#             self.display_surface.blit(sprite.image, sprite.rect)

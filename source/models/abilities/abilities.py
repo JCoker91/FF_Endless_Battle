@@ -1,5 +1,5 @@
 import pygame
-from models.character.character import Character
+from source.models.character.character import Character
 
 
 def basic_attack(caster: Character, enemy: Character, particle_list_group: pygame.sprite.Group, floating_text_group: pygame.sprite.Group):

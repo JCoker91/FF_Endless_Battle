@@ -1,5 +1,5 @@
 import pygame
-from models.character.character import Character
+from source.models.character.character import Character
 
 
 class BreakBar:
@@ -15,7 +15,7 @@ class BreakBar:
             x_pos, y_pos, break_width, MAX_HEIGHT)
 
     def draw(self):
-        BREAK_COLOR = 'Orange'
+        BREAK_COLOR = (230,150,0)
         pygame.draw.rect(self.display_surf, 'Black',
                          self.max_hp_bar, border_top_right_radius=10, border_bottom_right_radius=10)
         pygame.draw.rect(self.display_surf, BREAK_COLOR,

@@ -1,5 +1,6 @@
 import pygame
-from models.character.character import Character
+from settings import *
+from source.models.character.character import Character
 
 
 class CommandMenu:
@@ -15,14 +16,12 @@ class CommandMenu:
             0, self.display_surface.get_height() - self.HEIGHT, self.WIDTH * .4, self.HEIGHT)
 
     def draw(self, player: Character):
-        MENU_COLOR = "Blue"
-        MENU_BORDER_COLOR = 'White'
         pygame.draw.rect(self.display_surface, MENU_COLOR, self.full_menu)
         pygame.draw.rect(self.display_surface,
-                         MENU_BORDER_COLOR, self.full_menu, 3, 3)
+                         MENU_BORDER_COLOR, self.full_menu, MENU_BORDER_WIDTH, MENU_BORDER_RADIUS)
         pygame.draw.rect(self.display_surface, MENU_COLOR, self.left_menu)
         pygame.draw.rect(self.display_surface,
-                         MENU_BORDER_COLOR, self.left_menu, 3, 3)
+                         MENU_BORDER_COLOR, self.left_menu, MENU_BORDER_WIDTH, MENU_BORDER_RADIUS)
         y = (self.display_surface.get_height() - self.HEIGHT) + 30
         x = 50
         player_name_text = self.font.render(player.name, True, 'White')
@@ -40,8 +39,6 @@ class CommandMenu:
         selected_option.set_alpha(100)
         pygame.draw.rect(self.display_surface, 'White',
                          divider, width=10)
-        # pygame.draw.rect(self.display_surface,
-        #                  pygame.Color(255, 255, 255, 0), selected_option)
         self.display_surface.blit(selected_option, (x - 30, y - 5))
         for action in player.menu_action:
             action_text = self.font.render(action, True, 'White')
