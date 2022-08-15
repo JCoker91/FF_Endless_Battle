@@ -1,13 +1,19 @@
 
-# screen properties
+# Screen properties
 SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 800
 FPS = 60
+
+# Menu settings
 MENU_COLOR = "Blue"
+MENU_SECONDARY_COLOR = "DarkBlue"
+MENU_TEXT_COLOR = "White"
 MENU_BORDER_COLOR = 'White'
+MENU_PADDING = 20
 MENU_BORDER_WIDTH = 3
 MENU_BORDER_RADIUS = 3
 
+# Hard-coded positions
 LEFT_SIDE_POSITIONS = {
     "front_middle": (200, 500),
     "front_top": (200, 450),
