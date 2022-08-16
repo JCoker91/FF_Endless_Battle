@@ -12,13 +12,15 @@ from source.screen.player_detail_screen import PlayerDetailScreen
 from source.game.load_characters import load_characters
 from source.util.debug import debug
 from source.models.sprite_groups.sprite_groups import YSortedGroup
+from source.models.ui.overlay.player_hp import PlayerHP
+
 
 class Game:
     def __init__(self) -> None:
         pygame.init()
         # screen setup
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-        
+
         # sprite group setup
         self.players_group = YSortedGroup()
         self.particles_group = pygame.sprite.Group()
@@ -26,17 +28,16 @@ class Game:
 
         # clock and timer setup
         self.mouse_click_timer = pygame.time.get_ticks()
-        self.can_click = True # used with the mouse timer 
+        self.can_click = True  # used with the mouse timer
         self.clock = pygame.time.Clock()
 
         # game variable setup
         # determines which player is focused on either side
-        self.left_focused = None 
+        self.left_focused = None
         self.right_focused = None
         self.selection_arrow = self.create_selection_arrow()
         self.showing_player_details = False
         self.showing_player = None
-
 
     def run(self):
         load_characters(self.players_group)
@@ -61,13 +62,13 @@ class Game:
         background = pygame.image.load(
             'resources/images/backgrounds/water_temple.png').convert()
         return background
-    
+
     def create_selection_arrow(self):
         selection_arrow = pygame.image.load(
             'resources/images/misc/arrows/menu_arrow.png')
         selection_arrow = pygame.transform.rotate(selection_arrow, -90.0)
         return selection_arrow
-    
+
     def update_groups(self):
         self.players_group.update()
         self.particles_group.update()
@@ -76,6 +77,8 @@ class Game:
     def draw_groups(self):
         self.players_group.draw(self.screen)
         self.particles_group.draw(self.screen)
+        hp_bars = PlayerHP(self.players_group.sprites())
+        hp_bars.draw()
         self.floating_text_group.draw(self.screen)
 
     def check_for_player_focus(self):
@@ -96,13 +99,13 @@ class Game:
                 self.left_focused = None
             else:
                 self.screen.blit(selection_arrow,
-                        (self.left_focused.starting_spot[0] + left_x_offset, self.left_focused.starting_spot[1] + left_y_offset))
+                                 (self.left_focused.starting_spot[0] + left_x_offset, self.left_focused.starting_spot[1] + left_y_offset))
         if self.right_focused:
             if self.right_focused.has_fallen:
                 self.right_focused = None
             else:
                 self.screen.blit(selection_arrow,
-                        (self.right_focused.starting_spot[0] + right_x_offset, self.right_focused.starting_spot[1] + right_y_offset))
+                                 (self.right_focused.starting_spot[0] + right_x_offset, self.right_focused.starting_spot[1] + right_y_offset))
 
     def cool_downs(self):
         if not self.can_click:
@@ -115,22 +118,26 @@ class Game:
         right_y_offset = 10
         left_x_offset = 70
         right_x_offset = self.screen.get_width() - 225
-        
+
         for player in players_group:
             if player.icon is not None:
                 if player.side == PlayerSide.RIGHT:
-                    self.screen.blit(player.icon, (self.screen.get_width() - 66, right_y_offset))
+                    self.screen.blit(
+                        player.icon, (self.screen.get_width() - 66, right_y_offset))
                     hp_bar = HPBar(player, right_x_offset, right_y_offset)
-                    break_bar = BreakBar(player, right_x_offset, right_y_offset+14)
+                    break_bar = BreakBar(
+                        player, right_x_offset, right_y_offset+14)
                     mp_bar = MPBar(player, right_x_offset, right_y_offset+28)
                     hp_bar.draw()
                     break_bar.draw()
                     mp_bar.draw()
                     right_y_offset += 60
                 else:
-                    self.screen.blit(pygame.transform.flip(player.icon, 1, 0), (10, left_y_offset))
+                    self.screen.blit(pygame.transform.flip(
+                        player.icon, 1, 0), (10, left_y_offset))
                     hp_bar = HPBar(player, left_x_offset, left_y_offset)
-                    break_bar = BreakBar(player, left_x_offset, left_y_offset + 14)
+                    break_bar = BreakBar(
+                        player, left_x_offset, left_y_offset + 14)
                     mp_bar = MPBar(player, left_x_offset, left_y_offset + 28)
                     hp_bar.draw()
                     break_bar.draw()
@@ -145,7 +152,7 @@ class Game:
                     width = SCREEN_WIDTH / 2
                     height = SCREEN_HEIGHT / 2
                     details_screen = pygame.Rect(
-                            self.screen.get_width()/4, self.screen.get_height()/4, width, height)
+                        self.screen.get_width()/4, self.screen.get_height()/4, width, height)
                     if not details_screen.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
                         self.showing_player_details = 0
                         self.showing_player = None
@@ -165,8 +172,8 @@ class Game:
                                     self.can_click = False
                                     self.mouse_click_timer = pygame.time.get_ticks()
             if event.type == pygame.QUIT:
-                        pygame.quit()
-                        exit()
+                pygame.quit()
+                exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     pygame.quit()
@@ -174,12 +181,11 @@ class Game:
                 if event.key == pygame.K_j:
                     if self.left_focused and self.right_focused:
                         basic_attack(self.right_focused,
-                                    self.left_focused, self.particles_group, self.floating_text_group)
+                                     self.left_focused, self.particles_group, self.floating_text_group)
                 if event.key == pygame.K_f:
                     if self.left_focused and self.right_focused:
                         basic_attack(self.left_focused,
-                                        self.right_focused, self.particles_group, self.floating_text_group)
-
+                                     self.right_focused, self.particles_group, self.floating_text_group)
 
     def show_player_details_screen(self):
         if self.showing_player_details:

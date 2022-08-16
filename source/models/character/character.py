@@ -233,6 +233,12 @@ class Character(pygame.sprite.Sprite):
                 if self.animation_frame_count >= len(self.animations['win_end']):
                     self.animation_frame_count = 0
 
+    def change_sprite_color(self):
+        if self.is_broken:
+            pass
+        else:
+            pass
+
     def adjust_offset(self):
         if self.set_offset:
             self.rect.x += self.off_set[self.set_offset][0]
@@ -280,7 +286,8 @@ class Character(pygame.sprite.Sprite):
                     damage += int(damage * .5)
                     damage_type = DamageType.BREAK
                 if self.break_bar > 0 and self.break_bar - self.break_damage_taken_frame[self.particle_action_count] < 0:
-                    DamageText("BREAK",self.rect.center, self.floating_text_group, DamageType.BREAK)
+                    DamageText("BREAK", self.rect.center,
+                               self.floating_text_group, DamageType.BREAK)
                 DamageText(
                     str(damage), self.rect.center, self.floating_text_group, damage_type)
                 self.current_stats['hp'] -= damage
@@ -352,4 +359,5 @@ class Character(pygame.sprite.Sprite):
         self.display_damage()
         self.switch_action()
         self.animate()
+        self.change_sprite_color()
         self.cool_downs()
