@@ -11,6 +11,7 @@ class PlayerDetailScreen:
         self.display_surf_width = self.display_surface.get_width()
         self.display_surf_height = self.display_surface.get_height()
         self.player = player
+        self.details_screen = None
         self.font = pygame.font.Font(
             'resources/fonts/Pixeltype/Pixeltype.ttf', 24)
 
@@ -25,11 +26,11 @@ class PlayerDetailScreen:
     def draw_screen(self):
         width = SCREEN_WIDTH / 1.2
         height = SCREEN_HEIGHT / 2
-        details_screen = pygame.Rect(
+        self.details_screen = pygame.Rect(
             self.display_surf_width/2 - width/2, self.display_surf_height/4, width, height)
-        pygame.draw.rect(self.display_surface, MENU_COLOR, details_screen)
+        pygame.draw.rect(self.display_surface, MENU_COLOR, self.details_screen)
         pygame.draw.rect(self.display_surface,
-                         MENU_BORDER_COLOR, details_screen, MENU_BORDER_WIDTH, MENU_BORDER_RADIUS)
+                         MENU_BORDER_COLOR, self.details_screen, MENU_BORDER_WIDTH, MENU_BORDER_RADIUS)
 
     def draw_elements(self):
         self.draw_sprite()
@@ -42,6 +43,7 @@ class PlayerDetailScreen:
             sprite_image, (sprite_image.get_width() * 1.5, sprite_image.get_height() * 1.5))
         sprite_background = pygame.Rect(
             self.display_surf_width - (SCREEN_WIDTH/3 + MENU_PADDING), self.display_surf_height/4 + MENU_PADDING, sprite_image.get_width() + MENU_PADDING, sprite_image.get_height() + MENU_PADDING)
+        sprite_background.topright = (self.details_screen.topright[0] - MENU_PADDING, self.details_screen.topright[1] + MENU_PADDING)
         sprite_rect = sprite_image.get_rect(center=sprite_background.center)
         pygame.draw.rect(self.display_surface,
                          MENU_SECONDARY_COLOR, sprite_background)
