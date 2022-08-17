@@ -33,6 +33,7 @@ class Character(pygame.sprite.Sprite):
         self.is_attacking = False
         self.is_dying = False
         self.move_speed = 10
+        self.turn_count = 0
         self.floating_text_group = None
         self.color_counter = 150
         self.color_counter_2 = 150
@@ -68,6 +69,7 @@ class Character(pygame.sprite.Sprite):
             'win_end': []
         }
         self.load_images()
+        self.attack_animation_time = (250 * len(self.animations['attack']))/4
         self.base_rect = None
 
         if self.side == PlayerSide.RIGHT:
@@ -89,6 +91,9 @@ class Character(pygame.sprite.Sprite):
         group.add(self)
 
     def __str__(self):
+        return self.name
+
+    def __repr__(self):
         return self.name
 
     def load_images(self):
@@ -239,60 +244,62 @@ class Character(pygame.sprite.Sprite):
                 if self.animation_frame_count >= len(self.animations['win_end']):
                     self.animation_frame_count = 0
 
+    def change_sprite_color(self):
+        if self.is_broken:
+            if self.color_counter_increment:
+                self.color_counter += 1
+                if self.color_counter >= 253:
+                    self.color_counter_increment = False
+            else:
+                self.color_counter -= 1
+                if self.color_counter < 175:
+                    self.color_counter = 175
+                    self.color_counter_increment = True
+            coloured_image = pygame.Surface(self.image.get_size())
+            coloured_image.fill((self.color_counter, 0, 0))
+
+            final_image = self.image.copy()
+            final_image.blit(coloured_image, (0, 0),
+                             special_flags=pygame.BLEND_MULT)
+            self.image = final_image
+
     # def change_sprite_color(self):
     #     if self.is_broken:
     #         if self.color_counter_increment:
     #             self.color_counter += 2
     #             if self.color_counter >= 253:
     #                 self.color_counter_increment = False
-    #         else: 
-    #             self.color_counter -=2
+    #         else:
+    #             self.color_counter -= 2
     #             if self.color_counter < 150:
     #                 self.color_counter = 150
     #                 self.color_counter_increment = True
+    #         if self.color_counter_increment_2:
+    #             self.color_counter_2 += 4
+    #             if self.color_counter_2 >= 250:
+    #                 self.color_counter_increment_2 = False
+    #         else:
+    #             self.color_counter_2 -= 4
+    #             if self.color_counter_2 < 150:
+    #                 self.color_counter_2 = 150
+    #                 self.color_counter_increment_2 = True
+    #         if self.color_counter_increment_3:
+    #             self.color_counter_3 += 6
+    #             if self.color_counter_3 >= 248:
+    #                 self.color_counter_increment_3 = False
+    #         else:
+    #             self.color_counter_3 -= 6
+    #             if self.color_counter_3 < 150:
+    #                 self.color_counter_3 = 150
+    #                 self.color_counter_increment_3 = True
     #         coloured_image = pygame.Surface(self.image.get_size())
-    #         coloured_image.fill((self.color_counter,0,0))
+    #         coloured_image.fill(
+    #             (self.color_counter, self.color_counter_2, self.color_counter_3))
 
     #         final_image = self.image.copy()
-    #         final_image.blit(coloured_image, (0, 0), special_flags = pygame.BLEND_MULT)
+    #         final_image.blit(coloured_image, (0, 0),
+    #                          special_flags=pygame.BLEND_MULT)
     #         self.image = final_image
-
-    def change_sprite_color(self):
-        if self.is_broken:
-            if self.color_counter_increment:
-                self.color_counter += 2
-                if self.color_counter >= 253:
-                    self.color_counter_increment = False
-            else: 
-                self.color_counter -=2
-                if self.color_counter < 0:
-                    self.color_counter = 0
-                    self.color_counter_increment = True
-            if self.color_counter_increment_2:
-                self.color_counter_2 += 4
-                if self.color_counter_2 >= 250:
-                    self.color_counter_increment_2 = False
-            else: 
-                self.color_counter_2 -=4
-                if self.color_counter_2 < 0:
-                    self.color_counter_2 = 0
-                    self.color_counter_increment_2 = True
-            if self.color_counter_increment_3:
-                self.color_counter_3 += 6
-                if self.color_counter_3 >= 248:
-                    self.color_counter_increment_3 = False
-            else: 
-                self.color_counter_3 -=6
-                if self.color_counter_3 < 0:
-                    self.color_counter_3= 0
-                    self.color_counter_increment_3 = True
-            coloured_image = pygame.Surface(self.image.get_size())
-            coloured_image.fill((self.color_counter,self.color_counter_2,self.color_counter_3))
-
-            final_image = self.image.copy()
-            final_image.blit(coloured_image, (0, 0), special_flags = pygame.BLEND_MULT)
-            self.image = final_image
-            
 
     def adjust_offset(self):
         if self.set_offset:
@@ -302,7 +309,6 @@ class Character(pygame.sprite.Sprite):
 
     def input(self):
         pass
-
 
     def take_damage(self, damage_data: dict):
         self.is_taking_damage = True
@@ -362,6 +368,7 @@ class Character(pygame.sprite.Sprite):
                 self.is_taking_damage = False
                 self.particle_action_count = 0
                 self.taking_damage_duration = 0
+                self.break_damage_taken_frame.clear()
                 self.particle_list.clear()
                 self.damage_taken_frame.clear()
 

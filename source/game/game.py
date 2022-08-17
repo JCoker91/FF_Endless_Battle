@@ -1,6 +1,7 @@
 from distutils.log import debug
 import pygame
 from settings import *
+from random import choice
 from source.util.custom_enum import PlayerSide
 from source.models.ui.status_bar.break_bar import BreakBar
 from source.models.ui.status_bar.mp_bar import MPBar
@@ -28,7 +29,10 @@ class Game:
 
         # clock and timer setup
         self.mouse_click_timer = pygame.time.get_ticks()
+        self.get_next_player_timer = pygame.time.get_ticks()
         self.can_click = True  # used with the mouse timer
+        self.attack_animation_time = 0
+        self.get_next_player = True  # used with get next player timer
         self.clock = pygame.time.Clock()
 
         # game variable setup
@@ -38,6 +42,8 @@ class Game:
         self.selection_arrow = self.create_selection_arrow()
         self.showing_player_details = False
         self.showing_player = None
+        self.player_turn = None
+        self.player_turn_list = []
 
     def run(self):
         load_characters(self.players_group)
@@ -48,13 +54,17 @@ class Game:
         while True:
             self.screen.blit(background, (0, 0))
             self.process_events(players_group=self.players_group)
-            self.draw_status_bars(players_group=self.players_group)
+            self.get_player_turn_list()
+            self.run_enemy_action()
+            # self.draw_status_bars(players_group=self.players_group)
             self.update_groups()
             self.draw_groups()
             command_menu.draw(self.players_group.sprites()[0])
             self.check_for_player_focus()
+            self.display_turn_list()
             self.show_player_details_screen()
             self.cool_downs()
+            debug(self.player_turn)
             pygame.display.update()
             self.clock.tick(FPS)
 
@@ -62,6 +72,46 @@ class Game:
         background = pygame.image.load(
             'resources/images/backgrounds/water_temple.png').convert()
         return background
+
+    def run_enemy_action(self):
+        if self.player_turn:
+            if self.player_turn.side == PlayerSide.RIGHT and not self.player_turn.is_attacking:
+                self.left_focused = choice(list(filter(
+                    lambda player: player.side == PlayerSide.LEFT, self.players_group.sprites())))
+                basic_attack(self.player_turn, self.left_focused,
+                             self.particles_group, self.floating_text_group)
+                self.get_next_player_timer = pygame.time.get_ticks()
+                self.get_next_player = False
+                self.attack_animation_time = self.player_turn.attack_animation_time
+
+    def get_player_turn_list(self):
+        def get_turn_count(player):
+            return player.turn_count
+        if not self.player_turn and self.get_next_player:
+            for player in self.players_group.sprites():
+                player.turn_count += player.current_stats['speed']
+            self.player_turn_list = list(filter(
+                lambda player: not player.has_fallen, self.players_group.sprites()))
+            self.player_turn_list.sort(key=get_turn_count, reverse=True)
+            self.player_turn = self.player_turn_list[0]
+            if self.player_turn.is_broken:
+                self.player_turn.is_broken = False
+                self.player_turn.break_bar = 100
+
+    def display_turn_list(self):
+        x = SCREEN_WIDTH / 4
+        y = 10
+        for i, player in enumerate(self.player_turn_list):
+            icon = player.icon
+            if self.player_turn == player:
+                icon = pygame.transform.scale(
+                    player.icon, (player.icon.get_width() * 1.25, player.icon.get_height() * 1.25))
+            else:
+                icon = pygame.transform.scale(
+                    player.icon, (player.icon.get_width() * (1 - (i * .05)), player.icon.get_height() * (1 - (i * .05))))
+            icon_rect = icon.get_rect(topright=(x, y))
+            self.screen.blit(icon, icon_rect)
+            x += icon.get_width()
 
     def create_selection_arrow(self):
         selection_arrow = pygame.image.load(
@@ -97,9 +147,9 @@ class Game:
         if self.left_focused:
             if self.left_focused.has_fallen:
                 self.left_focused = None
-            else:
-                self.screen.blit(selection_arrow,
-                                 (self.left_focused.starting_spot[0] + left_x_offset, self.left_focused.starting_spot[1] + left_y_offset))
+            # else:
+            #     self.screen.blit(selection_arrow,
+            #                      (self.left_focused.starting_spot[0] + left_x_offset, self.left_focused.starting_spot[1] + left_y_offset))
         if self.right_focused:
             if self.right_focused.has_fallen:
                 self.right_focused = None
@@ -112,6 +162,12 @@ class Game:
             timer = pygame.time.get_ticks()
             if timer - self.mouse_click_timer > 300:
                 self.can_click = True
+        if not self.get_next_player:
+            timer = pygame.time.get_ticks()
+            if timer - self.get_next_player_timer > self.attack_animation_time:
+                self.get_next_player = True
+                self.player_turn.turn_count = 0
+                self.player_turn = None
 
     def draw_status_bars(self, players_group: pygame.sprite.Group):
         left_y_offset = 10
@@ -171,6 +227,7 @@ class Game:
                                         self.right_focused = player
                                     self.can_click = False
                                     self.mouse_click_timer = pygame.time.get_ticks()
+
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
@@ -186,6 +243,26 @@ class Game:
                     if self.left_focused and self.right_focused:
                         basic_attack(self.left_focused,
                                      self.right_focused, self.particles_group, self.floating_text_group)
+                if event.key == pygame.K_SPACE:
+                    if self.player_turn:
+                        if not self.player_turn.is_attacking:
+                            if self.player_turn.side == PlayerSide.LEFT:
+                                if self.right_focused:
+                                    basic_attack(self.player_turn,
+                                                 self.right_focused, self.particles_group, self.floating_text_group)
+                                    self.get_next_player_timer = pygame.time.get_ticks()
+                                    self.get_next_player = False
+                                    # self.player_turn.turn_count = 0
+                                    self.attack_animation_time = self.player_turn.attack_animation_time
+
+                            else:
+                                if self.left_focused:
+                                    basic_attack(self.player_turn,
+                                                 self.left_focused, self.particles_group, self.floating_text_group)
+                                    self.get_next_player_timer = pygame.time.get_ticks()
+                                    self.get_next_player = False
+                                    # self.player_turn.turn_count = 0
+                                    self.attack_animation_time = self.player_turn.attack_animation_time
 
     def show_player_details_screen(self):
         if self.showing_player_details:

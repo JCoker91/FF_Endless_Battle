@@ -4,7 +4,7 @@ CHARACTERS = [
     {
         'name': 'Lightning',
         'stats': {
-            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 50
+            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 55
         },
         'abilities': {
             'basic_attack': {
@@ -45,7 +45,7 @@ CHARACTERS = [
     {
         'name': 'Cloud',
         'stats': {
-            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 50
+            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 48
         },
         'abilities': {
             'basic_attack': {
@@ -86,7 +86,7 @@ CHARACTERS = [
     {
         'name': 'Tidus',
         'stats': {
-            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 50
+            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 55
         },
         'abilities': {
             'basic_attack': {
@@ -168,7 +168,7 @@ CHARACTERS = [
     {
         'name': 'Cecil',
         'stats': {
-            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 50
+            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 42, 'speed': 50
         },
         'abilities': {
             'basic_attack': {
@@ -250,7 +250,7 @@ CHARACTERS = [
     {
         'name': 'Zidane',
         'stats': {
-            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 50
+            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 60
         },
         'abilities': {
             'basic_attack': {
@@ -291,7 +291,7 @@ CHARACTERS = [
     {
         'name': 'Tera',
         'stats': {
-            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 50
+            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 49, 'speed': 50
         },
         'abilities': {
             'basic_attack': {
@@ -332,7 +332,7 @@ CHARACTERS = [
     {
         'name': 'Noctis',
         'stats': {
-            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 50
+            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 52
         },
         'abilities': {
             'basic_attack': {
