@@ -363,6 +363,7 @@ class Character(pygame.sprite.Sprite):
                 self.particle_action_count = 0
                 self.taking_damage_duration = 0
                 self.particle_list.clear()
+                self.damage_taken_frame.clear()
 
     def cool_downs(self):
         if not self.can_click:
