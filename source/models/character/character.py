@@ -34,6 +34,12 @@ class Character(pygame.sprite.Sprite):
         self.is_dying = False
         self.move_speed = 10
         self.floating_text_group = None
+        self.color_counter = 150
+        self.color_counter_2 = 150
+        self.color_counter_3 = 150
+        self.color_counter_increment = True
+        self.color_counter_increment_2 = True
+        self.color_counter_increment_3 = True
         self.set_offset = None
         self.particle_action_count = 0
         self.move_to = None
@@ -233,11 +239,60 @@ class Character(pygame.sprite.Sprite):
                 if self.animation_frame_count >= len(self.animations['win_end']):
                     self.animation_frame_count = 0
 
+    # def change_sprite_color(self):
+    #     if self.is_broken:
+    #         if self.color_counter_increment:
+    #             self.color_counter += 2
+    #             if self.color_counter >= 253:
+    #                 self.color_counter_increment = False
+    #         else: 
+    #             self.color_counter -=2
+    #             if self.color_counter < 150:
+    #                 self.color_counter = 150
+    #                 self.color_counter_increment = True
+    #         coloured_image = pygame.Surface(self.image.get_size())
+    #         coloured_image.fill((self.color_counter,0,0))
+
+    #         final_image = self.image.copy()
+    #         final_image.blit(coloured_image, (0, 0), special_flags = pygame.BLEND_MULT)
+    #         self.image = final_image
+
     def change_sprite_color(self):
         if self.is_broken:
-            pass
-        else:
-            pass
+            if self.color_counter_increment:
+                self.color_counter += 2
+                if self.color_counter >= 253:
+                    self.color_counter_increment = False
+            else: 
+                self.color_counter -=2
+                if self.color_counter < 0:
+                    self.color_counter = 0
+                    self.color_counter_increment = True
+            if self.color_counter_increment_2:
+                self.color_counter_2 += 4
+                if self.color_counter_2 >= 250:
+                    self.color_counter_increment_2 = False
+            else: 
+                self.color_counter_2 -=4
+                if self.color_counter_2 < 0:
+                    self.color_counter_2 = 0
+                    self.color_counter_increment_2 = True
+            if self.color_counter_increment_3:
+                self.color_counter_3 += 6
+                if self.color_counter_3 >= 248:
+                    self.color_counter_increment_3 = False
+            else: 
+                self.color_counter_3 -=6
+                if self.color_counter_3 < 0:
+                    self.color_counter_3= 0
+                    self.color_counter_increment_3 = True
+            coloured_image = pygame.Surface(self.image.get_size())
+            coloured_image.fill((self.color_counter,self.color_counter_2,self.color_counter_3))
+
+            final_image = self.image.copy()
+            final_image.blit(coloured_image, (0, 0), special_flags = pygame.BLEND_MULT)
+            self.image = final_image
+            
 
     def adjust_offset(self):
         if self.set_offset:
@@ -245,12 +300,9 @@ class Character(pygame.sprite.Sprite):
             self.rect.y += self.off_set[self.set_offset][1]
             self.set_offset = None
 
-    # def input(self):
-    #     if self.rect.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
-    #         if self.can_click:
-    #             self.focused = not self.focused
-    #             self.can_click = False
-    #             self.mouse_click_timer = pygame.time.get_ticks()
+    def input(self):
+        pass
+
 
     def take_damage(self, damage_data: dict):
         self.is_taking_damage = True
@@ -299,6 +351,7 @@ class Character(pygame.sprite.Sprite):
                     self.is_dying = True
                 if self.current_stats['hp'] < 1:
                     self.has_fallen = True
+                    self.is_broken = False
                     self.is_dying = False
                     self.current_stats['hp'] = 0
                 self.particle_action_count += 1
@@ -355,7 +408,7 @@ class Character(pygame.sprite.Sprite):
 
     def update(self):
         self.adjust_offset()
-        # self.input()
+        self.input()
         self.display_damage()
         self.switch_action()
         self.animate()
