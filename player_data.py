@@ -127,7 +127,7 @@ CHARACTERS = [
     {
         'name': 'Firion',
         'stats': {
-            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 50
+            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 52
         },
         'abilities': {
             'basic_attack': {
@@ -209,7 +209,7 @@ CHARACTERS = [
     {
         'name': 'Bartz',
         'stats': {
-            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 50
+            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 53
         },
         'abilities': {
             'basic_attack': {
@@ -291,7 +291,7 @@ CHARACTERS = [
     {
         'name': 'Tera',
         'stats': {
-            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 49, 'speed': 50
+            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 49
         },
         'abilities': {
             'basic_attack': {

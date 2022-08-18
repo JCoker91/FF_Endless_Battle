@@ -6,6 +6,7 @@ from source.util.custom_enum import PlayerSide
 from source.models.ui.status_bar.break_bar import BreakBar
 from source.models.ui.status_bar.mp_bar import MPBar
 from source.models.ui.status_bar.hp_bar import HPBar
+from source.models.ui.overlay.player_turn_list import PlayerTurnList
 from source.models.ui.menu.menu import CommandMenu
 from source.models.abilities.abilities import basic_attack
 from source.models.character.character import Character
@@ -30,10 +31,12 @@ class Game:
         # clock and timer setup
         self.mouse_click_timer = pygame.time.get_ticks()
         self.get_next_player_timer = pygame.time.get_ticks()
+        self.turn_buffer_timer = pygame.time.get_ticks()
         self.can_click = True  # used with the mouse timer
         self.attack_animation_time = 0
         self.get_next_player = True  # used with get next player timer
         self.clock = pygame.time.Clock()
+        self.double_click_clock = pygame.time.Clock()
 
         # game variable setup
         # determines which player is focused on either side
@@ -55,16 +58,16 @@ class Game:
             self.screen.blit(background, (0, 0))
             self.process_events(players_group=self.players_group)
             self.get_player_turn_list()
+            self.get_player_turn()
             self.run_enemy_action()
             # self.draw_status_bars(players_group=self.players_group)
             self.update_groups()
             self.draw_groups()
             command_menu.draw(self.players_group.sprites()[0])
             self.check_for_player_focus()
-            self.display_turn_list()
             self.show_player_details_screen()
             self.cool_downs()
-            debug(self.player_turn)
+            # debug(self.player_turn)
             pygame.display.update()
             self.clock.tick(FPS)
 
@@ -84,34 +87,42 @@ class Game:
                 self.get_next_player = False
                 self.attack_animation_time = self.player_turn.attack_animation_time
 
+    # def get_player_turn_list(self):
+    #     def get_turn_count(player):
+    #         return player.turn_count
+    #     if not self.player_turn and self.get_next_player:
+    #         for player in self.players_group.sprites():
+    #             player.turn_count += player.current_stats['speed']
+    #         self.player_turn_list = list(filter(
+    #             lambda player: not player.has_fallen, self.players_group.sprites()))
+    #         self.player_turn_list.sort(key=get_turn_count, reverse=True)
+    #         self.player_turn_list += self.player_turn_list
+    #         self.player_turn = self.player_turn_list[0]
+    #         if self.player_turn.is_broken:
+    #             self.player_turn.is_broken = False
+    #             self.player_turn.break_bar = 100
+
     def get_player_turn_list(self):
-        def get_turn_count(player):
-            return player.turn_count
-        if not self.player_turn and self.get_next_player:
-            for player in self.players_group.sprites():
-                player.turn_count += player.current_stats['speed']
-            self.player_turn_list = list(filter(
-                lambda player: not player.has_fallen, self.players_group.sprites()))
-            self.player_turn_list.sort(key=get_turn_count, reverse=True)
+        def get_player_speed(player):
+            return player.current_stats['speed']
+        player_speed_list = list(filter(
+            lambda player: not player.has_fallen, self.players_group.sprites()))
+        player_speed_list = self.players_group.sprites()
+
+        player_speed_list.sort(key=get_player_speed, reverse=True)
+
+        for player in player_speed_list:
+            player.turn_count += player.current_stats['speed']
+            while player.turn_count >= TURN_COUNT_LIMIT:
+                self.player_turn_list.append(player)
+                player.turn_count -= TURN_COUNT_LIMIT
+
+    def get_player_turn(self):
+        if len(self.player_turn_list) > 0:
             self.player_turn = self.player_turn_list[0]
             if self.player_turn.is_broken:
                 self.player_turn.is_broken = False
                 self.player_turn.break_bar = 100
-
-    def display_turn_list(self):
-        x = SCREEN_WIDTH / 4
-        y = 10
-        for i, player in enumerate(self.player_turn_list):
-            icon = player.icon
-            if self.player_turn == player:
-                icon = pygame.transform.scale(
-                    player.icon, (player.icon.get_width() * 1.25, player.icon.get_height() * 1.25))
-            else:
-                icon = pygame.transform.scale(
-                    player.icon, (player.icon.get_width() * (1 - (i * .05)), player.icon.get_height() * (1 - (i * .05))))
-            icon_rect = icon.get_rect(topright=(x, y))
-            self.screen.blit(icon, icon_rect)
-            x += icon.get_width()
 
     def create_selection_arrow(self):
         selection_arrow = pygame.image.load(
@@ -127,8 +138,8 @@ class Game:
     def draw_groups(self):
         self.players_group.draw(self.screen)
         self.particles_group.draw(self.screen)
-        hp_bars = PlayerHP(self.players_group.sprites())
-        hp_bars.draw()
+        PlayerTurnList(self.player_turn_list, 10, 10).draw()
+        PlayerHP(self.players_group.sprites()).draw()
         self.floating_text_group.draw(self.screen)
 
     def check_for_player_focus(self):
@@ -165,9 +176,13 @@ class Game:
         if not self.get_next_player:
             timer = pygame.time.get_ticks()
             if timer - self.get_next_player_timer > self.attack_animation_time:
-                self.get_next_player = True
                 self.player_turn.turn_count = 0
                 self.player_turn = None
+                self.turn_buffer_timer = pygame.time.get_ticks()
+                self.get_next_player = True
+                self.player_turn_list.pop(0)
+                self.turn_buffer_timer = None
+            # if self.turn_buffer_timer and timer - self.turn_buffer_timer > TURN_BUFFER:
 
     def draw_status_bars(self, players_group: pygame.sprite.Group):
         left_y_offset = 10
@@ -212,15 +227,16 @@ class Game:
                     if not details_screen.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
                         self.showing_player_details = 0
                         self.showing_player = None
-
                 else:
-                    for player in players_group.sprites():
-                        if player.rect.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
-                            if self.can_click:
-                                if self.left_focused == player or self.right_focused == player:
-                                    self.showing_player_details = True
-                                    self.showing_player = player
-                                else:
+                    if self.double_click_clock.tick() < DOUBLE_CLICK_TIME:
+                        for player in players_group.sprites():
+                            if player.rect.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
+                                self.showing_player_details = True
+                                self.showing_player = player
+                    else:
+                        for player in players_group.sprites():
+                            if player.rect.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
+                                if self.can_click:
                                     if player.side == PlayerSide.LEFT:
                                         self.left_focused = player
                                     else:
@@ -254,6 +270,8 @@ class Game:
                                     self.get_next_player = False
                                     # self.player_turn.turn_count = 0
                                     self.attack_animation_time = self.player_turn.attack_animation_time
+                                    self.player_turn.turn_count += int(
+                                        TURN_COUNT_LIMIT / 2)
 
                             else:
                                 if self.left_focused:

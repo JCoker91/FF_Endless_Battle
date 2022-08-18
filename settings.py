@@ -5,7 +5,7 @@ SCREEN_HEIGHT = 800
 FPS = 60
 
 # Game settings
-TURN_BUFFER = 1000
+TURN_BUFFER = 10
 
 # Menu settings
 MENU_COLOR = "Blue"
@@ -15,6 +15,12 @@ MENU_BORDER_COLOR = 'White'
 MENU_PADDING = 20
 MENU_BORDER_WIDTH = 3
 MENU_BORDER_RADIUS = 3
+
+# Clock settings
+DOUBLE_CLICK_TIME = 500
+
+# Turn settings
+TURN_COUNT_LIMIT = 100
 
 # Hard-coded positions
 LEFT_SIDE_POSITIONS = {
