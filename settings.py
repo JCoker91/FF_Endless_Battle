@@ -5,7 +5,7 @@ SCREEN_HEIGHT = 800
 FPS = 60
 
 # Game settings
-TURN_BUFFER = 10
+TURN_BUFFER = 500
 
 # Menu settings
 MENU_COLOR = "Blue"

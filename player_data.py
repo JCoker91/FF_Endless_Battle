@@ -8,6 +8,7 @@ CHARACTERS = [
         },
         'abilities': {
             'basic_attack': {
+                'name': 'Basic Attack',
                 'particle_effects': ['slash', 'slash', 'slash', 'slash', 'shards', 'shards', 'shards'],
                 'particle_action_frames': [3,  12,  17,  22, 27, 28, 29],
                 'damage_weight': [3, 3, 3, 3, 2, 2, 2],

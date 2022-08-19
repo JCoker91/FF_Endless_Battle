@@ -12,14 +12,20 @@ class PlayerTurnList:
     def draw(self):
         x_pos = self.starting_x
         y_pos = self.starting_y
+        player_turn = None
         mouse_pos = pygame.mouse.get_pos()
         for i, player in enumerate(self.player_turn_list[:20]):
             icon = player.icon
             if i == 0:
                 icon = player.icon
+                player_turn = player
             else:
-                icon = pygame.transform.scale(
-                    player.icon, (player.icon.get_width() * .5, player.icon.get_height() * .5))
+                if player == player_turn:
+                    icon = pygame.transform.scale(
+                        player.icon, (player.icon.get_width() * .75, player.icon.get_height() * .75))
+                else:
+                    icon = pygame.transform.scale(
+                        player.icon, (player.icon.get_width() * .5, player.icon.get_height() * .5))
             icon_rect = icon.get_rect(topleft=(x_pos, y_pos))
             if icon_rect.collidepoint(mouse_pos):
                 icon = pygame.transform.scale(
