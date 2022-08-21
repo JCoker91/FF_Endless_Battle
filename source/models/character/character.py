@@ -9,11 +9,10 @@ from source.models.floating_text.damage_text import DamageText
 
 
 class Character(pygame.sprite.Sprite):
-    def __init__(self, character_name: str, stats: dict, position: tuple, side: PlayerSide, off_set: dict, abilities: list, attack_effects: dict, group: pygame.sprite.Group) -> None:
+    def __init__(self, character_name: str, stats: dict, position: tuple, side: PlayerSide, off_set: dict, skills: dict, group: pygame.sprite.Group) -> None:
         super().__init__()
         self.base_stats = stats.copy()
         self.current_stats = stats.copy()
-        self.attack_effects = attack_effects
         self.break_bar = 100
         self.name = character_name  # Character name
         self.side = side  # Which side the character is on (left or right)
@@ -42,9 +41,11 @@ class Character(pygame.sprite.Sprite):
         self.color_counter_increment_2 = True
         self.color_counter_increment_3 = True
         self.set_offset = None
+        self.limit_break_gauge = 0
         self.particle_action_count = 0
+        self.turn_adjust = None
         self.move_to = None
-        self.abilities = abilities
+        self.skills = skills
         self.menu_action = ['ATTACK', 'SPECIAL',
                             'MAGIC', 'DEFEND', 'ITEM', 'LIMIT BREAK']
         self.particle_list = []

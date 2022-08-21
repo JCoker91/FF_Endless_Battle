@@ -1,0 +1,13 @@
+"filename", "language", "Python", "comment", "blank", "total"
+"/Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/settings.py", "Python", 7, 2, 2, 11
+"/Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/source/game/game.py", "Python", 30, -25, 0, 5
+"/Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/source/models/character/character.py", "Python", 47, 2, 3, 52
+"/Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/source/models/ui/menu/menu.py", "Python", -1, -2, 0, -3
+"/Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/source/models/ui/overlay/__init__.py", "Python", 0, 0, 1, 1
+"/Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/source/models/ui/overlay/player_hp.py", "Python", 11, 0, 4, 15
+"/Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/source/models/ui/status_bar/break_bar.py", "Python", 22, 0, 1, 23
+"/Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/source/models/ui/status_bar/hp_bar.py", "Python", 34, 0, 1, 35
+"/Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/source/models/ui/status_bar/mp_bar.py", "Python", 22, 0, 2, 24
+"/Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/source/screen/__init__.py", "Python", 0, 0, 1, 1
+"/Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/source/screen/player_detail_screen.py", "Python", 86, 0, 11, 97
+"Total", "-", 258, -23, 26, 261

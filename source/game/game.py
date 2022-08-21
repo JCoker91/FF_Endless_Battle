@@ -8,7 +8,6 @@ from source.models.ui.status_bar.mp_bar import MPBar
 from source.models.ui.status_bar.hp_bar import HPBar
 from source.models.ui.overlay.player_turn_list import PlayerTurnList
 from source.models.ui.menu.menu import CommandMenu
-from source.models.abilities.abilities import basic_attack
 from source.models.character.character import Character
 from source.screen.player_detail_screen import PlayerDetailScreen
 from source.game.load_characters import load_characters
@@ -43,6 +42,7 @@ class Game:
         # determines which player is focused on either side
         self.left_focused = None
         self.right_focused = None
+        
         self.selection_arrow = self.create_selection_arrow()
         self.showing_player_details = False
         self.showing_player = None
@@ -51,7 +51,7 @@ class Game:
         self.player_turn_list = []
 
     def run(self):
-        load_characters(self.players_group)
+        load_characters(self.players_group, self.floating_text_group, self.particles_group)
         command_menu = CommandMenu()
         background = self.load_background()
         pygame.display.set_caption("Final Fantasy Endless Battle")
@@ -84,8 +84,9 @@ class Game:
             if self.player_turn.side == PlayerSide.RIGHT and not self.player_turn.is_attacking and self.attack_animation_time == 0:
                 self.left_focused = choice(list(filter(
                     lambda player: player.side == PlayerSide.LEFT, self.players_group.sprites())))
-                basic_attack(self.player_turn, self.left_focused,
-                             self.particles_group, self.floating_text_group)
+                # basic_attack(self.player_turn, self.left_focused,
+                #              self.particles_group, self.floating_text_group)
+                self.player_turn.skills['skill_1'].execute(self.player_turn, self.left_focused)
                 self.get_next_player_timer = pygame.time.get_ticks()
                 self.get_next_player = False
                 self.attack_animation_time = self.player_turn.attack_animation_time + TURN_BUFFER
@@ -174,6 +175,14 @@ class Game:
                 self.can_click = True
         if not self.get_next_player:
             timer = pygame.time.get_ticks()
+            for player in self.players_group.sprites():
+                if player.turn_adjust:
+                    for i, _player in enumerate(self.player_turn_list):
+                        if _player == player and i != 0:
+                            self.player_turn_list.pop(i)
+                            self.player_turn_list.insert(
+                                i - player.turn_adjust, player)
+                    player.turn_adjust = None
             if timer - self.get_next_player_timer > self.attack_animation_time:
                 self.player_action = None
                 self.player_turn.turn_count = 0
@@ -250,42 +259,16 @@ class Game:
                 if event.key == pygame.K_ESCAPE:
                     pygame.quit()
                     exit()
-                if event.key == pygame.K_j:
-                    if self.left_focused and self.right_focused:
-                        basic_attack(self.right_focused,
-                                     self.left_focused, self.particles_group, self.floating_text_group)
-                if event.key == pygame.K_f:
-                    if self.left_focused and self.right_focused:
-                        basic_attack(self.left_focused,
-                                     self.right_focused, self.particles_group, self.floating_text_group)
                 if event.key == pygame.K_SPACE:
                     if self.player_turn:
                         if not self.player_turn.is_attacking:
                             if self.player_turn.side == PlayerSide.LEFT:
                                 if self.right_focused:
-                                    basic_attack(self.player_turn,
-                                                 self.right_focused, self.particles_group, self.floating_text_group)
+                                    self.player_turn.skills['skill_1'].execute(self.player_turn,self.right_focused)
                                     self.get_next_player_timer = pygame.time.get_ticks()
                                     self.get_next_player = False
-                                    self.player_action = PlayerAction(action_name="Basic Attack",
-                                                                      player=self.player_turn)
-                                    # self.player_turn.turn_count = 0
+                                    self.player_action = PlayerAction(action_name=self.player_turn.skills['skill_1'].name,player=self.player_turn)
                                     self.attack_animation_time = self.player_turn.attack_animation_time + TURN_BUFFER
-                                    self.player_turn.turn_count += int(
-                                        TURN_COUNT_LIMIT / 2)
-                                    for i, player in enumerate(self.player_turn_list):
-                                        if player == self.player_turn and i != 0:
-                                            self.player_turn_list.pop(i)
-                                            self.player_turn_list.insert(
-                                                i - 2, player)
-
-                            else:
-                                if self.left_focused:
-                                    basic_attack(self.player_turn,
-                                                 self.left_focused, self.particles_group, self.floating_text_group)
-                                    self.get_next_player_timer = pygame.time.get_ticks()
-                                    self.get_next_player = False
-                                    self.attack_animation_time = self.player_turn.attack_animation_time
 
     def show_player_details_screen(self):
         if self.showing_player_details:
