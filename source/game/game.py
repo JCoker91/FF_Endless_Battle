@@ -28,6 +28,10 @@ class Game:
         self.particles_group = pygame.sprite.Group()
         self.floating_text_group = pygame.sprite.Group()
 
+        # Command passing
+        self.command_menu = CommandMenu()
+        self.action_command = None
+
         # clock and timer setup
         self.mouse_click_timer = pygame.time.get_ticks()
         self.get_next_player_timer = pygame.time.get_ticks()
@@ -52,25 +56,25 @@ class Game:
 
     def run(self):
         load_characters(self.players_group, self.floating_text_group, self.particles_group)
-        command_menu = CommandMenu()
+        
         background = self.load_background()
         pygame.display.set_caption("Final Fantasy Endless Battle")
 
         while True:
             self.screen.blit(background, (0, 0))
             self.process_events(players_group=self.players_group)
+            self.process_commands()
             self.get_player_turn_list()
             self.get_player_turn()
             self.run_enemy_action()
-            # self.draw_status_bars(players_group=self.players_group)
             self.update_groups()
             self.draw_groups()
-            command_menu.draw(self.player_turn)
+            
             self.check_for_player_focus()
             self.show_player_details_screen()
             self.cool_downs()
-            # debug(self.get_next_player_timer)
-            # debug(self.attack_animation_time)
+            
+            debug(self.action_command)
             pygame.display.update()
             self.clock.tick(FPS)
 
@@ -137,10 +141,28 @@ class Game:
         self.particles_group.draw(self.screen)
         PlayerTurnList(self.player_turn_list, 10, 10).draw()
         PlayerHP(self.players_group.sprites()).draw()
+        action_command = self.command_menu.draw(self.player_turn)
+        if action_command and self.get_next_player:
+            self.action_command = action_command
         if self.player_action:
             self.player_action.draw()
 
         self.floating_text_group.draw(self.screen)
+
+    def process_commands(self):
+        if self.action_command == 'attack':
+            if self.player_turn:
+                if not self.player_turn.is_attacking:
+                    if self.player_turn.side == PlayerSide.LEFT:
+                        if self.right_focused:
+                            self.player_turn.skills['skill_1'].execute(self.player_turn,self.right_focused)
+                            self.get_next_player_timer = pygame.time.get_ticks()
+                            self.get_next_player = False
+                            self.player_action = PlayerAction(action_name=self.player_turn.skills['skill_1'].name,player=self.player_turn)
+                            self.attack_animation_time = self.player_turn.attack_animation_time + TURN_BUFFER
+                            self.action_command = None
+                            
+
 
     def check_for_player_focus(self):
         left_x_offset = 20
