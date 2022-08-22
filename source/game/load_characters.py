@@ -35,14 +35,22 @@ def load_characters(players_group: pygame.sprite.Group, particle_list_group: pyg
             group=players_group,
             # abilities=player['abilities'],
             side=player_side,
-            skills = {
-                'skill_1' : Attack(
+            skills={
+                'attack': Attack(
                     particle_list_group=particle_list_group,
                     floating_text_group=floating_text_group,
-                    damage_weight=skill_1_data['damage_weight'], 
-                    partcicle_action_frames=skill_1_data['particle_action_frames'],
-                    particle_effects=skill_1_data['particle_effects'])
-                    }
+                    damage_weight=skill_1_data['damage_weight'],
+                    particle_action_frames=skill_1_data['particle_action_frames'],
+                    particle_effects=skill_1_data['particle_effects']
+                ),
+                'skill_2': SparkStrike(
+                    particle_list_group=particle_list_group,
+                    floating_text_group=floating_text_group,
+                    damage_weight=skill_1_data['damage_weight'],
+                    particle_action_frames=skill_1_data['particle_action_frames'],
+                    particle_effects=skill_1_data['particle_effects']
+                ),
+            }
         )
     # player = CHARACTERS[0]
     # Character(

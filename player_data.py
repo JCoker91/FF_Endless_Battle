@@ -4,14 +4,14 @@ CHARACTERS = [
     {
         'name': 'Lightning',
         'stats': {
-            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 55
+            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 55, 'mp_regen': 5
         },
-        'skill_data': { 
+        'skill_data': {
             'skill_1':  {
                 'particle_effects': ['slash', 'slash', 'slash', 'slash', 'shards', 'shards', 'shards'],
                 'particle_action_frames': [3,  12,  17,  22, 27, 28, 29],
                 'damage_weight': [3, 3, 3, 3, 2, 2, 2]}
-            },
+        },
         'off_set': {
             'left':
             {
@@ -44,14 +44,14 @@ CHARACTERS = [
     {
         'name': 'Cloud',
         'stats': {
-            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 48
+            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 48, 'mp_regen': 5
         },
-        'skill_data' : {
+        'skill_data': {
             'skill_1':  {
-                    'particle_effects': ['slash'],
-                    'particle_action_frames': [2],
-                    'damage_weight': [1],
-                },
+                'particle_effects': ['slash'],
+                'particle_action_frames': [2],
+                'damage_weight': [1],
+            },
         },
         'off_set': {
             'left':
@@ -85,10 +85,10 @@ CHARACTERS = [
     {
         'name': 'Tidus',
         'stats': {
-            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 55
+            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 55, 'mp_regen': 5
         },
         'skill_data': {
-        'skill_1': {
+            'skill_1': {
                 'particle_effects': ['slash'],
                 'particle_action_frames': [3],
                 'damage_weight': [1],
@@ -126,13 +126,13 @@ CHARACTERS = [
     {
         'name': 'Firion',
         'stats': {
-            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 52
+            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 52, 'mp_regen': 5
         },
-        'skill_data' : {
-        'skill_1':  {
+        'skill_data': {
+            'skill_1':  {
                 'particle_effects': ['slash', 'slash'],
-                'particle_action_frames': [3,9],
-                'damage_weight': [1,1],
+                'particle_action_frames': [3, 9],
+                'damage_weight': [1, 1],
             },
         },
         'off_set': {
@@ -167,10 +167,10 @@ CHARACTERS = [
     {
         'name': 'Cecil',
         'stats': {
-            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 42, 'speed': 50
+            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 42, 'speed': 50, 'mp_regen': 5
         },
-        'skill_data' : {
-        'skill_1':  {
+        'skill_data': {
+            'skill_1':  {
                 'name': 'Attack',
                 'particle_effects': ['slash'],
                 'particle_action_frames': [8],
@@ -209,10 +209,10 @@ CHARACTERS = [
     {
         'name': 'Bartz',
         'stats': {
-            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 53
+            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 53, 'mp_regen': 5
         },
-        'skill_data' : {
-        'skill_1': {
+        'skill_data': {
+            'skill_1': {
                 'particle_effects': ['slash', 'slash'],
                 'particle_action_frames': [0, 6],
                 'damage_weight': [1, 1],
@@ -250,10 +250,10 @@ CHARACTERS = [
     {
         'name': 'Zidane',
         'stats': {
-            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 60
+            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 60, 'mp_regen': 5
         },
-        'skill_data' : {
-        'skill_1': {
+        'skill_data': {
+            'skill_1': {
                 'particle_effects': ['slash', 'slash', 'slash'],
                 'particle_action_frames': [1, 4, 7],
                 'damage_weight': [1, 1, 2],
@@ -291,10 +291,10 @@ CHARACTERS = [
     {
         'name': 'Tera',
         'stats': {
-            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 49
+            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 49, 'mp_regen': 5
         },
-        'skill_data' : {
-        'skill_1': {
+        'skill_data': {
+            'skill_1': {
                 'particle_effects': ['shards', 'shards', 'shards', 'shards', 'shards', ],
                 'particle_action_frames': [3, 4, 5, 6, 7],
                 'damage_weight': [1, 1, 1, 1, 1],
@@ -332,10 +332,10 @@ CHARACTERS = [
     {
         'name': 'Noctis',
         'stats': {
-            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 52
+            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 52, 'mp_regen': 5
         },
-        'skill_data' : {
-        'skill_1': {
+        'skill_data': {
+            'skill_1': {
                 'particle_effects': ['shards', 'slash', 'slash'],
                 'particle_action_frames': [12, 16, 19],
                 'damage_weight': [5, 4, 4],
@@ -373,10 +373,10 @@ CHARACTERS = [
     {
         'name': 'Squall',
         'stats': {
-            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 50
+            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 50, 'mp_regen': 5
         },
-        'skill_data' : {
-        'skill_1': {
+        'skill_data': {
+            'skill_1': {
                 'particle_effects': ['slash'],
                 'particle_action_frames': [3],
                 'damage_weight': [1],

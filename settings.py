@@ -6,6 +6,9 @@ FPS = 60
 
 # Game settings
 TURN_BUFFER = 500
+BREAK_TURN_ADJUST = -99
+INSTANT_TURN_ADJUST = 99
+DEFENSE_MOD = 0.3
 
 # Menu settings
 MENU_COLOR = "Blue"

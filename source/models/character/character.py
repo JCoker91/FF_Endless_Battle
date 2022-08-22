@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import pygame
 from random import randint
+from settings import BREAK_TURN_ADJUST
 from source.util.custom_enum import CurrentState, PlayerSide, DamageType
 from source.util.util_functions import load_image_folder
 from source.models.particle.particle import Particle
@@ -43,7 +44,7 @@ class Character(pygame.sprite.Sprite):
         self.set_offset = None
         self.limit_break_gauge = 0
         self.particle_action_count = 0
-        self.turn_adjust = None
+        self.turn_adjust = 0
         self.move_to = None
         self.skills = skills
         self.menu_action = ['ATTACK', 'SPECIAL',
@@ -265,44 +266,6 @@ class Character(pygame.sprite.Sprite):
                              special_flags=pygame.BLEND_MULT)
             self.image = final_image
 
-    # def change_sprite_color(self):
-    #     if self.is_broken:
-    #         if self.color_counter_increment:
-    #             self.color_counter += 2
-    #             if self.color_counter >= 253:
-    #                 self.color_counter_increment = False
-    #         else:
-    #             self.color_counter -= 2
-    #             if self.color_counter < 150:
-    #                 self.color_counter = 150
-    #                 self.color_counter_increment = True
-    #         if self.color_counter_increment_2:
-    #             self.color_counter_2 += 4
-    #             if self.color_counter_2 >= 250:
-    #                 self.color_counter_increment_2 = False
-    #         else:
-    #             self.color_counter_2 -= 4
-    #             if self.color_counter_2 < 150:
-    #                 self.color_counter_2 = 150
-    #                 self.color_counter_increment_2 = True
-    #         if self.color_counter_increment_3:
-    #             self.color_counter_3 += 6
-    #             if self.color_counter_3 >= 248:
-    #                 self.color_counter_increment_3 = False
-    #         else:
-    #             self.color_counter_3 -= 6
-    #             if self.color_counter_3 < 150:
-    #                 self.color_counter_3 = 150
-    #                 self.color_counter_increment_3 = True
-    #         coloured_image = pygame.Surface(self.image.get_size())
-    #         coloured_image.fill(
-    #             (self.color_counter, self.color_counter_2, self.color_counter_3))
-
-    #         final_image = self.image.copy()
-    #         final_image.blit(coloured_image, (0, 0),
-    #                          special_flags=pygame.BLEND_MULT)
-    #         self.image = final_image
-
     def adjust_offset(self):
         if self.set_offset:
             self.rect.x += self.off_set[self.set_offset][0]
@@ -345,9 +308,10 @@ class Character(pygame.sprite.Sprite):
                 if self.is_broken:
                     damage += int(damage * .5)
                     damage_type = DamageType.BREAK
-                if self.break_bar > 0 and self.break_bar - self.break_damage_taken_frame[self.particle_action_count] < 0:
+                if self.break_bar > 0 and self.break_bar - self.break_damage_taken_frame[self.particle_action_count] <= 0:
                     DamageText("BREAK", self.rect.center,
                                self.floating_text_group, DamageType.BREAK)
+                    self.turn_adjust = BREAK_TURN_ADJUST
                 DamageText(
                     str(damage), self.rect.center, self.floating_text_group, damage_type)
                 self.current_stats['hp'] -= damage

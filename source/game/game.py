@@ -16,6 +16,7 @@ from source.models.ui.overlay.player_action import PlayerAction
 from source.models.sprite_groups.sprite_groups import YSortedGroup
 from source.models.ui.overlay.player_hp import PlayerHP
 from source.models.ui.overlay.draw_target_info import DrawTargetInfo
+from source.models.ui.overlay.player_turn_indicator import PlayerTurnIndicator
 
 
 class Game:
@@ -47,7 +48,7 @@ class Game:
         # determines which player is focused on either side
         self.left_focused = None
         self.right_focused = None
-        
+
         self.selection_arrow = self.create_selection_arrow()
         self.showing_player_details = False
         self.showing_player = None
@@ -56,8 +57,9 @@ class Game:
         self.player_turn_list = []
 
     def run(self):
-        load_characters(self.players_group, self.floating_text_group, self.particles_group)
-        
+        load_characters(self.players_group,
+                        self.floating_text_group, self.particles_group)
+
         background = self.load_background()
         pygame.display.set_caption("Final Fantasy Endless Battle")
 
@@ -74,7 +76,7 @@ class Game:
             self.check_for_player_focus()
             self.show_player_details_screen()
             self.cool_downs()
-            
+
             # debug(self.action_command)
             pygame.display.update()
             self.clock.tick(FPS)
@@ -89,13 +91,12 @@ class Game:
             if self.player_turn.side == PlayerSide.RIGHT and not self.player_turn.is_attacking and self.attack_animation_time == 0:
                 self.left_focused = choice(list(filter(
                     lambda player: player.side == PlayerSide.LEFT, self.players_group.sprites())))
-                # basic_attack(self.player_turn, self.left_focused,
-                #              self.particles_group, self.floating_text_group)
-                self.player_turn.skills['skill_1'].execute(self.player_turn, self.left_focused)
+                self.player_turn.skills['attack'].execute(
+                    self.player_turn, self.left_focused)
                 self.get_next_player_timer = pygame.time.get_ticks()
                 self.get_next_player = False
                 self.attack_animation_time = self.player_turn.attack_animation_time + TURN_BUFFER
-                self.player_action = PlayerAction(action_name="Basic Attack",
+                self.player_action = PlayerAction(action_name=self.player_turn.skills['attack'].name,
                                                   player=self.player_turn)
 
     def get_player_turn_list(self):
@@ -110,7 +111,8 @@ class Game:
         for player in player_speed_list:
             player.turn_count += player.current_stats['speed']
             if player.turn_count >= TURN_COUNT_LIMIT:
-                self.player_turn_list.append(player)
+                if len(self.player_turn_list) < 999:
+                    self.player_turn_list.append(player)
                 player.turn_count -= TURN_COUNT_LIMIT
         remove_player = []
         for i, player in enumerate(self.player_turn_list):
@@ -120,11 +122,17 @@ class Game:
             self.player_turn_list.pop(player)
 
     def get_player_turn(self):
-        if len(self.player_turn_list) > 0:
+        if len(self.player_turn_list) > 0 and self.player_turn is None:
             self.player_turn = self.player_turn_list[0]
+            self.player_update_status(self.player_turn)
             if self.player_turn.is_broken:
                 self.player_turn.is_broken = False
                 self.player_turn.break_bar = 100
+
+    def player_update_status(self, player):
+        player.current_stats['mp'] += player.current_stats['mp_regen']
+        if player.current_stats['mp'] > player.base_stats['mp']:
+            player.current_stats['mp'] = player.base_stats['mp']
 
     def create_selection_arrow(self):
         selection_arrow = pygame.image.load(
@@ -138,6 +146,8 @@ class Game:
         self.floating_text_group.update()
 
     def draw_groups(self):
+        if self.player_turn:
+            PlayerTurnIndicator().draw(self.player_turn)
         self.players_group.draw(self.screen)
         self.particles_group.draw(self.screen)
         PlayerTurnList(self.player_turn_list, 10, 10).draw()
@@ -162,12 +172,27 @@ class Game:
                 if not self.player_turn.is_attacking:
                     if self.player_turn.side == PlayerSide.LEFT:
                         if self.right_focused:
-                            self.player_turn.skills['skill_1'].execute(self.player_turn,self.right_focused)
+                            self.player_turn.skills['attack'].execute(
+                                self.player_turn, self.right_focused)
                             self.get_next_player_timer = pygame.time.get_ticks()
                             self.get_next_player = False
-                            self.player_action = PlayerAction(action_name=self.player_turn.skills['skill_1'].name,player=self.player_turn)
+                            self.player_action = PlayerAction(
+                                action_name=self.player_turn.skills['attack'].name, player=self.player_turn)
                             self.attack_animation_time = self.player_turn.attack_animation_time + TURN_BUFFER
-                            self.action_command = None  
+                            self.action_command = None
+        elif self.action_command == 'skill_2':
+            if self.player_turn:
+                if not self.player_turn.is_attacking:
+                    if self.player_turn.side == PlayerSide.LEFT:
+                        if self.right_focused:
+                            self.player_turn.skills['skill_2'].execute(
+                                self.player_turn, self.right_focused)
+                            self.get_next_player_timer = pygame.time.get_ticks()
+                            self.get_next_player = False
+                            self.player_action = PlayerAction(
+                                action_name=self.player_turn.skills['skill_2'].name, player=self.player_turn)
+                            self.attack_animation_time = self.player_turn.attack_animation_time + TURN_BUFFER
+                            self.action_command = None
 
     def check_for_player_focus(self):
         left_x_offset = 20
@@ -185,9 +210,6 @@ class Game:
         if self.left_focused:
             if self.left_focused.has_fallen:
                 self.left_focused = None
-            # else:
-            #     self.screen.blit(selection_arrow,
-            #                      (self.left_focused.starting_spot[0] + left_x_offset, self.left_focused.starting_spot[1] + left_y_offset))
         if self.right_focused:
             if self.right_focused.has_fallen:
                 self.right_focused = None
@@ -202,14 +224,7 @@ class Game:
                 self.can_click = True
         if not self.get_next_player:
             timer = pygame.time.get_ticks()
-            for player in self.players_group.sprites():
-                if player.turn_adjust:
-                    for i, _player in enumerate(self.player_turn_list):
-                        if _player == player and i != 0:
-                            self.player_turn_list.pop(i)
-                            self.player_turn_list.insert(
-                                i - player.turn_adjust, player)
-                    player.turn_adjust = None
+            self.turn_adjust()
             if timer - self.get_next_player_timer > self.attack_animation_time:
                 self.player_action = None
                 self.player_turn.turn_count = 0
@@ -219,6 +234,33 @@ class Game:
                 self.player_turn_list.pop(0)
                 self.attack_animation_time = 0
 
+    def turn_adjust(self):
+        for player in self.players_group.sprites():
+            if player.turn_adjust == BREAK_TURN_ADJUST:
+                self.turn_adjust_break(player)
+            if player.turn_adjust == INSTANT_TURN_ADJUST:
+                self.turn_adjust_instant(player)
+            if player.turn_adjust != 0:
+                insert_index = []
+                for i, _player in enumerate(self.player_turn_list):
+                    if _player == player and i != 0:
+                        self.player_turn_list.pop(i)
+                        insert_index.append(i)
+                for index in insert_index:
+                    self.player_turn_list.insert(
+                        index - player.turn_adjust, player)
+                player.turn_adjust = 0
+
+    def turn_adjust_break(self, player):
+        for i, _player in enumerate(self.player_turn_list):
+            if _player == player and i != 0:
+                self.player_turn_list.pop(i)
+                player.turn_adjust = 0
+                break
+
+    def turn_adjust_instant(self, player):
+        self.player_turn_list.insert(1, player)
+        player.turn_adjust = 0
 
     def process_events(self, players_group: pygame.sprite.Group):
         events = pygame.event.get()
@@ -256,16 +298,18 @@ class Game:
                 if event.key == pygame.K_ESCAPE:
                     pygame.quit()
                     exit()
-                if event.key == pygame.K_SPACE:
-                    if self.player_turn:
-                        if not self.player_turn.is_attacking:
-                            if self.player_turn.side == PlayerSide.LEFT:
-                                if self.right_focused:
-                                    self.player_turn.skills['skill_1'].execute(self.player_turn,self.right_focused)
-                                    self.get_next_player_timer = pygame.time.get_ticks()
-                                    self.get_next_player = False
-                                    self.player_action = PlayerAction(action_name=self.player_turn.skills['skill_1'].name,player=self.player_turn)
-                                    self.attack_animation_time = self.player_turn.attack_animation_time + TURN_BUFFER
+                # if event.key == pygame.K_SPACE:
+                #     if self.player_turn:
+                #         if not self.player_turn.is_attacking:
+                #             if self.player_turn.side == PlayerSide.LEFT:
+                #                 if self.right_focused:
+                #                     self.player_turn.skills['skill_1'].execute(
+                #                         self.player_turn, self.right_focused)
+                #                     self.get_next_player_timer = pygame.time.get_ticks()
+                #                     self.get_next_player = False
+                #                     self.player_action = PlayerAction(
+                #                         action_name=self.player_turn.skills['skill_1'].name, player=self.player_turn)
+                #                     self.attack_animation_time = self.player_turn.attack_animation_time + TURN_BUFFER
 
     def show_player_details_screen(self):
         if self.showing_player_details:
