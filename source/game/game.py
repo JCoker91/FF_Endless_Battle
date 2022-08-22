@@ -15,6 +15,7 @@ from source.util.debug import debug
 from source.models.ui.overlay.player_action import PlayerAction
 from source.models.sprite_groups.sprite_groups import YSortedGroup
 from source.models.ui.overlay.player_hp import PlayerHP
+from source.models.ui.overlay.draw_target_info import DrawTargetInfo
 
 
 class Game:
@@ -69,12 +70,12 @@ class Game:
             self.run_enemy_action()
             self.update_groups()
             self.draw_groups()
-            
+
             self.check_for_player_focus()
             self.show_player_details_screen()
             self.cool_downs()
             
-            debug(self.action_command)
+            # debug(self.action_command)
             pygame.display.update()
             self.clock.tick(FPS)
 
@@ -141,8 +142,14 @@ class Game:
         self.particles_group.draw(self.screen)
         PlayerTurnList(self.player_turn_list, 10, 10).draw()
         PlayerHP(self.players_group.sprites()).draw()
+        mouse_pos = pygame.mouse.get_pos()
+        draw_player = self.right_focused
+        for player in self.players_group.sprites():
+            if player.rect.collidepoint(mouse_pos):
+                draw_player = player
+        DrawTargetInfo().draw(draw_player)
         action_command = self.command_menu.draw(self.player_turn)
-        if action_command and self.get_next_player:
+        if action_command and self.get_next_player and self.right_focused:
             self.action_command = action_command
         if self.player_action:
             self.player_action.draw()
@@ -160,9 +167,7 @@ class Game:
                             self.get_next_player = False
                             self.player_action = PlayerAction(action_name=self.player_turn.skills['skill_1'].name,player=self.player_turn)
                             self.attack_animation_time = self.player_turn.attack_animation_time + TURN_BUFFER
-                            self.action_command = None
-                            
-
+                            self.action_command = None  
 
     def check_for_player_focus(self):
         left_x_offset = 20
@@ -214,36 +219,6 @@ class Game:
                 self.player_turn_list.pop(0)
                 self.attack_animation_time = 0
 
-    def draw_status_bars(self, players_group: pygame.sprite.Group):
-        left_y_offset = 10
-        right_y_offset = 10
-        left_x_offset = 70
-        right_x_offset = self.screen.get_width() - 225
-
-        for player in players_group:
-            if player.icon is not None:
-                if player.side == PlayerSide.RIGHT:
-                    self.screen.blit(
-                        player.icon, (self.screen.get_width() - 66, right_y_offset))
-                    hp_bar = HPBar(player, right_x_offset, right_y_offset)
-                    break_bar = BreakBar(
-                        player, right_x_offset, right_y_offset+14)
-                    mp_bar = MPBar(player, right_x_offset, right_y_offset+28)
-                    hp_bar.draw()
-                    break_bar.draw()
-                    mp_bar.draw()
-                    right_y_offset += 60
-                else:
-                    self.screen.blit(pygame.transform.flip(
-                        player.icon, 1, 0), (10, left_y_offset))
-                    hp_bar = HPBar(player, left_x_offset, left_y_offset)
-                    break_bar = BreakBar(
-                        player, left_x_offset, left_y_offset + 14)
-                    mp_bar = MPBar(player, left_x_offset, left_y_offset + 28)
-                    hp_bar.draw()
-                    break_bar.draw()
-                    mp_bar.draw()
-                    left_y_offset += 60
 
     def process_events(self, players_group: pygame.sprite.Group):
         events = pygame.event.get()

@@ -65,6 +65,7 @@ class CommandMenu:
                 action_description_text_rendered, (275, (self.display_surface.get_height() - self.HEIGHT) + 30))
             for _command in self.action_commands:
                 if self.action_commands[_command]['is_selected']:
+                    self.action_commands[_command]['is_selected'] = False
                     return _command
 
     def draw_menu_item(self, command: dict, mouse_pos: tuple, mouse_pressed: bool, x_pos: int, y_pos: int, text_color = MENU_TEXT_COLOR, disabled: bool = False):

@@ -28,7 +28,7 @@ class PlayerAction(pygame.sprite.Sprite):
             return
         rect = pygame.Rect(0, 0, SCREEN_WIDTH/2 + 100,
                            self.icon.get_height() + 10)
-        rect.bottom = SCREEN_HEIGHT / 3
+        rect.bottom = SCREEN_HEIGHT / 4
         if self.player.side == PlayerSide.RIGHT:
             rect.left = self.x_pos
             icon_rect = self.icon.get_rect(
