@@ -1,5 +1,6 @@
 import pygame
 from source.models.character.character import Character
+from source.util.custom_enum import PlayerSide, CurrentState
 from settings import *
 
 
@@ -8,9 +9,9 @@ class PlayerTurnIndicator:
         self.display_surface = pygame.display.get_surface()
 
     def draw(self, player: Character, width: int = 0):
-        x_pos = player.rect.left
-        y_pos = player.rect.bottom
-        width = player.rect.width
-        rect = pygame.Rect(x_pos, y_pos, width, 10)
-        pygame.draw.rect(self.display_surface,
-                         MENU_BORDER_COLOR, rect, MENU_BORDER_WIDTH, MENU_BORDER_RADIUS)
+        if player.side == PlayerSide.LEFT and player.current_state == CurrentState.IDLE:
+            image = pygame.transform.scale(player.image, (100,100))
+            image_mask = pygame.mask.from_surface(image).fill()
+            # image.fill((255,255,255))
+            image_rect = image.get_rect()
+            self.display_surface.blit(image, image_rect)
