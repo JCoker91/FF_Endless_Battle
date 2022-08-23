@@ -91,12 +91,12 @@ class Game:
             if self.player_turn.side == PlayerSide.RIGHT and not self.player_turn.is_attacking and self.attack_animation_time == 0:
                 self.left_focused = choice(list(filter(
                     lambda player: player.side == PlayerSide.LEFT, self.players_group.sprites())))
-                self.player_turn.skills['attack'].execute(
+                self.player_turn.attack['attack'].execute(
                     self.player_turn, self.left_focused)
                 self.get_next_player_timer = pygame.time.get_ticks()
                 self.get_next_player = False
                 self.attack_animation_time = self.player_turn.attack_animation_time + TURN_BUFFER
-                self.player_action = PlayerAction(action_name=self.player_turn.skills['attack'].name,
+                self.player_action = PlayerAction(action_name=self.player_turn.attack['attack'].name,
                                                   player=self.player_turn)
 
     def get_player_turn_list(self):
@@ -172,25 +172,25 @@ class Game:
                 if not self.player_turn.is_attacking:
                     if self.player_turn.side == PlayerSide.LEFT:
                         if self.right_focused:
-                            self.player_turn.skills['attack'].execute(
+                            self.player_turn.attack['attack'].execute(
                                 self.player_turn, self.right_focused)
                             self.get_next_player_timer = pygame.time.get_ticks()
                             self.get_next_player = False
                             self.player_action = PlayerAction(
-                                action_name=self.player_turn.skills['attack'].name, player=self.player_turn)
+                                action_name=self.player_turn.attack['attack'].name, player=self.player_turn)
                             self.attack_animation_time = self.player_turn.attack_animation_time + TURN_BUFFER
                             self.action_command = None
-        elif self.action_command == 'skill_2':
+        elif self.action_command == 'skill_1':
             if self.player_turn:
                 if not self.player_turn.is_attacking:
                     if self.player_turn.side == PlayerSide.LEFT:
                         if self.right_focused:
-                            self.player_turn.skills['skill_2'].execute(
+                            self.player_turn.skills['skill_1'].execute(
                                 self.player_turn, self.right_focused)
                             self.get_next_player_timer = pygame.time.get_ticks()
                             self.get_next_player = False
                             self.player_action = PlayerAction(
-                                action_name=self.player_turn.skills['skill_2'].name, player=self.player_turn)
+                                action_name=self.player_turn.skills['skill_1'].name, player=self.player_turn)
                             self.attack_animation_time = self.player_turn.attack_animation_time + TURN_BUFFER
                             self.action_command = None
 
@@ -298,18 +298,6 @@ class Game:
                 if event.key == pygame.K_ESCAPE:
                     pygame.quit()
                     exit()
-                # if event.key == pygame.K_SPACE:
-                #     if self.player_turn:
-                #         if not self.player_turn.is_attacking:
-                #             if self.player_turn.side == PlayerSide.LEFT:
-                #                 if self.right_focused:
-                #                     self.player_turn.skills['skill_1'].execute(
-                #                         self.player_turn, self.right_focused)
-                #                     self.get_next_player_timer = pygame.time.get_ticks()
-                #                     self.get_next_player = False
-                #                     self.player_action = PlayerAction(
-                #                         action_name=self.player_turn.skills['skill_1'].name, player=self.player_turn)
-                #                     self.attack_animation_time = self.player_turn.attack_animation_time + TURN_BUFFER
 
     def show_player_details_screen(self):
         if self.showing_player_details:
