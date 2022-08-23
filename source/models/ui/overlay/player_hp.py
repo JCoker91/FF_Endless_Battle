@@ -11,4 +11,5 @@ class PlayerHP:
         for player in self.players:
             hp_bar = HPBar(player, player.rect.topright[0] - player.image.get_width()/2, player.rect.topright[1] - 5,
                            False, draw_point='center', show_border=False, show_background=False, size="small")
-            hp_bar.draw()
+            if not player.is_attacking:
+                hp_bar.draw()
