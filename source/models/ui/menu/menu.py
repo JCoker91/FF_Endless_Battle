@@ -31,7 +31,7 @@ class CommandMenu:
     def draw(self, player: Character):
         return_value = None
         self.draw_menu_background()
-        if player is not None and player.side == PlayerSide.LEFT:
+        if player is not None and player.side == PlayerSide.LEFT and not player.is_attacking:
             if self.current_player !=  player:
                 self.showing_main_menu = True
                 self.current_player = player
@@ -53,13 +53,6 @@ class CommandMenu:
 
 
     def draw_main_menu(self, player: Character):
-        # self.action_commands = {
-        #     'attack': {'label': 'ATTACK', 'description': 'Launches a basic attack at an enemy.', 'is_selected': False, 'is_hovered': False, 'mp_cost': 0},
-        #     'skills': {'label': 'SKILLS', 'description': 'Special skills unique to each character.', 'is_selected': False, 'is_hovered': False, 'mp_cost': 0},
-        #     'defend': {'label': 'DEFEND', 'description': 'Enter a defensive stance reducing damage taken by 50\% until next turn.', 'is_selected': False, 'is_hovered': False, 'mp_cost': 0},
-        #     'item': {'label': 'ITEM', 'description': 'Use an item in stock.', 'is_selected': False, 'is_hovered': False, 'mp_cost': 0},
-        #     'limit_break': {'label': 'LIMIT BREAK', 'description': 'Uses limit break against an enemy.', 'is_selected': False, 'is_hovered': False, 'mp_cost': 0}
-        # }
         limit_break_ready = player.limit_break_gauge >= 100
         pygame.draw.rect(self.display_surface, MENU_COLOR, self.left_menu)
         pygame.draw.rect(self.display_surface,
@@ -133,7 +126,7 @@ class CommandMenu:
 
         # define hover behavior
         if command_text_rect.collidepoint(mouse_pos):
-            if mouse_pressed and not disabled:
+            if mouse_pressed and not disabled and self.can_click:
                 for _command in action_dict:
                     action_dict[_command]['is_selected'] = False
                 action_dict[command]['is_selected'] = True
@@ -172,9 +165,6 @@ class CommandMenu:
                          MENU_BORDER_COLOR, full_menu_border, MENU_BORDER_WIDTH, MENU_BORDER_RADIUS)
 
     def draw_skill_menu(self, player):
-        for skill in player.skills:
-            self.skill_commands[skill] = {'label': player.skills[skill].name,
-                                     'description': player.skills[skill].description, 'is_selected': False, 'is_hovered': False, 'mp_cost': player.skills[skill].mp_cost}
         pygame.draw.rect(self.display_surface, MENU_COLOR, self.left_menu)
         pygame.draw.rect(self.display_surface,
                          MENU_BORDER_COLOR, self.left_menu, MENU_BORDER_WIDTH, MENU_BORDER_RADIUS)
@@ -192,7 +182,8 @@ class CommandMenu:
 
         for command in self.skill_commands:
             self.skill_commands[command]['is_hovered'] = False
-
+            if command == 'back':
+                continue
             if player.current_stats['mp'] - self.skill_commands[command]['mp_cost'] < 0:
                 self.draw_menu_item(self.skill_commands,command, mouse_pos,
                                     mouse_clicked, 100, y, disabled=True, draw_mp_cost=True)
@@ -215,14 +206,13 @@ class CommandMenu:
         if self.can_click:
             for _command in self.skill_commands:
                 if self.skill_commands[_command]['is_selected']:
-                
                     self.skill_commands[_command]['is_selected'] = False
                     if self.skill_commands[_command]['label'] == 'BACK':
                         self.showing_main_menu = True
-                        # self.can_click = False
-                        # self.mouse_click_timer = pygame.time.get_ticks()
+                        self.can_click = False
+                        self.mouse_click_timer = pygame.time.get_ticks()
                     else:
-                        # self.can_click = False
-                        # self.mouse_click_timer = pygame.time.get_ticks()
+                        self.can_click = False
+                        self.mouse_click_timer = pygame.time.get_ticks()
                         return _command
                     

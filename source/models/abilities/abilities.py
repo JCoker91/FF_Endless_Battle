@@ -1,6 +1,7 @@
 import pygame
 from settings import *
 from source.models.character.character import Character
+from source.util.custom_enum import DamageType
 
 
 class Attack:
@@ -27,6 +28,7 @@ class Attack:
             'damage_weight': self.damage_weight,
             'particle_list_group': self.particle_list_group,
             'floating_text_group': self.floating_text_group,
+            'damage_type' : DamageType.NEUTRAL
         }
         caster.turn_adjust += self.turn_adjust
         enemy.take_damage(damage_data)
@@ -59,7 +61,7 @@ class SparkStrike:
             'damage_weight': self.damage_weight,
             'particle_list_group': self.particle_list_group,
             'floating_text_group': self.floating_text_group,
-            'damage_type': 'lightning'
+            'damage_type': DamageType.LIGHTNING
         }
         caster.turn_adjust += self.turn_adjust
         caster.current_stats['mp'] -= self.mp_cost

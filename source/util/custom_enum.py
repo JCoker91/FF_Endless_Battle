@@ -26,3 +26,13 @@ class DamageType(Enum):
     PHYSICAL = 1
     MAGIC = 2
     BREAK = 3
+    LIGHTNING = 4
+    FIRE = 5
+    WATER = 6
+    ICE = 7
+    WIND = 8
+    EARTH = 9
+    DARK = 10
+    LIGHT = 11
+    NEUTRAL = 12
+

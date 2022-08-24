@@ -282,6 +282,7 @@ class Character(pygame.sprite.Sprite):
         self.particle_action_frames = damage_data['particle_action_frames']
         self.damage_weight = damage_data['damage_weight']
         self.floating_text_group = damage_data['floating_text_group']
+        self.damage_taken_type = damage_data['damage_type']
         for i, particle in enumerate(damage_data['particle_effects']):
             self.damage_taken_frame.append(self.calculate_weighted_damage(
                 self.damage_weight, i, damage_data['damage']))
@@ -305,13 +306,13 @@ class Character(pygame.sprite.Sprite):
                 self.particle_list[self.particle_action_count].create(
                     self.rect.center)
                 damage = self.damage_taken_frame[self.particle_action_count]
-                damage_type = None
+                damage_type = self.damage_taken_type
                 if self.is_broken:
                     damage += int(damage * .5)
                     damage_type = DamageType.BREAK
                 if self.break_bar > 0 and self.break_bar - self.break_damage_taken_frame[self.particle_action_count] <= 0:
                     DamageText("BREAK", self.rect.center,
-                               self.floating_text_group, DamageType.BREAK)
+                               self.floating_text_group, damage_type)
                     self.turn_adjust = BREAK_TURN_ADJUST
                 DamageText(
                     str(damage), self.rect.center, self.floating_text_group, damage_type)
@@ -335,6 +336,7 @@ class Character(pygame.sprite.Sprite):
                 self.is_taking_damage = False
                 self.particle_action_count = 0
                 self.taking_damage_duration = 0
+                self.damage_taken_type = None
                 self.break_damage_taken_frame.clear()
                 self.particle_list.clear()
                 self.damage_taken_frame.clear()
