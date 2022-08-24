@@ -15,13 +15,15 @@ class PlayerDetailScreen:
         self.col_1 = self.display_surf_width/6
         self.col_2 = self.display_surf_width/2 - MENU_PADDING * 2
         self.menu_screen_width = SCREEN_WIDTH / 1.2
-        self.menu_screen_height = SCREEN_HEIGHT / 2
+        self.menu_screen_height = SCREEN_HEIGHT / 2.5
         self.details_screen = pygame.Rect(
             self.display_surf_width/2 - self.menu_screen_width/2, self.display_surf_height/4, self.menu_screen_width, self.menu_screen_height)
         self.right_justified_x = self.details_screen.topright[0] - \
             MENU_PADDING * 2
         self.font = pygame.font.Font(
             'resources/fonts/Pixeltype/Pixeltype.ttf', 24)
+        self.small_font = pygame.font.Font(
+            'resources/fonts/Pixeltype/Pixeltype.ttf', 20)
 
     def draw_opacity(self):
         opac_rect = pygame.Surface(
@@ -41,6 +43,7 @@ class PlayerDetailScreen:
         self.draw_name()
         self.draw_stats()
         self.draw_status_bars()
+        self.draw_resistances()
 
     def draw_sprite(self):
         sprite_image = self.player.animations['idle'][0]
@@ -82,6 +85,36 @@ class PlayerDetailScreen:
               425, True, draw_point='topright').draw()
         BreakBar(self.player, self.right_justified_x, 450,
                  True, draw_point='topright').draw()
+
+    def draw_resistances(self):
+        resistance_list = [
+            'fire',
+            'lightning',
+            'ice',
+            'wind',
+            'water',
+            'earth',
+            'light',
+            'dark',
+        ]
+        x_pos = self.col_1
+        for element in resistance_list:
+            text_color = MENU_TEXT_COLOR
+            if self.player.current_resistance[element] < 0:
+                text_color = 'Red'
+            if self.player.current_resistance[element] > 0:
+                text_color = 'Green'
+            resistance_icon = pygame.image.load(
+                f'resources/images/icons/elements/{element}.png').convert_alpha()
+            resistance_text = self.small_font.render(
+                f"{self.player.current_resistance[element]}%", False, text_color)
+            resistance_text_rect = resistance_text.get_rect(
+                center=(x_pos, 410))
+            resistance_icon_rect = resistance_icon.get_rect(
+                center=(resistance_text_rect.centerx, 440))
+            self.display_surface.blit(resistance_icon, resistance_icon_rect)
+            self.display_surface.blit(resistance_text, resistance_text_rect)
+            x_pos += 35
 
     def draw_name(self):
         player_name_text = self.font.render(

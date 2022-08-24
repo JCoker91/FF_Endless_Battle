@@ -15,53 +15,53 @@ class DamageText(pygame.sprite.Sprite):
         self.is_waiting_count = 8
         self.width = self.text_size * 4
         if len(text) > 3:
-            self.width = self.text_size *8
+            self.width = self.text_size * 8
         self.height = self.text_size * 2
         self.is_first_run = True
         self.is_floating = True
         self.is_fading = False
         self.is_waiting = False
-        self.font_outline = pygame.font.Font(
-            "resources/fonts/SeymourOne/SeymourOne-Regular.ttf", self.text_size + 4)
+
         self.font = pygame.font.Font(
             "resources/fonts/SeymourOne/SeymourOne-Regular.ttf", self.text_size)
-        self.textSurfOutline = self.font_outline.render(
-            text, 1, self.outline_color)
-        self.textSurf = self.font.render(text, 1, self.color)
-        # self.textSurfRect =self.textSurf.get_rect()
 
-        # self.text_mask = pygame.mask.from_surface(self.textSurf)
-        # self.text_mask_surf = self.text_mask.to_surface().set_colorkey((0,0,0))
-        # pixel_range = []
-        # x_size, y_size = self.text_mask_surf.get_size()
-        # for x in range(x_size):
-        #     for y in range(y_size):
-        #         if self.text_mask_surf.get_at((x, y)) == (255, 255, 255):
-        #             pixel_range.append((x-1, y-1))
-        #             pixel_range.append((x-1, y+1))
-        #             pixel_range.append((x-1, y+1))
-        #             pixel_range.append((x+1, y))
-        #             pixel_range.append((x-1, y))
-        #             pixel_range.append((x, y+1))
-        #             pixel_range.append((x, y-1))
-        # outline_color = (255, 255, 255)
-        # for pixel_pos in pixel_range:
-        #     self.text_mask_surf.set_at(pixel_pos, (outline_color))
+        self.text_surf = self.font.render(text, 1, self.color)
 
+        self.text_surf_mask = pygame.mask.from_surface(
+            self.text_surf).to_surface()
+        self.text_surf_mask.set_colorkey((0, 0, 0))
 
-        
+        text_width = self.text_surf.get_width()
+        text_height = self.text_surf.get_height()
+
+        self.text_surf_rect = self.text_surf.get_rect(
+            topleft=((self.width/2 - text_width/2) - 2, (self.height/2 - text_height/2)-2))
+        self.text_surf_mask_rect = self.text_surf_mask.get_rect(
+            center=self.text_surf_rect.center)
+
+        pixel_range = []
+        x_size, y_size = self.text_surf_mask.get_size()
+        for x in range(x_size):
+            for y in range(y_size):
+                if self.text_surf_mask.get_at((x, y)) == (255, 255, 255):
+                    pixel_range.append((x-2, y-2))
+                    pixel_range.append((x-2, y+2))
+                    pixel_range.append((x-2, y+2))
+                    pixel_range.append((x+2, y))
+                    pixel_range.append((x-2, y))
+                    pixel_range.append((x, y+2))
+                    pixel_range.append((x, y-2))
+        for pixel_pos in pixel_range:
+            self.text_surf_mask.set_at(pixel_pos, (self.outline_color))
+
         self.image = pygame.Surface((self.width, self.height)).convert_alpha()
         self.image.set_colorkey('Black')
         self.rect = self.image.get_rect(center=self.center)
         self.starting_pos = self.center
-        W = self.textSurf.get_width()
-        H = self.textSurf.get_height()
 
+        self.image.blit(self.text_surf_mask, self.text_surf_mask_rect)
         self.image.blit(
-            self.textSurfOutline, [(self.width/2 - W/2) - 2, (self.height/2 - H/2)-2])
-        # self.image.blit(self.text_mask_surf, self.textSurf.get_rect())
-        self.image.blit(
-            self.textSurf, [self.width/2 - W/2, self.height/2 - H/2])
+            self.text_surf, self.text_surf_rect)
         self.gravity = 1
         group.add(self)
 
@@ -78,7 +78,7 @@ class DamageText(pygame.sprite.Sprite):
             case DamageType.WATER:
                 self.color = ('Blue')
             case DamageType.ICE:
-                self.color = ('Blue')
+                self.color = ('Light Blue')
             case DamageType.WIND:
                 self.color = ('Green')
             case DamageType.EARTH:
@@ -86,7 +86,7 @@ class DamageText(pygame.sprite.Sprite):
             case DamageType.DARK:
                 self.color = ('Purple')
             case DamageType.LIGHT:
-                self.color = ('White')
+                self.color = ('Light Yellow')
             case DamageType.NEUTRAL:
                 self.color = ('White')
             case _:

@@ -26,31 +26,33 @@ class CommandMenu:
             'item': {'label': 'ITEM', 'description': 'Use an item in stock.', 'is_selected': False, 'is_hovered': False, 'mp_cost': 0},
             'limit_break': {'label': 'LIMIT BREAK', 'description': 'Uses limit break against an enemy.', 'is_selected': False, 'is_hovered': False, 'mp_cost': 0}
         }
-        self.skill_commands = {}
+        self.skill_commands = {
+            'back': {'label': 'BACK', 'description': 'Back to main menu.',
+                     'is_selected': False, 'is_hovered': False, 'mp_cost': 0}
+        }
 
     def draw(self, player: Character):
         return_value = None
         self.draw_menu_background()
         if player is not None and player.side == PlayerSide.LEFT and not player.is_attacking:
-            if self.current_player !=  player:
+            if self.current_player != player:
                 self.showing_main_menu = True
                 self.current_player = player
                 for skill in player.skills:
                     self.skill_commands[skill] = {'label': player.skills[skill].name,
-                                            'description': player.skills[skill].description, 'is_selected': False, 'is_hovered': False, 'mp_cost': player.skills[skill].mp_cost}
+                                                  'description': player.skills[skill].description, 'is_selected': False, 'is_hovered': False, 'mp_cost': player.skills[skill].mp_cost}
             if self.showing_main_menu:
                 return_value = self.draw_main_menu(player)
             else:
                 return_value = self.draw_skill_menu(player)
         self.mouse_click_cooldown()
         return return_value
-    
+
     def mouse_click_cooldown(self):
         if not self.can_click:
             timer = pygame.time.get_ticks()
             if timer - self.mouse_click_timer > MOUSE_CLICK_TIMER:
                 self.can_click = True
-
 
     def draw_main_menu(self, player: Character):
         limit_break_ready = player.limit_break_gauge >= 100
@@ -74,12 +76,12 @@ class CommandMenu:
             if command == 'limit_break':
                 if limit_break_ready:
                     self.draw_menu_item(self.action_commands,
-                        command, mouse_pos, mouse_clicked, 100, y, text_color='Green')
+                                        command, mouse_pos, mouse_clicked, 100, y, text_color='Green')
                 else:
                     self.draw_menu_item(self.action_commands,
-                        command, mouse_pos, mouse_clicked, 100, y, disabled=True)
+                                        command, mouse_pos, mouse_clicked, 100, y, disabled=True)
             else:
-                self.draw_menu_item(self.action_commands,command, mouse_pos,
+                self.draw_menu_item(self.action_commands, command, mouse_pos,
                                     mouse_clicked, 100, y)
             y += 25
 
@@ -96,11 +98,7 @@ class CommandMenu:
                 self.action_commands[_command]['is_selected'] = False
                 if _command == 'skills':
                     self.showing_main_menu = False
-                    self.can_click = False
-                    self.mouse_click_timer = pygame.time.get_ticks()
                 else:
-                    self.can_click = False
-                    self.mouse_click_timer = pygame.time.get_ticks()
                     return _command
 
     def draw_menu_item(self, action_dict: dict, command: dict, mouse_pos: tuple, mouse_pressed: bool, x_pos: int, y_pos: int, text_color=MENU_TEXT_COLOR, disabled: bool = False, draw_mp_cost: bool = False):
@@ -110,8 +108,8 @@ class CommandMenu:
             action_dict[command]['label'], True, text_color)
         mp_text = self.font.render(
             str(action_dict[command]['mp_cost']).upper(), True, text_color)
-        mp_text_rect = mp_text.get_rect(topleft=(250,y_pos))
-        mp_text_rect.inflate_ip(100,10)
+        mp_text_rect = mp_text.get_rect(topleft=(250, y_pos))
+        mp_text_rect.inflate_ip(100, 10)
         command_text_rect = command_text.get_rect(topleft=(x_pos, y_pos))
         command_text_rect.inflate_ip(100, 10)
         selected_option = pygame.Surface((150, 20))
@@ -153,7 +151,6 @@ class CommandMenu:
         if draw_mp_cost:
             self.display_surface.blit(mp_text, mp_text_rect)
 
-
     def draw_menu_background(self):
         full_menu_border = pygame.Rect(
             0, self.display_surface.get_height() - self.HEIGHT, self.WIDTH, self.HEIGHT)
@@ -185,15 +182,14 @@ class CommandMenu:
             if command == 'back':
                 continue
             if player.current_stats['mp'] - self.skill_commands[command]['mp_cost'] < 0:
-                self.draw_menu_item(self.skill_commands,command, mouse_pos,
+                self.draw_menu_item(self.skill_commands, command, mouse_pos,
                                     mouse_clicked, 100, y, disabled=True, draw_mp_cost=True)
             else:
-                self.draw_menu_item(self.skill_commands,command, mouse_pos,
+                self.draw_menu_item(self.skill_commands, command, mouse_pos,
                                     mouse_clicked, 100, y, draw_mp_cost=True)
             y += 25
-        self.skill_commands['back'] = {'label': 'BACK', 'description': 'Back to main menu.',
-                                        'is_selected': False, 'is_hovered': False, 'mp_cost': 0}
-        self.draw_menu_item(self.skill_commands,'back', mouse_pos, mouse_clicked,
+
+        self.draw_menu_item(self.skill_commands, 'back', mouse_pos, mouse_clicked,
                             100, self.display_surface.get_height()-50)
         action_description_text = ""
         for command in self.skill_commands:
@@ -203,16 +199,13 @@ class CommandMenu:
             action_description_text, True, 'White')
         self.display_surface.blit(
             action_description_text_rendered, (275, (self.display_surface.get_height() - self.HEIGHT) + 30))
-        if self.can_click:
-            for _command in self.skill_commands:
-                if self.skill_commands[_command]['is_selected']:
-                    self.skill_commands[_command]['is_selected'] = False
-                    if self.skill_commands[_command]['label'] == 'BACK':
-                        self.showing_main_menu = True
-                        self.can_click = False
-                        self.mouse_click_timer = pygame.time.get_ticks()
-                    else:
-                        self.can_click = False
-                        self.mouse_click_timer = pygame.time.get_ticks()
-                        return _command
-                    
+        # if self.can_click:
+        for _command in self.skill_commands:
+            if self.skill_commands[_command]['is_selected']:
+                self.skill_commands[_command]['is_selected'] = False
+                if _command == 'back':
+                    self.showing_main_menu = True
+
+                else:
+                    self.showing_main_menu = True
+                    return _command

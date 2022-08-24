@@ -185,9 +185,21 @@ class Game:
                 if self.player_turn:
                     if not self.player_turn.is_attacking:
                         if self.player_turn.side == PlayerSide.LEFT:
-                            if self.right_focused:
+                            if self.player_turn.skills[self.action_command].target_count == 'single':
+                                if self.right_focused:
+                                    self.player_turn.skills[self.action_command].execute(
+                                        self.player_turn, self.right_focused)
+                                    self.get_next_player_timer = pygame.time.get_ticks()
+                                    self.get_next_player = False
+                                    self.player_action = PlayerAction(
+                                        action_name=self.player_turn.skills[self.action_command].name, player=self.player_turn)
+                                    self.attack_animation_time = self.player_turn.attack_animation_time + TURN_BUFFER
+                                    self.action_command = None
+                            elif self.player_turn.skills[self.action_command].target_count == 'all':
+                                enemy_list = list(filter(lambda player: player.side ==
+                                                         PlayerSide.RIGHT, self.players_group))
                                 self.player_turn.skills[self.action_command].execute(
-                                    self.player_turn, self.right_focused)
+                                    self.player_turn, enemy_list)
                                 self.get_next_player_timer = pygame.time.get_ticks()
                                 self.get_next_player = False
                                 self.player_action = PlayerAction(

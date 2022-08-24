@@ -4,7 +4,10 @@ CHARACTERS = [
     {
         'name': 'Lightning',
         'stats': {
-            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 55, 'mp_regen': 5
+            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 100, 'magic': 50, 'defense': 100, 'magic_defense': 50, 'speed': 55, 'mp_regen': 5
+        },
+        'resistance': {
+            'physical': 0, 'magic': 0, 'lightning': 0, 'fire': 0, 'water': 0, 'ice': 0, 'wind': 0, 'earth': 0, 'dark': 0, 'light': 0
         },
         'skill_data': {
             'skill_1':  {
@@ -44,7 +47,10 @@ CHARACTERS = [
     {
         'name': 'Cloud',
         'stats': {
-            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 48, 'mp_regen': 5
+            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 100, 'magic': 50, 'defense': 100, 'magic_defense': 50, 'speed': 48, 'mp_regen': 5
+        },
+        'resistance': {
+            'physical': 0, 'magic': 0, 'lightning': 0, 'fire': 0, 'water': 0, 'ice': 0, 'wind': 0, 'earth': 0, 'dark': 0, 'light': 0
         },
         'skill_data': {
             'skill_1':  {
@@ -85,7 +91,10 @@ CHARACTERS = [
     {
         'name': 'Tidus',
         'stats': {
-            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 55, 'mp_regen': 5
+            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 100, 'magic': 50, 'defense': 100, 'magic_defense': 50, 'speed': 55, 'mp_regen': 5
+        },
+        'resistance': {
+            'physical': 0, 'magic': 0, 'lightning': 0, 'fire': 0, 'water': 0, 'ice': 0, 'wind': 0, 'earth': 0, 'dark': 0, 'light': 0
         },
         'skill_data': {
             'skill_1': {
@@ -126,7 +135,10 @@ CHARACTERS = [
     {
         'name': 'Firion',
         'stats': {
-            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 52, 'mp_regen': 5
+            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 100, 'magic': 50, 'defense': 100, 'magic_defense': 50, 'speed': 52, 'mp_regen': 5
+        },
+        'resistance': {
+            'physical': 0, 'magic': 0, 'lightning': 0, 'fire': 0, 'water': 0, 'ice': 0, 'wind': 0, 'earth': 0, 'dark': 0, 'light': 0
         },
         'skill_data': {
             'skill_1':  {
@@ -167,7 +179,10 @@ CHARACTERS = [
     {
         'name': 'Cecil',
         'stats': {
-            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 42, 'speed': 50, 'mp_regen': 5
+            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 100, 'magic': 50, 'defense': 100, 'magic_defense': 42, 'speed': 50, 'mp_regen': 5
+        },
+        'resistance': {
+            'physical': 0, 'magic': 0, 'lightning': 0, 'fire': 0, 'water': 0, 'ice': 0, 'wind': 0, 'earth': 0, 'dark': 0, 'light': 0
         },
         'skill_data': {
             'skill_1':  {
@@ -209,7 +224,10 @@ CHARACTERS = [
     {
         'name': 'Bartz',
         'stats': {
-            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 53, 'mp_regen': 5
+            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 100, 'magic': 50, 'defense': 100, 'magic_defense': 50, 'speed': 53, 'mp_regen': 5
+        },
+        'resistance': {
+            'physical': 0, 'magic': 0, 'lightning': 0, 'fire': 0, 'water': 0, 'ice': 0, 'wind': 0, 'earth': 0, 'dark': 0, 'light': 0
         },
         'skill_data': {
             'skill_1': {
@@ -250,7 +268,10 @@ CHARACTERS = [
     {
         'name': 'Zidane',
         'stats': {
-            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 60, 'mp_regen': 5
+            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 100, 'magic': 50, 'defense': 100, 'magic_defense': 50, 'speed': 60, 'mp_regen': 5
+        },
+        'resistance': {
+            'physical': 0, 'magic': 0, 'lightning': 0, 'fire': 0, 'water': 0, 'ice': 0, 'wind': 0, 'earth': 0, 'dark': 0, 'light': 0
         },
         'skill_data': {
             'skill_1': {
@@ -291,7 +312,10 @@ CHARACTERS = [
     {
         'name': 'Tera',
         'stats': {
-            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 49, 'mp_regen': 5
+            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 100, 'magic': 50, 'defense': 100, 'magic_defense': 50, 'speed': 49, 'mp_regen': 5
+        },
+        'resistance': {
+            'physical': 0, 'magic': 0, 'lightning': 0, 'fire': 0, 'water': 0, 'ice': 0, 'wind': 0, 'earth': 0, 'dark': 0, 'light': 0
         },
         'skill_data': {
             'skill_1': {
@@ -332,7 +356,10 @@ CHARACTERS = [
     {
         'name': 'Noctis',
         'stats': {
-            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 52, 'mp_regen': 5
+            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 100, 'magic': 50, 'defense': 100, 'magic_defense': 50, 'speed': 52, 'mp_regen': 5
+        },
+        'resistance': {
+            'physical': 0, 'magic': 0, 'lightning': 0, 'fire': 0, 'water': 0, 'ice': 0, 'wind': 0, 'earth': 0, 'dark': 0, 'light': 0
         },
         'skill_data': {
             'skill_1': {
@@ -373,7 +400,10 @@ CHARACTERS = [
     {
         'name': 'Squall',
         'stats': {
-            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 50, 'magic': 50, 'defense': 50, 'magic_defense': 50, 'speed': 50, 'mp_regen': 5
+            'level': 1, 'hp': 500, 'mp': 50, 'break_power': 20, 'strength': 100, 'magic': 50, 'defense': 100, 'magic_defense': 50, 'speed': 50, 'mp_regen': 5
+        },
+        'resistance': {
+            'physical': 0, 'magic': 0, 'lightning': 0, 'fire': 0, 'water': 0, 'ice': 0, 'wind': 0, 'earth': 0, 'dark': 0, 'light': 0
         },
         'skill_data': {
             'skill_1': {

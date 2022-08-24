@@ -10,10 +10,12 @@ from source.models.floating_text.damage_text import DamageText
 
 
 class Character(pygame.sprite.Sprite):
-    def __init__(self, character_name: str, stats: dict, position: tuple, side: PlayerSide, off_set: dict, attack: dict, skills: dict, group: pygame.sprite.Group) -> None:
+    def __init__(self, character_name: str, stats: dict, resistance: dict, position: tuple, side: PlayerSide, off_set: dict, attack: dict, skills: dict, group: pygame.sprite.Group) -> None:
         super().__init__()
         self.base_stats = stats.copy()
         self.current_stats = stats.copy()
+        self.current_resistance = resistance.copy()
+        self.base_resistance = resistance.copy()
         self.break_bar = 100
         self.name = character_name  # Character name
         self.side = side  # Which side the character is on (left or right)
@@ -309,10 +311,9 @@ class Character(pygame.sprite.Sprite):
                 damage_type = self.damage_taken_type
                 if self.is_broken:
                     damage += int(damage * .5)
-                    damage_type = DamageType.BREAK
                 if self.break_bar > 0 and self.break_bar - self.break_damage_taken_frame[self.particle_action_count] <= 0:
                     DamageText("BREAK", self.rect.center,
-                               self.floating_text_group, damage_type)
+                               self.floating_text_group, damage_type=DamageType.BREAK)
                     self.turn_adjust = BREAK_TURN_ADJUST
                 DamageText(
                     str(damage), self.rect.center, self.floating_text_group, damage_type)
