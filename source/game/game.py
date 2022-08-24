@@ -167,32 +167,33 @@ class Game:
         self.floating_text_group.draw(self.screen)
 
     def process_commands(self):
-        if self.action_command == 'attack':
-            if self.player_turn:
-                if not self.player_turn.is_attacking:
-                    if self.player_turn.side == PlayerSide.LEFT:
-                        if self.right_focused:
-                            self.player_turn.attack['attack'].execute(
-                                self.player_turn, self.right_focused)
-                            self.get_next_player_timer = pygame.time.get_ticks()
-                            self.get_next_player = False
-                            self.player_action = PlayerAction(
-                                action_name=self.player_turn.attack['attack'].name, player=self.player_turn)
-                            self.attack_animation_time = self.player_turn.attack_animation_time + TURN_BUFFER
-                            self.action_command = None
-        elif self.action_command == 'skill_1':
-            if self.player_turn:
-                if not self.player_turn.is_attacking:
-                    if self.player_turn.side == PlayerSide.LEFT:
-                        if self.right_focused:
-                            self.player_turn.skills['skill_1'].execute(
-                                self.player_turn, self.right_focused)
-                            self.get_next_player_timer = pygame.time.get_ticks()
-                            self.get_next_player = False
-                            self.player_action = PlayerAction(
-                                action_name=self.player_turn.skills['skill_1'].name, player=self.player_turn)
-                            self.attack_animation_time = self.player_turn.attack_animation_time + TURN_BUFFER
-                            self.action_command = None
+        if self.action_command:
+            if self.action_command == 'attack':
+                if self.player_turn:
+                    if not self.player_turn.is_attacking:
+                        if self.player_turn.side == PlayerSide.LEFT:
+                            if self.right_focused:
+                                self.player_turn.attack['attack'].execute(
+                                    self.player_turn, self.right_focused)
+                                self.get_next_player_timer = pygame.time.get_ticks()
+                                self.get_next_player = False
+                                self.player_action = PlayerAction(
+                                    action_name=self.player_turn.attack['attack'].name, player=self.player_turn)
+                                self.attack_animation_time = self.player_turn.attack_animation_time + TURN_BUFFER
+                                self.action_command = None
+            elif self.action_command.startswith('skill_'):
+                if self.player_turn:
+                    if not self.player_turn.is_attacking:
+                        if self.player_turn.side == PlayerSide.LEFT:
+                            if self.right_focused:
+                                self.player_turn.skills[self.action_command].execute(
+                                    self.player_turn, self.right_focused)
+                                self.get_next_player_timer = pygame.time.get_ticks()
+                                self.get_next_player = False
+                                self.player_action = PlayerAction(
+                                    action_name=self.player_turn.skills[self.action_command].name, player=self.player_turn)
+                                self.attack_animation_time = self.player_turn.attack_animation_time + TURN_BUFFER
+                                self.action_command = None
 
     def check_for_player_focus(self):
         left_x_offset = 20
@@ -220,7 +221,7 @@ class Game:
     def cool_downs(self):
         if not self.can_click:
             timer = pygame.time.get_ticks()
-            if timer - self.mouse_click_timer > 300:
+            if timer - self.mouse_click_timer > MOUSE_CLICK_TIMER:
                 self.can_click = True
         if not self.get_next_player:
             timer = pygame.time.get_ticks()

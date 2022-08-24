@@ -30,10 +30,8 @@ def load_characters(players_group: pygame.sprite.Group, particle_list_group: pyg
             character_name=player['name'],
             stats=player['stats'],
             off_set=player['off_set'],
-            # attack_effects=player['abilities'],
             position=positions[i],
             group=players_group,
-            # abilities=player['abilities'],
             side=player_side,
             attack={
                 'attack': Attack(
@@ -45,13 +43,6 @@ def load_characters(players_group: pygame.sprite.Group, particle_list_group: pyg
                 )
             },
             skills={
-                # 'attack': Attack(
-                #     particle_list_group=particle_list_group,
-                #     floating_text_group=floating_text_group,
-                #     damage_weight=skill_1_data['damage_weight'],
-                #     particle_action_frames=skill_1_data['particle_action_frames'],
-                #     particle_effects=skill_1_data['particle_effects']
-                # ),
                 'skill_1': SparkStrike(
                     particle_list_group=particle_list_group,
                     floating_text_group=floating_text_group,
@@ -60,6 +51,20 @@ def load_characters(players_group: pygame.sprite.Group, particle_list_group: pyg
                     particle_effects=skill_1_data['particle_effects']
                 ),
                 'skill_2': SparkStrike(
+                    particle_list_group=particle_list_group,
+                    floating_text_group=floating_text_group,
+                    damage_weight=skill_1_data['damage_weight'],
+                    particle_action_frames=skill_1_data['particle_action_frames'],
+                    particle_effects=skill_1_data['particle_effects']
+                ),
+                'skill_3': SparkStrike(
+                    particle_list_group=particle_list_group,
+                    floating_text_group=floating_text_group,
+                    damage_weight=skill_1_data['damage_weight'],
+                    particle_action_frames=skill_1_data['particle_action_frames'],
+                    particle_effects=skill_1_data['particle_effects']
+                ),
+                'skill_4': SparkStrike(
                     particle_list_group=particle_list_group,
                     floating_text_group=floating_text_group,
                     damage_weight=skill_1_data['damage_weight'],
