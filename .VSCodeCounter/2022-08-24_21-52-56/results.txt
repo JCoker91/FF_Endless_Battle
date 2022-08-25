@@ -1,0 +1,78 @@
+Date : 2022-08-24 21:52:56
+Directory : /Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle
+Total : 38 files,  2615 codes, 150 comments, 224 blanks, all 2989 lines
+
+Languages
++----------+------------+------------+------------+------------+------------+
+| language | files      | code       | comment    | blank      | total      |
++----------+------------+------------+------------+------------+------------+
+| Python   |         36 |      2,309 |        150 |        219 |      2,678 |
+| JSON     |          1 |        295 |          0 |          1 |        296 |
+| TOML     |          1 |         11 |          0 |          4 |         15 |
++----------+------------+------------+------------+------------+------------+
+
+Directories
++----------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                           | files      | code       | comment    | blank      | total      |
++----------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                              |         38 |      2,615 |        150 |        224 |      2,989 |
+| source                                                                                                         |         33 |      1,822 |        144 |        207 |      2,173 |
+| source/game                                                                                                    |          3 |        414 |        140 |         40 |        594 |
+| source/models                                                                                                  |         24 |      1,175 |          4 |        132 |      1,311 |
+| source/models/abilities                                                                                        |          2 |        123 |          0 |         15 |        138 |
+| source/models/character                                                                                        |          2 |        372 |          3 |         25 |        400 |
+| source/models/floating_text                                                                                    |          2 |        107 |          0 |         14 |        121 |
+| source/models/particle                                                                                         |          2 |         29 |          0 |          9 |         38 |
+| source/models/sprite_groups                                                                                    |          2 |          8 |          0 |          4 |         12 |
+| source/models/ui                                                                                               |         13 |        536 |          1 |         64 |        601 |
+| source/models/ui/menu                                                                                          |          2 |        242 |          1 |         22 |        265 |
+| source/models/ui/overlay                                                                                       |          6 |        151 |          0 |         24 |        175 |
+| source/models/ui/status_bar                                                                                    |          4 |        143 |          0 |         17 |        160 |
+| source/screen                                                                                                  |          2 |        118 |          0 |         13 |        131 |
+| source/util                                                                                                    |          4 |        115 |          0 |         22 |        137 |
++----------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++----------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| filename                                                                                                       | language | code       | comment    | blank      | total      |
++----------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| /Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/Pipfile                                           | TOML     |         11 |          0 |          4 |         15 |
+| /Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/Pipfile.lock                                      | JSON     |        295 |          0 |          1 |        296 |
+| /Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/main.py                                           | Python   |          5 |          0 |          2 |          7 |
+| /Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/player_data.py                                    | Python   |        443 |          0 |          2 |        445 |
+| /Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/settings.py                                       | Python   |         39 |          6 |          8 |         53 |
+| /Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/source/game/__init__.py                           | Python   |          0 |          0 |          1 |          1 |
+| /Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/source/game/game.py                               | Python   |        277 |         16 |         34 |        327 |
+| /Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/source/game/load_characters.py                    | Python   |        137 |        124 |          5 |        266 |
+| /Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/source/models/__init__.py                         | Python   |          0 |          0 |          1 |          1 |
+| /Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/source/models/abilities/__init__.py               | Python   |          0 |          0 |          1 |          1 |
+| /Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/source/models/abilities/abilities.py              | Python   |        123 |          0 |         14 |        137 |
+| /Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/source/models/character/__init__.py               | Python   |          0 |          0 |          1 |          1 |
+| /Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/source/models/character/character.py              | Python   |        372 |          3 |         24 |        399 |
+| /Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/source/models/floating_text/__init__.py           | Python   |          0 |          0 |          1 |          1 |
+| /Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/source/models/floating_text/damage_text.py        | Python   |        107 |          0 |         13 |        120 |
+| /Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/source/models/particle/__init__.py                | Python   |          0 |          0 |          1 |          1 |
+| /Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/source/models/particle/particle.py                | Python   |         29 |          0 |          8 |         37 |
+| /Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/source/models/sprite_groups/__init__.py           | Python   |          0 |          0 |          1 |          1 |
+| /Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/source/models/sprite_groups/sprite_groups.py      | Python   |          8 |          0 |          3 |         11 |
+| /Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/source/models/ui/__init__.py                      | Python   |          0 |          0 |          1 |          1 |
+| /Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/source/models/ui/menu/__init__.py                 | Python   |          0 |          0 |          1 |          1 |
+| /Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/source/models/ui/menu/menu.py                     | Python   |        242 |          1 |         21 |        264 |
+| /Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/source/models/ui/overlay/__init__.py              | Python   |          0 |          0 |          1 |          1 |
+| /Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/source/models/ui/overlay/draw_target_info.py      | Python   |         28 |          0 |          3 |         31 |
+| /Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/source/models/ui/overlay/player_action.py         | Python   |         48 |          0 |          6 |         54 |
+| /Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/source/models/ui/overlay/player_hp.py             | Python   |         12 |          0 |          4 |         16 |
+| /Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/source/models/ui/overlay/player_turn_indicator.py | Python   |         32 |          0 |          6 |         38 |
+| /Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/source/models/ui/overlay/player_turn_list.py      | Python   |         31 |          0 |          4 |         35 |
+| /Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/source/models/ui/status_bar/__init__.py           | Python   |          0 |          0 |          1 |          1 |
+| /Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/source/models/ui/status_bar/break_bar.py          | Python   |         43 |          0 |          5 |         48 |
+| /Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/source/models/ui/status_bar/hp_bar.py             | Python   |         58 |          0 |          5 |         63 |
+| /Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/source/models/ui/status_bar/mp_bar.py             | Python   |         42 |          0 |          6 |         48 |
+| /Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/source/screen/__init__.py                         | Python   |          0 |          0 |          1 |          1 |
+| /Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/source/screen/player_detail_screen.py             | Python   |        118 |          0 |         12 |        130 |
+| /Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/source/util/__init__.py                           | Python   |          0 |          0 |          1 |          1 |
+| /Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/source/util/custom_enum.py                        | Python   |         31 |          0 |          8 |         39 |
+| /Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/source/util/debug.py                              | Python   |          9 |          0 |          2 |         11 |
+| /Users/jacobcoker/Projects/pygame_projects/FF_Endless_Battle/source/util/util_functions.py                     | Python   |         75 |          0 |         11 |         86 |
+| Total                                                                                                          |          |      2,615 |        150 |        224 |      2,989 |
++----------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+

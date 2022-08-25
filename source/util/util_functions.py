@@ -12,24 +12,23 @@ def load_image_folder(folder_path: str):
     return images
 
 
-def text_wrap(string: str, width: int, x_pos: int, y_pos: int, display_surface: pygame.Surface, text_size: int = 24):
-    font = pygame.font.Font(
-        'resources/fonts/Pixeltype/Pixeltype.ttf', text_size)
+def draw_text_wrap(string: str,font: pygame.font.Font, wrap_width: int, x_pos: int, y_pos: int, text_color: pygame.Color = 'White'):    
     words = string.split(' ')
-
+    display_surface = pygame.display.get_surface()
     line_count = 0
     current_line_length = 0
     words_per_line = []
     for word in words:
-        rendered_width = font.render(word, False, 'White')
-        rendered_width = rendered_width.get_width()
-        if current_line_length + rendered_width < width:
-            line_count += 1
-            current_line_length += rendered_width
+        rendered_text = font.render(word, False, text_color)
+        rendered_width = rendered_text.get_width()
+        heigth = rendered_text.get_height()
+        if current_line_length + rendered_width < wrap_width:
+            line_count += 1 
+            current_line_length += rendered_width 
         else:
-            words_per_line.append(line_count)
-            line_count = 0
-            current_line_length = 0
+            words_per_line.append(line_count) 
+            line_count = 1 
+            current_line_length = rendered_width
     words_per_line.append(line_count)
 
     start_index = 0
@@ -37,9 +36,9 @@ def text_wrap(string: str, width: int, x_pos: int, y_pos: int, display_surface: 
     for line in words_per_line:
         line_index += line
         line_words = ' '.join(words[start_index:start_index + line])
-        rendered_text = font.render(line_words, False, 'White')
+        rendered_text = font.render(line_words, False, text_color)
         display_surface.blit(rendered_text, (x_pos, y_pos))
-        y_pos += text_size
+        y_pos += heigth
         start_index = line_index
 
 
@@ -78,9 +77,9 @@ if __name__ == '__main__':
         pygame.draw.rect(screen, MENU_BORDER_COLOR, display_area_rect,
                          MENU_BORDER_WIDTH, MENU_BORDER_RADIUS)
         text_string = 'Breaks the target and gains increased stats for 5 turns. Afterward, becomes sleepy and does zero damage for 56 turns. Then dies. Then gets reborn. Then dies again and that is all folks'
-        test_width = 300 - (MENU_PADDING * 2)
+        test_width = 300 - 60
         x_pos = display_area_rect.left + MENU_PADDING
-        text_wrap(text_string, test_width,
-                  x_pos, display_area_rect.top + MENU_PADDING, screen)
+        font = pygame.font.Font('resources/fonts/Pixeltype/Pixeltype.ttf', 24)
+        draw_text_wrap(text_string, font, test_width, x_pos, display_area_rect.top + MENU_PADDING, (255,0,255))
 
         process_events()

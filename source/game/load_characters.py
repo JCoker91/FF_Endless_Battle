@@ -1,3 +1,4 @@
+from turtle import position
 import pygame
 from random import choice
 from player_data import CHARACTERS
@@ -6,6 +7,83 @@ from settings import LEFT_SIDE_POSITIONS, RIGHT_SIDE_POSITIONS
 from source.util.custom_enum import PlayerSide
 from source.models.abilities.abilities import *
 
+def load_single(player_name: str,players_group: pygame.sprite.Group, particle_list_group: pygame.sprite.Group, floating_text_group: pygame.sprite.Group):
+    positions = [
+        LEFT_SIDE_POSITIONS['middle_middle'],
+        RIGHT_SIDE_POSITIONS['middle_middle'],
+    ]
+
+    for player in CHARACTERS:
+        if player['name'] == player_name:
+            skill_1_data = player['skill_data']['skill_1']
+            Character(
+                character_name=player['name'],
+                stats=player['stats'],
+                off_set=player['off_set'],
+                resistance=player['resistance'],
+                position=positions[0],
+                group=players_group,
+                side=PlayerSide.LEFT,
+                attack={
+                    'attack': Attack(
+                        particle_list_group=particle_list_group,
+                        floating_text_group=floating_text_group,
+                        damage_weight=skill_1_data['damage_weight'],
+                        particle_action_frames=skill_1_data['particle_action_frames'],
+                        particle_effects=skill_1_data['particle_effects']
+                    )
+                },
+                skills={
+                    'skill_1': SparkStrike(
+                        particle_list_group=particle_list_group,
+                        floating_text_group=floating_text_group,
+                        damage_weight=skill_1_data['damage_weight'],
+                        particle_action_frames=skill_1_data['particle_action_frames'],
+                        particle_effects=skill_1_data['particle_effects']
+                    ),
+                    'skill_2': JechtShot(
+                        particle_list_group=particle_list_group,
+                        floating_text_group=floating_text_group,
+                        damage_weight=skill_1_data['damage_weight'],
+                        particle_action_frames=skill_1_data['particle_action_frames'],
+                        particle_effects=skill_1_data['particle_effects']
+                    ),
+                }
+            )
+            Character(
+                character_name=player['name'],
+                stats=player['stats'],
+                off_set=player['off_set'],
+                resistance=player['resistance'],
+                position=positions[1],
+                group=players_group,
+                side=PlayerSide.RIGHT,
+                attack={
+                    'attack': Attack(
+                        particle_list_group=particle_list_group,
+                        floating_text_group=floating_text_group,
+                        damage_weight=skill_1_data['damage_weight'],
+                        particle_action_frames=skill_1_data['particle_action_frames'],
+                        particle_effects=skill_1_data['particle_effects']
+                    )
+                },
+                skills={
+                    'skill_1': SparkStrike(
+                        particle_list_group=particle_list_group,
+                        floating_text_group=floating_text_group,
+                        damage_weight=skill_1_data['damage_weight'],
+                        particle_action_frames=skill_1_data['particle_action_frames'],
+                        particle_effects=skill_1_data['particle_effects']
+                    ),
+                    'skill_2': JechtShot(
+                        particle_list_group=particle_list_group,
+                        floating_text_group=floating_text_group,
+                        damage_weight=skill_1_data['damage_weight'],
+                        particle_action_frames=skill_1_data['particle_action_frames'],
+                        particle_effects=skill_1_data['particle_effects']
+                    ),
+                }
+            )
 
 def load_characters(players_group: pygame.sprite.Group, particle_list_group: pygame.sprite.Group, floating_text_group: pygame.sprite.Group):
     positions = [

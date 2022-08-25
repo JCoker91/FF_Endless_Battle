@@ -356,6 +356,10 @@ class Character(pygame.sprite.Sprite):
                 if not self.base_rect:
                     self.base_rect = self.rect.copy()
                     self.set_offset = 'attack'
+            if animation == CurrentState.LIMIT_BREAK:
+                if not self.base_rect:
+                    self.base_rect = self.rect.copy()
+                    self.set_offset = 'limit_break'
             if animation == CurrentState.DYING or animation == CurrentState.BROKEN:
                 self.set_offset = 'dying'
                 if self.base_rect:

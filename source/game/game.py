@@ -2,7 +2,7 @@ from distutils.log import debug
 import pygame
 from settings import *
 from random import choice
-from source.util.custom_enum import PlayerSide
+from source.util.custom_enum import CurrentState, PlayerSide
 from source.models.ui.status_bar.break_bar import BreakBar
 from source.models.ui.status_bar.mp_bar import MPBar
 from source.models.ui.status_bar.hp_bar import HPBar
@@ -10,7 +10,7 @@ from source.models.ui.overlay.player_turn_list import PlayerTurnList
 from source.models.ui.menu.menu import CommandMenu
 from source.models.character.character import Character
 from source.screen.player_detail_screen import PlayerDetailScreen
-from source.game.load_characters import load_characters
+from source.game.load_characters import load_characters, load_single
 from source.util.debug import debug
 from source.models.ui.overlay.player_action import PlayerAction
 from source.models.sprite_groups.sprite_groups import YSortedGroup
@@ -59,6 +59,8 @@ class Game:
     def run(self):
         load_characters(self.players_group,
                         self.floating_text_group, self.particles_group)
+        # load_single('Tidus',self.players_group,
+        #                 self.floating_text_group, self.particles_group)
 
         background = self.load_background()
         pygame.display.set_caption("Final Fantasy Endless Battle")
@@ -311,6 +313,12 @@ class Game:
                 if event.key == pygame.K_ESCAPE:
                     pygame.quit()
                     exit()
+                # if event.key == pygame.K_f:
+                #     for player in players_group.sprites():
+                #         if player.current_state == CurrentState.IDLE:
+                #             player.switch_animation(CurrentState.DEAD)
+                #         else: player.switch_animation(CurrentState.IDLE)
+
 
     def show_player_details_screen(self):
         if self.showing_player_details:

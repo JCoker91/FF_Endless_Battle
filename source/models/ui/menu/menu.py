@@ -1,8 +1,10 @@
+from math import fabs
 from re import L, fullmatch
 import pygame
 from settings import *
 from source.models.character.character import Character
-from source.util.custom_enum import PlayerSide
+from source.util.custom_enum import DamageType, PlayerSide
+from source.util.util_functions import draw_text_wrap
 
 
 class CommandMenu:
@@ -11,6 +13,8 @@ class CommandMenu:
         self.WIDTH = self.display_surface.get_width()
         self.showing_main_menu = True
         self.can_click = True
+        self.right_menu_text_x = 275
+        self.right_menu_text_width = 300
         self.mouse_click_timer = pygame.time.get_ticks()
         self.current_player = None
         self.HEIGHT = int(self.display_surface.get_height() * .3)
@@ -22,7 +26,7 @@ class CommandMenu:
         self.action_commands = {
             'attack': {'label': 'ATTACK', 'description': 'Launches a basic attack at an enemy.', 'is_selected': False, 'is_hovered': False, 'mp_cost': 0},
             'skills': {'label': 'SKILLS', 'description': 'Special skills unique to each character.', 'is_selected': False, 'is_hovered': False, 'mp_cost': 0},
-            'defend': {'label': 'DEFEND', 'description': 'Enter a defensive stance reducing damage taken by 50\% until next turn.', 'is_selected': False, 'is_hovered': False, 'mp_cost': 0},
+            'defend': {'label': 'DEFEND', 'description': 'Enter a defensive stance reducing damage taken by 50% until next turn.', 'is_selected': False, 'is_hovered': False, 'mp_cost': 0},
             'item': {'label': 'ITEM', 'description': 'Use an item in stock.', 'is_selected': False, 'is_hovered': False, 'mp_cost': 0},
             'limit_break': {'label': 'LIMIT BREAK', 'description': 'Uses limit break against an enemy.', 'is_selected': False, 'is_hovered': False, 'mp_cost': 0}
         }
@@ -89,10 +93,7 @@ class CommandMenu:
         for command in self.action_commands:
             if self.action_commands[command]['is_hovered']:
                 action_description_text = self.action_commands[command]['description']
-        action_description_text_rendered = self.font.render(
-            action_description_text, True, 'White')
-        self.display_surface.blit(
-            action_description_text_rendered, (275, (self.display_surface.get_height() - self.HEIGHT) + 30))
+                self.draw_description_text(action_description_text)
         for _command in self.action_commands:
             if self.action_commands[_command]['is_selected']:
                 self.action_commands[_command]['is_selected'] = False
@@ -100,7 +101,9 @@ class CommandMenu:
                     self.showing_main_menu = False
                 else:
                     return _command
-
+    def draw_description_text(self, action_description_text: str):
+        draw_text_wrap(action_description_text,self.font,self.right_menu_text_width,self.right_menu_text_x,(self.display_surface.get_height() - self.HEIGHT) + 30)
+    
     def draw_menu_item(self, action_dict: dict, command: dict, mouse_pos: tuple, mouse_pressed: bool, x_pos: int, y_pos: int, text_color=MENU_TEXT_COLOR, disabled: bool = False, draw_mp_cost: bool = False):
         if disabled:
             text_color = 'Grey'
@@ -195,11 +198,11 @@ class CommandMenu:
         for command in self.skill_commands:
             if self.skill_commands[command]['is_hovered']:
                 action_description_text = self.skill_commands[command]['description']
-        action_description_text_rendered = self.font.render(
-            action_description_text, True, 'White')
-        self.display_surface.blit(
-            action_description_text_rendered, (275, (self.display_surface.get_height() - self.HEIGHT) + 30))
-        # if self.can_click:
+                if command != 'back':
+                    self.draw_damage_mod(player.skills[command].damage_mod,player.skills[command].break_mod,player.skills[command].turn_adjust)
+                    self.draw_element(player.skills[command].damage_type)
+        self.draw_description_text(action_description_text)
+        
         for _command in self.skill_commands:
             if self.skill_commands[_command]['is_selected']:
                 self.skill_commands[_command]['is_selected'] = False
@@ -209,3 +212,53 @@ class CommandMenu:
                 else:
                     self.showing_main_menu = True
                     return _command
+
+    def draw_damage_mod(self, damage_mod, break_mod, speed_mod):
+        x_pos = self.right_menu_text_x
+        y_pos = self.display_surface.get_height()-75
+        damage_mod_text = self.font.render(f'Damage: {damage_mod}%', False, MENU_TEXT_COLOR)
+        damage_mod_rect = damage_mod_text.get_rect(topleft=(x_pos,y_pos))
+        y_pos += damage_mod_text.get_height() *1.5
+        break_mod_text = self.font.render(f'Break: {break_mod}%', False, MENU_TEXT_COLOR)
+        break_mod_rect = break_mod_text.get_rect(topleft=(x_pos,y_pos))
+        y_pos += damage_mod_text.get_height() *1.5
+        match speed_mod:
+            case 0:
+                speed = 'Normal'
+            case 1:
+                speed = 'Fast'
+            case 2:
+                speed = 'Very Fast'
+            case -1:
+                speed = 'Slow'
+            case -2:
+                speed = 'Very Slow'
+            case 99:
+                speed = 'Instant'
+            case _:
+                speed = 'Normal'
+                
+        speed_mod_text = self.font.render(f'Speed: {speed}', False, MENU_TEXT_COLOR)
+        speed_mod_rect = damage_mod_text.get_rect(topleft=(x_pos,y_pos))
+        self.display_surface.blit(damage_mod_text, damage_mod_rect)
+        self.display_surface.blit(break_mod_text, break_mod_rect)
+        self.display_surface.blit(speed_mod_text, speed_mod_rect)
+
+    def draw_element(self,damage_type):
+        x_pos = self.display_surface.get_width() - MENU_PADDING
+        y_pos = self.display_surface.get_height()-75
+        damage_type_text = self.font.render('Damage Type', False, MENU_TEXT_COLOR)
+        damage_type_text_rect = damage_type_text.get_rect(topright = (x_pos, y_pos))
+        self.display_surface.blit(damage_type_text, damage_type_text_rect)
+        y_pos += damage_type_text.get_height() * 1.5
+        match damage_type:
+            case DamageType.LIGHTNING:
+                icon = pygame.image.load('resources/images/icons/elements/lightning.png')
+                icon_rect = icon.get_rect(topright = (x_pos,y_pos))
+                self.display_surface.blit(icon, icon_rect)
+            case DamageType.WATER:
+                icon = pygame.image.load('resources/images/icons/elements/water.png')
+                icon_rect = icon.get_rect(topright = (x_pos,y_pos))
+                self.display_surface.blit(icon, icon_rect)
+            case _:
+                pass

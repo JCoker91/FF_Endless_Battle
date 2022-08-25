@@ -64,15 +64,18 @@ class SparkStrike(Ability):
         self.turn_adjust = 1
         self.mp_cost = 20
         self.damage_type = DamageType.LIGHTNING
+        self.damage_mod = 100
+        self.break_mod = 300
 
     def execute(self, caster: Character, enemy: Character):
         caster.is_attacking = True
+        break_damage = caster.current_stats['break_power'] * (self.break_mod/100)
+        base_damage = caster.current_stats['strength'] * (self.damage_mod/100)
         base_damage = int(
-            caster.current_stats['strength'] - ((enemy.current_stats['defense'] * DEFENSE_MOD)))
+            base_damage - ((enemy.current_stats['defense'] * DEFENSE_MOD)))
         resisted_damage = self.calculate_resistance(
             base_damage, enemy)
         final_damage = max(base_damage - resisted_damage, 1)
-        break_damage = caster.current_stats['break_power'] * 3
         damage_data = {
             'damage': final_damage,
             'break_damage': break_damage,
@@ -102,10 +105,13 @@ class JechtShot(Ability):
         self.mp_cost = 30
         self.damage_type = DamageType.WATER
         self.target_count = 'all'
+        self.damage_mod = 50
+        self.break_mod = 50
 
     def execute(self, caster: Character, enemies: list[Character]):
 
         caster.is_attacking = True
+        break_damage = caster.current_stats['break_power'] * (self.break_mod/100)
         for enemy in enemies:
             enemy.current_resistance['water'] -= 30
             base_damage = int(
@@ -113,7 +119,6 @@ class JechtShot(Ability):
             resisted_damage = self.calculate_resistance(
                 base_damage, enemy)
             final_damage = max(base_damage - resisted_damage, 1)
-            break_damage = caster.current_stats['break_power'] * .5
             damage_data = {
                 'damage': final_damage,
                 'break_damage': break_damage,
