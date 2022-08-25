@@ -43,12 +43,15 @@ class Game:
         self.get_next_player = True  # used with get next player timer
         self.clock = pygame.time.Clock()
         self.double_click_clock = pygame.time.Clock()
+        self.left_staging_area = (275,500)
+        self.right_staging_area = (400,500)
 
         # game variable setup
         # determines which player is focused on either side
         self.left_focused = None
         self.right_focused = None
 
+        self.limit_break_happening = False
         self.selection_arrow = self.create_selection_arrow()
         self.showing_player_details = False
         self.showing_player = None
@@ -73,6 +76,7 @@ class Game:
             self.get_player_turn()
             self.run_enemy_action()
             self.update_groups()
+            self.draw_opacity()
             self.draw_groups()
 
             self.check_for_player_focus()
@@ -83,6 +87,15 @@ class Game:
             pygame.display.update()
             self.clock.tick(FPS)
 
+    def draw_opacity(self):
+        opac_rect = pygame.Surface(
+            (self.screen.get_width(), self.screen.get_height())).convert_alpha()
+        opac_rect_rc = opac_rect.get_rect()
+        pygame.draw.rect(opac_rect, 'Black', opac_rect_rc)
+        opac_rect.set_alpha(100)
+        if self.limit_break_happening:
+            self.screen.blit(opac_rect, (0, 0))
+
     def load_background(self):
         background = pygame.image.load(
             'resources/images/backgrounds/water_temple.png').convert()
@@ -91,6 +104,7 @@ class Game:
     def run_enemy_action(self):
         if self.player_turn:
             if self.player_turn.side == PlayerSide.RIGHT and not self.player_turn.is_attacking and self.attack_animation_time == 0:
+                self.player_turn.rect.bottomright = self.right_staging_area
                 self.left_focused = choice(list(filter(
                     lambda player: player.side == PlayerSide.LEFT, self.players_group.sprites())))
                 self.player_turn.attack['attack'].execute(
@@ -159,6 +173,7 @@ class Game:
         for player in self.players_group.sprites():
             if player.rect.collidepoint(mouse_pos):
                 draw_player = player
+
         DrawTargetInfo().draw(draw_player)
         action_command = self.command_menu.draw(self.player_turn)
         if action_command and self.get_next_player and self.right_focused:
@@ -175,6 +190,7 @@ class Game:
                     if not self.player_turn.is_attacking:
                         if self.player_turn.side == PlayerSide.LEFT:
                             if self.right_focused:
+                                self.player_turn.rect.bottomleft = self.left_staging_area
                                 self.player_turn.attack['attack'].execute(
                                     self.player_turn, self.right_focused)
                                 self.get_next_player_timer = pygame.time.get_ticks()
@@ -189,6 +205,7 @@ class Game:
                         if self.player_turn.side == PlayerSide.LEFT:
                             if self.player_turn.skills[self.action_command].target_count == 'single':
                                 if self.right_focused:
+                                    self.player_turn.rect.bottomleft = self.left_staging_area
                                     self.player_turn.skills[self.action_command].execute(
                                         self.player_turn, self.right_focused)
                                     self.get_next_player_timer = pygame.time.get_ticks()
@@ -208,6 +225,20 @@ class Game:
                                     action_name=self.player_turn.skills[self.action_command].name, player=self.player_turn)
                                 self.attack_animation_time = self.player_turn.attack_animation_time + TURN_BUFFER
                                 self.action_command = None
+            elif self.action_command == 'limit_break':
+                if self.player_turn:
+                    self.limit_break_happening = True
+                    if not self.player_turn.is_limit_breaking:
+                        if self.player_turn.side == PlayerSide.LEFT:
+                            if self.player_turn.limit_break['limit_break'].target_count == 'single':
+                                if self.right_focused:
+                                    self.player_turn.rect.bottomleft = self.left_staging_area
+                                    self.player_turn.limit_break['limit_break'].execute(self.player_turn,self.right_focused)
+                                    self.get_next_player_timer = pygame.time.get_ticks()
+                                    self.get_next_player = False
+                                    self.player_action = PlayerAction(action_name=self.player_turn.limit_break['limit_break'].name, player=self.player_turn)
+                                    self.attack_animation_time = self.player_turn.limit_break_animation_time + TURN_BUFFER
+                                    self.action_command = None
 
     def check_for_player_focus(self):
         left_x_offset = 20
@@ -241,6 +272,10 @@ class Game:
             timer = pygame.time.get_ticks()
             self.turn_adjust()
             if timer - self.get_next_player_timer > self.attack_animation_time:
+                if self.player_turn.side == PlayerSide.LEFT:
+                    self.player_turn.rect.bottomleft = self.player_turn.starting_spot
+                if self.player_turn.side == PlayerSide.RIGHT:
+                    self.player_turn.rect.bottomright = self.player_turn.starting_spot
                 self.player_action = None
                 self.player_turn.turn_count = 0
                 self.player_turn = None
@@ -248,6 +283,8 @@ class Game:
                 self.get_next_player = True
                 self.player_turn_list.pop(0)
                 self.attack_animation_time = 0
+                self.limit_break_happening = False
+                
 
     def turn_adjust(self):
         for player in self.players_group.sprites():

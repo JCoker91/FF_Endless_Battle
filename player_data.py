@@ -15,6 +15,12 @@ CHARACTERS = [
                 'particle_action_frames': [3,  12,  17,  22, 27, 28, 29],
                 'damage_weight': [3, 3, 3, 3, 2, 2, 2]}
         },
+        'limit_break_data': {
+            'limit_break':  {
+                'particle_effects': ['slash', 'slash', 'slash', 'slash','slash', 'shards', 'shards', 'shards', 'shards', 'slash', 'slash', 'slash'],
+                'particle_action_frames': [6,9,12,18,23,28,30,34,41,47,50,52],
+                'damage_weight': [1,1,1,1,1,1,1,1,1,1,1,1]}
+        },
         'off_set': {
             'left':
             {
@@ -57,6 +63,13 @@ CHARACTERS = [
                 'particle_effects': ['slash'],
                 'particle_action_frames': [2],
                 'damage_weight': [1],
+            },
+        },
+        'limit_break_data': {
+            'limit_break':  {
+                'particle_effects': ['slash', 'slash', 'slash', 'slash','slash','slash','slash','slash','slash','slash','slash','slash','slash','slash','slash','slash'],
+                'particle_action_frames': [44,45,49,52,60,63,66,72,75,79,83,90,94,97,103,122],
+                'damage_weight': [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,10]
             },
         },
         'off_set': {
@@ -103,6 +116,13 @@ CHARACTERS = [
                 'damage_weight': [1],
             },
         },
+        'limit_break_data': {
+            'limit_break':  {
+                'particle_effects': ['slash', 'slash', 'slash', 'slash', 'shards', 'shards', 'shards'],
+                'particle_action_frames': [3,  12,  17,  22, 27, 28, 29],
+                'damage_weight': [3, 3, 3, 3, 2, 2, 2]
+            },
+        },
         'off_set': {
             'left':
             {
@@ -145,6 +165,13 @@ CHARACTERS = [
                 'particle_effects': ['slash', 'slash'],
                 'particle_action_frames': [3, 9],
                 'damage_weight': [1, 1],
+            },
+        },
+        'limit_break_data': {
+            'limit_break':  {
+                'particle_effects': ['slash', 'slash', 'slash', 'slash', 'shards', 'shards', 'shards'],
+                'particle_action_frames': [3,  12,  17,  22, 27, 28, 29],
+                'damage_weight': [3, 3, 3, 3, 2, 2, 2]
             },
         },
         'off_set': {
@@ -192,6 +219,13 @@ CHARACTERS = [
                 'damage_weight': [1],
             },
         },
+        'limit_break_data': {
+            'limit_break':  {
+                'particle_effects': ['slash', 'slash', 'slash', 'slash', 'shards', 'shards', 'shards'],
+                'particle_action_frames': [3,  12,  17,  22, 27, 28, 29],
+                'damage_weight': [3, 3, 3, 3, 2, 2, 2]
+            },
+        },
         'off_set': {
             'left':
             {
@@ -234,6 +268,13 @@ CHARACTERS = [
                 'particle_effects': ['slash', 'slash'],
                 'particle_action_frames': [0, 6],
                 'damage_weight': [1, 1],
+            },
+        },
+        'limit_break_data': {
+            'limit_break':  {
+                'particle_effects': ['slash', 'slash', 'slash', 'slash', 'shards', 'shards', 'shards'],
+                'particle_action_frames': [3,  12,  17,  22, 27, 28, 29],
+                'damage_weight': [3, 3, 3, 3, 2, 2, 2]
             },
         },
         'off_set': {
@@ -280,6 +321,13 @@ CHARACTERS = [
                 'damage_weight': [1, 1, 2],
             },
         },
+        'limit_break_data': {
+            'limit_break':  {
+                'particle_effects': ['slash', 'slash', 'slash', 'slash', 'shards', 'shards', 'shards'],
+                'particle_action_frames': [3,  12,  17,  22, 27, 28, 29],
+                'damage_weight': [3, 3, 3, 3, 2, 2, 2]
+            },
+        },
         'off_set': {
             'left':
             {
@@ -322,6 +370,13 @@ CHARACTERS = [
                 'particle_effects': ['shards', 'shards', 'shards', 'shards', 'shards', ],
                 'particle_action_frames': [3, 4, 5, 6, 7],
                 'damage_weight': [1, 1, 1, 1, 1],
+            },
+        },
+        'limit_break_data': {
+            'limit_break':  {
+                'particle_effects': ['slash', 'slash', 'slash', 'slash', 'shards', 'shards', 'shards'],
+                'particle_action_frames': [3,  12,  17,  22, 27, 28, 29],
+                'damage_weight': [3, 3, 3, 3, 2, 2, 2]
             },
         },
         'off_set': {
@@ -368,6 +423,13 @@ CHARACTERS = [
                 'damage_weight': [5, 4, 4],
             },
         },
+        'limit_break_data': {
+            'limit_break':  {
+                'particle_effects': ['slash', 'slash', 'slash', 'slash', 'shards', 'shards', 'shards'],
+                'particle_action_frames': [3,  12,  17,  22, 27, 28, 29],
+                'damage_weight': [3, 3, 3, 3, 2, 2, 2]
+            },
+        },
         'off_set': {
             'left':
             {
@@ -410,6 +472,13 @@ CHARACTERS = [
                 'particle_effects': ['slash'],
                 'particle_action_frames': [3],
                 'damage_weight': [1],
+            },
+        },
+        'limit_break_data': {
+            'limit_break':  {
+                'particle_effects': ['slash', 'slash', 'slash', 'slash', 'shards', 'shards', 'shards'],
+                'particle_action_frames': [3,  12,  17,  22, 27, 28, 29],
+                'damage_weight': [3, 3, 3, 3, 2, 2, 2]
             },
         },
         'off_set': {

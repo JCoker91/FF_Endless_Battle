@@ -10,13 +10,14 @@ from source.models.floating_text.damage_text import DamageText
 
 
 class Character(pygame.sprite.Sprite):
-    def __init__(self, character_name: str, stats: dict, resistance: dict, position: tuple, side: PlayerSide, off_set: dict, attack: dict, skills: dict, group: pygame.sprite.Group) -> None:
+    def __init__(self, character_name: str, stats: dict, resistance: dict, position: tuple, side: PlayerSide, off_set: dict, attack: dict, skills: dict,  group: pygame.sprite.Group,limit_break: dict = None,) -> None:
         super().__init__()
         self.base_stats = stats.copy()
         self.current_stats = stats.copy()
         self.current_resistance = resistance.copy()
         self.base_resistance = resistance.copy()
         self.break_bar = 100
+        self.is_limit_breaking = False
         self.name = character_name  # Character name
         self.side = side  # Which side the character is on (left or right)
         # Determines where the character will load on the screen
@@ -44,12 +45,13 @@ class Character(pygame.sprite.Sprite):
         self.color_counter_increment_2 = True
         self.color_counter_increment_3 = True
         self.set_offset = None
-        self.limit_break_gauge = 0
+        self.limit_break_gauge = 100
         self.particle_action_count = 0
         self.turn_adjust = 0
         self.move_to = None
         self.attack = attack
         self.skills = skills
+        self.limit_break = limit_break
         self.menu_action = ['ATTACK', 'SPECIAL',
                             'MAGIC', 'DEFEND', 'ITEM', 'LIMIT BREAK']
         self.particle_list = []
@@ -76,6 +78,7 @@ class Character(pygame.sprite.Sprite):
         }
         self.load_images()
         self.attack_animation_time = (250 * len(self.animations['attack']))/4
+        self.limit_break_animation_time = (250 * len(self.animations['limit_break']))/4
         self.base_rect = None
 
         if self.side == PlayerSide.RIGHT:
@@ -156,7 +159,7 @@ class Character(pygame.sprite.Sprite):
                 self.animation_frame_count += .25
                 if self.animation_frame_count >= len(self.animations['limit_break']):
                     self.animation_frame_count = 0
-                    self.current_state = CurrentState.IDLE
+                    self.is_limit_breaking = False
             case CurrentState.ATTACK_STANDBY:
                 if self.side == PlayerSide.RIGHT:
                     self.image = self.animations['attack_standby'][int(
@@ -379,6 +382,8 @@ class Character(pygame.sprite.Sprite):
     def switch_action(self):
         if self.is_attacking:
             self.switch_animation(CurrentState.ATTACK)
+        elif self.is_limit_breaking:
+            self.switch_animation(CurrentState.LIMIT_BREAK)
         elif self.has_fallen:
             self.switch_animation(CurrentState.DEAD)
         elif self.is_dying:

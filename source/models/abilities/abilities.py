@@ -53,6 +53,35 @@ class Attack(Ability):
         }
         caster.turn_adjust += self.turn_adjust
         enemy.take_damage(damage_data)
+class AttackPlusLightning(Ability):
+    def __init__(self, particle_effects: list, particle_action_frames: list, damage_weight: list, particle_list_group: pygame.sprite.Group, floating_text_group: pygame.sprite.Group) -> None:
+        super().__init__(particle_effects, particle_action_frames,
+                         damage_weight, particle_list_group, floating_text_group)
+        self.name = "ATTACK+"
+        self.damage_type = DamageType.LIGHTNING
+        self.description = "Lightning attribute attack with increased speed."
+        self.break_mod = 100
+        self.turn_adjust = 1
+
+    def execute(self, caster: Character, enemy: Character):
+        caster.is_attacking = True
+        damage = int(caster.current_stats['strength'] - (enemy.current_stats['defense'] * DEFENSE_MOD))
+        break_damage = caster.current_stats['break_power'] * self.break_mod / 100
+        resisted_damage = self.calculate_resistance(damage,enemy)
+        final_damage = max(damage - resisted_damage,1)
+        damage_data = {
+            'damage': final_damage,
+            'break_damage': break_damage,
+            'attack_len': len(caster.animations['attack']),
+            'particle_effects': self.particle_effects,
+            'particle_action_frames': self.particle_action_frames,
+            'damage_weight': self.damage_weight,
+            'particle_list_group': self.particle_list_group,
+            'floating_text_group': self.floating_text_group,
+            'damage_type': self.damage_type
+        }
+        caster.turn_adjust += self.turn_adjust
+        enemy.take_damage(damage_data)
 
 
 class SparkStrike(Ability):

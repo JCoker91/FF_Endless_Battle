@@ -28,8 +28,9 @@ class CommandMenu:
             'skills': {'label': 'SKILLS', 'description': 'Special skills unique to each character.', 'is_selected': False, 'is_hovered': False, 'mp_cost': 0},
             'defend': {'label': 'DEFEND', 'description': 'Enter a defensive stance reducing damage taken by 50% until next turn.', 'is_selected': False, 'is_hovered': False, 'mp_cost': 0},
             'item': {'label': 'ITEM', 'description': 'Use an item in stock.', 'is_selected': False, 'is_hovered': False, 'mp_cost': 0},
-            'limit_break': {'label': 'LIMIT BREAK', 'description': 'Uses limit break against an enemy.', 'is_selected': False, 'is_hovered': False, 'mp_cost': 0}
+            # 'limit_break': {'label': 'LIMIT BREAK', 'description': 'Uses limit break against an enemy.', 'is_selected': False, 'is_hovered': False, 'mp_cost': 0}
         }
+
         self.skill_commands = {
             'back': {'label': 'BACK', 'description': 'Back to main menu.',
                      'is_selected': False, 'is_hovered': False, 'mp_cost': 0}
@@ -45,6 +46,11 @@ class CommandMenu:
                 for skill in player.skills:
                     self.skill_commands[skill] = {'label': player.skills[skill].name,
                                                   'description': player.skills[skill].description, 'is_selected': False, 'is_hovered': False, 'mp_cost': player.skills[skill].mp_cost}
+                
+                for attack in player.attack:
+                    self.action_commands['attack'] = {'label': player.attack[attack].name, 'description': player.attack[attack].description, 'is_selected' : False, 'is_hovered': False,'mp_cost': 0}
+                for limit_break in player.limit_break:
+                    self.action_commands[limit_break] = {'label': player.limit_break[limit_break].name, 'description': player.limit_break[limit_break].description, 'is_selected' : False, 'is_hovered': False,'mp_cost': 0}
             if self.showing_main_menu:
                 return_value = self.draw_main_menu(player)
             else:
@@ -85,8 +91,16 @@ class CommandMenu:
                     self.draw_menu_item(self.action_commands,
                                         command, mouse_pos, mouse_clicked, 100, y, disabled=True)
             else:
-                self.draw_menu_item(self.action_commands, command, mouse_pos,
-                                    mouse_clicked, 100, y)
+                if command == 'attack':
+                    if self.action_commands[command]['label'] != 'ATTACK':
+                        self.draw_menu_item(self.action_commands, command, mouse_pos,
+                                            mouse_clicked, 100, y, text_color='Yellow')
+                    else:
+                        self.draw_menu_item(self.action_commands, command, mouse_pos,
+                                            mouse_clicked, 100, y)
+                else:
+                    self.draw_menu_item(self.action_commands, command, mouse_pos,
+                                        mouse_clicked, 100, y)
             y += 25
 
         action_description_text = ""

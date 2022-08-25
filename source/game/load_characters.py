@@ -6,6 +6,7 @@ from source.models.character.character import Character
 from settings import LEFT_SIDE_POSITIONS, RIGHT_SIDE_POSITIONS
 from source.util.custom_enum import PlayerSide
 from source.models.abilities.abilities import *
+from source.models.abilities.limit_break import *
 
 def load_single(player_name: str,players_group: pygame.sprite.Group, particle_list_group: pygame.sprite.Group, floating_text_group: pygame.sprite.Group):
     positions = [
@@ -48,7 +49,8 @@ def load_single(player_name: str,players_group: pygame.sprite.Group, particle_li
                         particle_action_frames=skill_1_data['particle_action_frames'],
                         particle_effects=skill_1_data['particle_effects']
                     ),
-                }
+                },
+                
             )
             Character(
                 character_name=player['name'],
@@ -104,6 +106,7 @@ def load_characters(players_group: pygame.sprite.Group, particle_list_group: pyg
         else:
             player_side = PlayerSide.LEFT
         skill_1_data = player['skill_data']['skill_1']
+        limit_break_data = player['limit_break_data']['limit_break']
         Character(
             character_name=player['name'],
             stats=player['stats'],
@@ -136,20 +139,15 @@ def load_characters(players_group: pygame.sprite.Group, particle_list_group: pyg
                     particle_action_frames=skill_1_data['particle_action_frames'],
                     particle_effects=skill_1_data['particle_effects']
                 ),
-                # 'skill_3': SparkStrike(
-                #     particle_list_group=particle_list_group,
-                #     floating_text_group=floating_text_group,
-                #     damage_weight=skill_1_data['damage_weight'],
-                #     particle_action_frames=skill_1_data['particle_action_frames'],
-                #     particle_effects=skill_1_data['particle_effects']
-                # ),
-                # 'skill_4': SparkStrike(
-                #     particle_list_group=particle_list_group,
-                #     floating_text_group=floating_text_group,
-                #     damage_weight=skill_1_data['damage_weight'],
-                #     particle_action_frames=skill_1_data['particle_action_frames'],
-                #     particle_effects=skill_1_data['particle_effects']
-                # ),
+            },
+            limit_break={
+                'limit_break': ArmyOfOne(
+                    particle_list_group=particle_list_group,
+                    floating_text_group=floating_text_group,
+                    damage_weight=limit_break_data['damage_weight'],
+                    particle_action_frames=limit_break_data['particle_action_frames'],
+                    particle_effects=limit_break_data['particle_effects']
+                ),
             }
         )
     # player = CHARACTERS[0]
