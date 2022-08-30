@@ -92,7 +92,7 @@ class CommandMenu:
                                         command, mouse_pos, mouse_clicked, 100, y, disabled=True)
             else:
                 if command == 'attack':
-                    if self.action_commands[command]['label'] != 'ATTACK':
+                    if self.action_commands[command]['label'].upper() != 'ATTACK':
                         self.draw_menu_item(self.action_commands, command, mouse_pos,
                                             mouse_clicked, 100, y, text_color='Yellow')
                     else:

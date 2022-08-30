@@ -2,6 +2,7 @@ from distutils.log import debug
 import pygame
 from settings import *
 from random import choice
+from source.models.ui.overlay import player_turn_indicator
 from source.util.custom_enum import CurrentState, PlayerSide
 from source.models.ui.status_bar.break_bar import BreakBar
 from source.models.ui.status_bar.mp_bar import MPBar
@@ -37,6 +38,7 @@ class Game:
         # clock and timer setup
         self.mouse_click_timer = pygame.time.get_ticks()
         self.get_next_player_timer = pygame.time.get_ticks()
+        self.player_turn_indicator = PlayerTurnIndicator()
         self.turn_buffer_timer = pygame.time.get_ticks()
         self.can_click = True  # used with the mouse timer
         self.attack_animation_time = 0
@@ -83,7 +85,7 @@ class Game:
             self.show_player_details_screen()
             self.cool_downs()
 
-            # debug(self.action_command)
+            # debug(self.player_turn_indicator.r_dir)
             pygame.display.update()
             self.clock.tick(FPS)
 
@@ -163,7 +165,7 @@ class Game:
 
     def draw_groups(self):
         if self.player_turn:
-            PlayerTurnIndicator().draw(self.player_turn)
+            self.player_turn_indicator.draw(self.player_turn)
         self.players_group.draw(self.screen)
         self.particles_group.draw(self.screen)
         PlayerTurnList(self.player_turn_list, 10, 10).draw()

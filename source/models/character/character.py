@@ -52,8 +52,8 @@ class Character(pygame.sprite.Sprite):
         self.attack = attack
         self.skills = skills
         self.limit_break = limit_break
-        self.menu_action = ['ATTACK', 'SPECIAL',
-                            'MAGIC', 'DEFEND', 'ITEM', 'LIMIT BREAK']
+        # self.menu_action = ['ATTACK', 'SPECIAL',
+        #                     'MAGIC', 'DEFEND', 'ITEM', 'LIMIT BREAK']
         self.particle_list = []
         if self.side == PlayerSide.RIGHT:
 
